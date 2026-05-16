@@ -7,32 +7,83 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class DashboardUI {
+
+public class AdminDashboardUI {
 
     public static void show(Stage stage) {
 
         Label title = new Label("ADMIN DASHBOARD");
 
-        Button employeeButton = new Button("Employee Management");
 
-        Button passSlipButton = new Button("Pass Slip Issuance");
 
-        Button returnButton = new Button("Return Employee");
-
-        Button monitoringButton = new Button("Monitoring");
-
-        Button reportsButton = new Button("Reports");
-
-        Button logoutButton = new Button("Logout");
+        Button employeeButton =
+                new Button("Employee Management");
 
 
 
-        // OPEN EMPLOYEE MANAGEMENT
+        Button addEmployeeButton =
+                new Button("Add Employee");
+
+
+
+        Button manageUsersButton =
+                new Button("Manage Users");
+
+
+
+        Button passSlipButton =
+                new Button("Pass Slip Issuance");
+
+
+
+        Button returnButton =
+                new Button("Return Employee");
+
+
+
+        Button monitoringButton =
+                new Button("Monitoring");
+
+
+
+        Button reportsButton =
+                new Button("Reports");
+
+
+
+        Button logoutButton =
+                new Button("Logout");
+
+
+
+
+        // OPEN EMPLOYEE LIST
         employeeButton.setOnAction(e -> {
+
+            EmployeeListUI.show(stage);
+
+        });
+
+
+
+
+        // OPEN ADD EMPLOYEE UI
+        addEmployeeButton.setOnAction(e -> {
 
             EmployeeUI.show(stage);
 
         });
+
+
+
+
+        // OPEN USER LIST
+        manageUsersButton.setOnAction(e -> {
+
+            UserListUI.show(stage);
+
+        });
+
 
 
 
@@ -45,12 +96,14 @@ public class DashboardUI {
 
 
 
+
         // OPEN RETURN UI
         returnButton.setOnAction(e -> {
 
             ReturnUI.show(stage);
 
         });
+
 
 
 
@@ -63,12 +116,14 @@ public class DashboardUI {
 
 
 
+
         // OPEN REPORTS UI
         reportsButton.setOnAction(e -> {
 
             ReportsUI.show(stage);
 
         });
+
 
 
 
@@ -81,13 +136,19 @@ public class DashboardUI {
 
 
 
+
         VBox root = new VBox(15);
 
         root.setAlignment(Pos.CENTER);
 
+
+
+
         root.getChildren().addAll(
                 title,
                 employeeButton,
+                addEmployeeButton,
+                manageUsersButton,
                 passSlipButton,
                 returnButton,
                 monitoringButton,
@@ -95,7 +156,11 @@ public class DashboardUI {
                 logoutButton
         );
 
-        Scene scene = new Scene(root, 500, 500);
+
+
+
+        Scene scene =
+                new Scene(root, 500, 600);
 
         stage.setTitle("Dashboard");
 

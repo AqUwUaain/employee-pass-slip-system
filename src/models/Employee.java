@@ -8,8 +8,17 @@ public class Employee {
 
     private String lastName;
 
+    private String department;
+
+    private String position;
+
+    private String contact;
+
+    private String joinDate;
 
 
+
+    // SIMPLE CONSTRUCTOR
     public Employee(
             int id,
             String firstName,
@@ -21,6 +30,35 @@ public class Employee {
         this.firstName = firstName;
 
         this.lastName = lastName;
+
+    }
+
+
+
+    // FULL CONSTRUCTOR
+    public Employee(
+            int id,
+            String firstName,
+            String lastName,
+            String department,
+            String position,
+            String contact,
+            String joinDate
+    ) {
+
+        this.id = id;
+
+        this.firstName = firstName;
+
+        this.lastName = lastName;
+
+        this.department = department;
+
+        this.position = position;
+
+        this.contact = contact;
+
+        this.joinDate = joinDate;
 
     }
 
@@ -50,10 +88,33 @@ public class Employee {
 
 
 
-    @Override
-    public String toString() {
+    public String getDepartment() {
 
-        return firstName + " " + lastName;
+        return department;
+
+    }
+
+
+
+    public String getPosition() {
+
+        return position;
+
+    }
+
+
+
+    public String getContact() {
+
+        return contact;
+
+    }
+
+
+
+    public String getJoinDate() {
+
+        return joinDate;
 
     }
 

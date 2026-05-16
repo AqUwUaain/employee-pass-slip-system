@@ -1,6 +1,13 @@
 package controllers;
 
 import database.DatabaseConnection;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import ui.AdminDashboardUI;
+import ui.StaffDashboardUI;
+import utils.Session;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,28 +15,89 @@ import java.sql.ResultSet;
 
 public class LoginController {
 
-    public static boolean login(String username, String password) {
+    public static void login(
+            TextField usernameField,
+            PasswordField passwordField,
+            Label messageLabel,
+            Stage stage
+    ) {
 
         try {
 
-            Connection connection = DatabaseConnection.connect();
+            Connection connection =
+                    DatabaseConnection.connect();
 
-            String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+            String query =
+                    "SELECT * FROM users " +
+                            "WHERE username = ? " +
+                            "AND password = ?";
 
-            PreparedStatement statement = connection.prepareStatement(sql);
+            PreparedStatement statement =
+                    connection.prepareStatement(query);
 
-            statement.setString(1, username);
-            statement.setString(2, password);
+            statement.setString(
+                    1,
+                    usernameField.getText()
+            );
 
-            ResultSet resultSet = statement.executeQuery();
+            statement.setString(
+                    2,
+                    passwordField.getText()
+            );
 
-            return resultSet.next();
+            ResultSet resultSet =
+                    statement.executeQuery();
 
-        } catch (Exception e) {
+
+
+            if(resultSet.next()) {
+
+                String role =
+                        resultSet.getString("role");
+
+
+
+                // SAVE CURRENT SESSION ROLE
+                Session.currentRole = role;
+
+
+
+                // ADMIN
+                if(role.equalsIgnoreCase("ADMIN")) {
+
+                    AdminDashboardUI.show(stage);
+
+                }
+
+
+
+                // STAFF
+                else if(role.equalsIgnoreCase("STAFF")) {
+
+                    StaffDashboardUI.show(stage);
+
+                }
+
+            }
+            else {
+
+                messageLabel.setText(
+                        "INVALID LOGIN"
+                );
+
+            }
+
+        }
+        catch (Exception e) {
 
             e.printStackTrace();
 
-            return false;
+            messageLabel.setText(
+                    "DATABASE ERROR"
+            );
+
         }
+
     }
+
 }

@@ -8,6 +8,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import utils.Session;
+
 public class ReportsUI {
 
     public static void show(Stage stage) {
@@ -37,6 +39,8 @@ public class ReportsUI {
                 totalExpiredLabel
         );
 
+
+
         Button refreshButton =
                 new Button("Refresh");
 
@@ -52,16 +56,33 @@ public class ReportsUI {
 
         });
 
+
+
         Button backButton =
                 new Button("Back");
 
+
+
+        // BACK BUTTON
         backButton.setOnAction(e -> {
 
-            DashboardUI.show(stage);
+            if(Session.currentRole.equals("ADMIN")) {
+
+                AdminDashboardUI.show(stage);
+
+            }
+            else {
+
+                StaffDashboardUI.show(stage);
+
+            }
 
         });
 
-        VBox root = new VBox(15);
+
+
+        VBox root =
+                new VBox(15);
 
         root.setAlignment(Pos.CENTER);
 
@@ -75,6 +96,8 @@ public class ReportsUI {
                 refreshButton,
                 backButton
         );
+
+
 
         Scene scene =
                 new Scene(root, 500, 400);

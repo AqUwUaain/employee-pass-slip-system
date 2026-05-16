@@ -10,6 +10,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import utils.Session;
+
 public class MonitoringUI {
 
     public static void show(Stage stage) {
@@ -50,7 +52,16 @@ public class MonitoringUI {
         // BACK BUTTON
         backButton.setOnAction(e -> {
 
-            DashboardUI.show(stage);
+            if(Session.currentRole.equals("ADMIN")) {
+
+                AdminDashboardUI.show(stage);
+
+            }
+            else {
+
+                StaffDashboardUI.show(stage);
+
+            }
 
         });
 

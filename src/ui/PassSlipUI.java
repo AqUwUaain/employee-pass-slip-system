@@ -4,19 +4,16 @@ import controllers.EmployeeController;
 import controllers.PassSlipController;
 
 import javafx.geometry.Pos;
-
 import javafx.scene.Scene;
-
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-
 import javafx.scene.layout.VBox;
-
 import javafx.stage.Stage;
 
 import models.Employee;
+import utils.Session;
 
 public class PassSlipUI {
 
@@ -87,10 +84,19 @@ public class PassSlipUI {
 
 
 
-        // BACK TO DASHBOARD
+        // BACK BUTTON
         backButton.setOnAction(e -> {
 
-            DashboardUI.show(stage);
+            if(Session.currentRole.equals("ADMIN")) {
+
+                AdminDashboardUI.show(stage);
+
+            }
+            else {
+
+                StaffDashboardUI.show(stage);
+
+            }
 
         });
 
