@@ -1,5 +1,7 @@
 package database;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
@@ -10,32 +12,17 @@ public class DatabaseConnection {
 
         try {
 
-            String url =
-                    "jdbc:postgresql://aws-1-ap-northeast-2.pooler.supabase.com:6543/postgres";
+            Dotenv dotenv = Dotenv.load();
 
-            String user =
-                    "postgres.kvtbvptrcdnenogrwtuc";
+            String url = dotenv.get("DB_URL");
+            String user = dotenv.get("DB_USER");
+            String password = dotenv.get("DB_PASSWORD");
 
-            String password =
-                    "DataBPW@177";
+            Properties props = new Properties();
 
-            Properties props =
-                    new Properties();
-
-            props.setProperty(
-                    "user",
-                    user
-            );
-
-            props.setProperty(
-                    "password",
-                    password
-            );
-
-            props.setProperty(
-                    "sslmode",
-                    "require"
-            );
+            props.setProperty("user", user);
+            props.setProperty("password", password);
+            props.setProperty("sslmode", "require");
 
             Connection connection =
                     DriverManager.getConnection(
@@ -43,21 +30,15 @@ public class DatabaseConnection {
                             props
                     );
 
-            System.out.println(
-                    "Database Connected!"
-            );
+            System.out.println("Database Connected!");
 
             return connection;
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
             e.printStackTrace();
 
             return null;
-
         }
-
     }
-
 }
