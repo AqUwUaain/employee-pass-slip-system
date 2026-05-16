@@ -2,6 +2,7 @@ package database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.Properties;
 
 public class DatabaseConnection {
 
@@ -9,22 +10,54 @@ public class DatabaseConnection {
 
         try {
 
-            Connection conn = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/employee_pass_slip",
-                    "postgres",
-                    "PostGres@177"
+            String url =
+                    "jdbc:postgresql://aws-1-ap-northeast-2.pooler.supabase.com:6543/postgres";
+
+            String user =
+                    "postgres.kvtbvptrcdnenogrwtuc";
+
+            String password =
+                    "";
+
+            Properties props =
+                    new Properties();
+
+            props.setProperty(
+                    "user",
+                    user
             );
 
-            System.out.println("Database Connected!");
+            props.setProperty(
+                    "password",
+                    password
+            );
 
-            return conn;
+            props.setProperty(
+                    "sslmode",
+                    "require"
+            );
 
-        } catch (Exception e) {
+            Connection connection =
+                    DriverManager.getConnection(
+                            url,
+                            props
+                    );
 
-            System.out.println("Connection Failed!");
+            System.out.println(
+                    "Database Connected!"
+            );
+
+            return connection;
+
+        }
+        catch (Exception e) {
+
             e.printStackTrace();
 
             return null;
+
         }
+
     }
+
 }
