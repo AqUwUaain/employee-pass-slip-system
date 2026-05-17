@@ -2,6 +2,10 @@ package utils;
 
 public class Session {
 
-    public static String currentRole = "";
+    public static int currentUserId;
+
+    public static String currentUsername;
+
+    public static String currentRole;
 
 }

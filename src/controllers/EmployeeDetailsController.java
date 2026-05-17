@@ -36,7 +36,7 @@ public class EmployeeDetailsController {
                         resultSet.getString("department"),
                         resultSet.getString("position"),
                         resultSet.getString("contact"),
-                        resultSet.getString("join_date")
+                        resultSet.getDate("join_date").toLocalDate()
                 );
 
             }

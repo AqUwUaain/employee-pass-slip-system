@@ -1,15 +1,14 @@
 package ui;
 
 import controllers.DeleteEmployeeController;
+import controllers.EmployeeController;
 import controllers.EmployeeDetailsController;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.Employee;
-
 import utils.Session;
 
 public class EmployeeDetailsUI {
@@ -32,36 +31,38 @@ public class EmployeeDetailsUI {
 
 
 
-        Label nameLabel =
-                new Label(
-                        "NAME: "
-                                + employee.getFirstName()
-                                + " "
-                                + employee.getLastName()
+        // EDITABLE FIELDS
+        TextField firstNameField =
+                new TextField(
+                        employee.getFirstName()
                 );
 
 
 
-        Label departmentLabel =
-                new Label(
-                        "DEPARTMENT: "
-                                + employee.getDepartment()
+        TextField lastNameField =
+                new TextField(
+                        employee.getLastName()
                 );
 
 
 
-        Label positionLabel =
-                new Label(
-                        "POSITION: "
-                                + employee.getPosition()
+        TextField departmentField =
+                new TextField(
+                        employee.getDepartment()
                 );
 
 
 
-        Label contactLabel =
-                new Label(
-                        "CONTACT: "
-                                + employee.getContact()
+        TextField positionField =
+                new TextField(
+                        employee.getPosition()
+                );
+
+
+
+        TextField contactField =
+                new TextField(
+                        employee.getContact()
                 );
 
 
@@ -79,6 +80,55 @@ public class EmployeeDetailsUI {
 
 
 
+
+        // UPDATE BUTTON
+        Button updateButton =
+                new Button("Update Employee");
+
+
+
+        updateButton.setOnAction(e -> {
+
+            boolean updated =
+                    EmployeeController.updateEmployee(
+
+                            employee.getId(),
+
+                            firstNameField.getText(),
+
+                            lastNameField.getText(),
+
+                            departmentField.getText(),
+
+                            positionField.getText(),
+
+                            contactField.getText()
+
+                    );
+
+
+
+            if(updated) {
+
+                messageLabel.setText(
+                        "EMPLOYEE UPDATED SUCCESSFULLY"
+                );
+
+            }
+            else {
+
+                messageLabel.setText(
+                        "FAILED TO UPDATE EMPLOYEE"
+                );
+
+            }
+
+        });
+
+
+
+
+        // DELETE BUTTON
         Button deleteButton =
                 new Button("Delete Employee");
 
@@ -109,12 +159,13 @@ public class EmployeeDetailsUI {
 
 
 
+
+        // BACK BUTTON
         Button backButton =
                 new Button("Back");
 
 
 
-        // BACK BUTTON
         backButton.setOnAction(e -> {
 
             if(Session.currentRole.equals("ADMIN")) {
@@ -132,6 +183,7 @@ public class EmployeeDetailsUI {
 
 
 
+
         VBox root =
                 new VBox(15);
 
@@ -139,23 +191,45 @@ public class EmployeeDetailsUI {
 
 
 
+
         root.getChildren().addAll(
+
                 title,
+
                 idLabel,
-                nameLabel,
-                departmentLabel,
-                positionLabel,
-                contactLabel,
+
+                new Label("First Name"),
+                firstNameField,
+
+                new Label("Last Name"),
+                lastNameField,
+
+                new Label("Department"),
+                departmentField,
+
+                new Label("Position"),
+                positionField,
+
+                new Label("Contact"),
+                contactField,
+
                 joinDateLabel,
+
+                updateButton,
+
                 deleteButton,
+
                 backButton,
+
                 messageLabel
+
         );
 
 
 
+
         Scene scene =
-                new Scene(root, 500, 500);
+                new Scene(root, 500, 700);
 
         stage.setTitle("Employee Details");
 

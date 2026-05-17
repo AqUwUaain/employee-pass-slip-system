@@ -62,9 +62,22 @@ public class DeleteEmployeeController {
 
 
 
+            if(rowsAffected > 0) {
+
+                // ACTIVITY LOG
+                ActivityLogController.logActivity(
+                        "Deleted Employee ID: "
+                                + employeeId
+                );
+
+            }
+
+
+
             return rowsAffected > 0;
 
         }
+
         catch (Exception e) {
 
             e.printStackTrace();

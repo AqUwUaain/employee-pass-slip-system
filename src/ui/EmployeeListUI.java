@@ -1,12 +1,14 @@
 package ui;
 
 import controllers.EmployeeListController;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -19,6 +21,16 @@ public class EmployeeListUI {
 
         Label title =
                 new Label("EMPLOYEE LIST");
+
+
+
+        // SEARCH FIELD
+        TextField searchField =
+                new TextField();
+
+        searchField.setPromptText(
+                "Search Employee..."
+        );
 
 
 
@@ -65,9 +77,77 @@ public class EmployeeListUI {
 
 
 
-        table.setItems(
-                EmployeeListController.getEmployees()
-        );
+        // FILTERED LIST
+        FilteredList<Employee> filteredData =
+                new FilteredList<>(
+
+                        EmployeeListController.getEmployees(),
+
+                        b -> true
+                );
+
+
+
+        // SEARCH LISTENER
+        searchField.textProperty().addListener(
+                (observable, oldValue, newValue) -> {
+
+                    filteredData.setPredicate(employee -> {
+
+                        // SHOW ALL IF EMPTY
+                        if(newValue == null ||
+                                newValue.isEmpty()) {
+
+                            return true;
+
+                        }
+
+                        String keyword =
+                                newValue.toLowerCase();
+
+
+
+                        // SEARCH ID
+                        if(String.valueOf(employee.getId())
+                                .contains(keyword)) {
+
+                            return true;
+
+                        }
+
+
+
+                        // SEARCH FIRST NAME
+                        if(employee.getFirstName()
+                                .toLowerCase()
+                                .contains(keyword)) {
+
+                            return true;
+
+                        }
+
+
+
+                        // SEARCH LAST NAME
+                        if(employee.getLastName()
+                                .toLowerCase()
+                                .contains(keyword)) {
+
+                            return true;
+
+                        }
+
+
+
+                        return false;
+
+                    });
+
+                });
+
+
+
+        table.setItems(filteredData);
 
 
 
@@ -111,7 +191,6 @@ public class EmployeeListUI {
 
 
 
-        // BACK BUTTON
         backButton.setOnAction(e -> {
 
             if(Session.currentRole.equals("ADMIN")) {
@@ -138,6 +217,7 @@ public class EmployeeListUI {
 
         root.getChildren().addAll(
                 title,
+                searchField,
                 table,
                 refreshButton,
                 backButton
@@ -146,7 +226,7 @@ public class EmployeeListUI {
 
 
         Scene scene =
-                new Scene(root, 600, 400);
+                new Scene(root, 700, 500);
 
         stage.setTitle("Employee List");
 

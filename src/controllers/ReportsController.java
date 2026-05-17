@@ -2,7 +2,12 @@ package controllers;
 
 import database.DatabaseConnection;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import javafx.scene.control.Label;
+
+import models.ActivityLog;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -154,6 +159,75 @@ public class ReportsController {
             e.printStackTrace();
 
         }
+
+    }
+
+
+
+
+
+
+    // GET ACTIVITY LOGS
+    public static ObservableList<ActivityLog> getLogs() {
+
+        ObservableList<ActivityLog> logs =
+                FXCollections.observableArrayList();
+
+        try {
+
+            Connection connection =
+                    DatabaseConnection.connect();
+
+
+
+            String query = """
+                    SELECT *
+                    FROM activity_logs
+                    ORDER BY created_at DESC
+                    """;
+
+
+
+            PreparedStatement statement =
+                    connection.prepareStatement(query);
+
+
+
+            ResultSet resultSet =
+                    statement.executeQuery();
+
+
+
+            while(resultSet.next()) {
+
+                ActivityLog log =
+                        new ActivityLog(
+
+                                resultSet.getInt("id"),
+
+                                resultSet.getString("username"),
+
+                                resultSet.getString("action"),
+
+                                resultSet.getTimestamp("created_at")
+                                        .toLocalDateTime()
+
+                        );
+
+
+
+                logs.add(log);
+
+            }
+
+        }
+        catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
+
+        return logs;
 
     }
 

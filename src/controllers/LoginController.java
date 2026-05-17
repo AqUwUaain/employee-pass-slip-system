@@ -57,8 +57,18 @@ public class LoginController {
 
 
 
-                // SAVE CURRENT SESSION ROLE
+                // SAVE CURRENT SESSION
                 Session.currentRole = role;
+
+                Session.currentUsername =
+                        usernameField.getText();
+
+
+
+                // ACTIVITY LOG
+                ActivityLogController.logActivity(
+                        "User Logged In"
+                );
 
 
 

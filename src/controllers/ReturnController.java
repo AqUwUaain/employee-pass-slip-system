@@ -91,13 +91,31 @@ public class ReturnController {
                         passSlipId
                 );
 
-                updateStatement.executeUpdate();
+                int updated =
+                        updateStatement.executeUpdate();
 
-                return true;
+
+
+
+                if(updated > 0) {
+
+                    // ACTIVITY LOG
+                    ActivityLogController.logActivity(
+                            "Returned Pass Slip ID: "
+                                    + passSlipId
+                    );
+
+                }
+
+
+
+
+                return updated > 0;
 
             }
 
         }
+
         catch (Exception e) {
 
             e.printStackTrace();

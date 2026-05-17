@@ -1,6 +1,7 @@
 package controllers;
 
 import database.DatabaseConnection;
+
 import javafx.scene.control.Label;
 
 import java.sql.Connection;
@@ -10,76 +11,134 @@ import java.time.LocalDateTime;
 public class PassSlipController {
 
     public static void issuePassSlip(
+
             String employeeId,
             String reason,
             Label messageLabel
+
     ) {
+
+        // EMPLOYEE VALIDATION
+        if(employeeId == null || employeeId.isEmpty()) {
+
+            messageLabel.setText(
+                    "SELECT EMPLOYEE"
+            );
+
+            return;
+
+        }
+
+
+
+        // REASON VALIDATION
+        if(reason == null || reason.trim().isEmpty()) {
+
+            messageLabel.setText(
+                    "REASON REQUIRED"
+            );
+
+            return;
+
+        }
+
+
+
+        // MINIMUM REASON LENGTH
+        if(reason.trim().length() < 5) {
+
+            messageLabel.setText(
+                    "REASON TOO SHORT"
+            );
+
+            return;
+
+        }
+
+
 
         try {
 
-            Connection connection = DatabaseConnection.connect();
+            Connection connection =
+                    DatabaseConnection.connect();
 
-            String sql = "INSERT INTO pass_slips " +
-                    "(employee_id, reason, time_out, status) " +
-                    "VALUES (?, ?, ?, ?)";
 
-            PreparedStatement preparedStatement =
-                    connection.prepareStatement(sql);
 
-            preparedStatement.setInt(
+            String query =
+
+                    "INSERT INTO pass_slips " +
+                            "(employee_id, reason, time_out, status) " +
+                            "VALUES (?, ?, ?, ?)";
+
+
+
+            PreparedStatement statement =
+                    connection.prepareStatement(query);
+
+
+
+            statement.setInt(
                     1,
                     Integer.parseInt(employeeId)
             );
 
-            preparedStatement.setString(2, reason);
-
-            preparedStatement.setTimestamp(
-                    3,
-                    java.sql.Timestamp.valueOf(LocalDateTime.now())
-            );
-
-            preparedStatement.setString(4, "OUT");
-
-            preparedStatement.executeUpdate();
-
-
-
-            // ACTIVITY LOG
-
-            String logSql =
-                    "INSERT INTO activity_logs " +
-                            "(action, employee_id) VALUES (?, ?)";
-
-            PreparedStatement logStatement =
-                    connection.prepareStatement(logSql);
-
-            logStatement.setString(
-                    1,
-                    "PASS SLIP ISSUED"
-            );
-
-            logStatement.setInt(
+            statement.setString(
                     2,
-                    Integer.parseInt(employeeId)
+                    reason.trim()
             );
 
-            logStatement.executeUpdate();
-
-
-
-            messageLabel.setText(
-                    "PASS SLIP ISSUED SUCCESSFULLY"
+            statement.setTimestamp(
+                    3,
+                    java.sql.Timestamp.valueOf(
+                            LocalDateTime.now()
+                    )
             );
+
+            statement.setString(
+                    4,
+                    "OUT"
+            );
+
+
+
+            int inserted =
+                    statement.executeUpdate();
+
+
+
+            if(inserted > 0) {
+
+                // ACTIVITY LOG
+                ActivityLogController.logActivity(
+                        "Issued Pass Slip for Employee ID: "
+                                + employeeId
+                );
+
+
+
+                messageLabel.setText(
+                        "PASS SLIP ISSUED"
+                );
+
+            }
+
+            else {
+
+                messageLabel.setText(
+                        "FAILED TO ISSUE PASS SLIP"
+                );
+
+            }
 
         }
 
         catch (Exception e) {
 
-            messageLabel.setText(
-                    "FAILED TO ISSUE PASS SLIP"
-            );
-
             e.printStackTrace();
+
+            messageLabel.setText(
+                    "DATABASE ERROR"
+            );
 
         }
 

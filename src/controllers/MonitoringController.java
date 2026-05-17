@@ -89,18 +89,18 @@ public class MonitoringController {
 
             String query = """
                     SELECT
-                    pass_slips.id,
-                    employees.first_name,
-                    employees.last_name,
-                    pass_slips.reason,
-                    pass_slips.time_out,
-                    pass_slips.time_in,
-                    pass_slips.duration,
-                    pass_slips.status
-                    FROM pass_slips
-                    JOIN employees
-                    ON pass_slips.employee_id = employees.id
-                    ORDER BY pass_slips.id DESC
+                   pass_slips.id,
+                   employees.first_name,
+                   employees.last_name,
+                   pass_slips.reason,
+                   pass_slips.time_out,
+                   pass_slips.time_in,
+                   pass_slips.duration,
+                   pass_slips.status
+                   FROM pass_slips
+                   JOIN employees
+                   ON pass_slips.employee_id = employees.id
+                   ORDER BY pass_slips.id DESC
                     """;
 
             PreparedStatement statement =

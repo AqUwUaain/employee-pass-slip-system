@@ -1,5 +1,7 @@
 package models;
 
+import java.time.LocalDate;
+
 public class Employee {
 
     private int id;
@@ -14,7 +16,7 @@ public class Employee {
 
     private String contact;
 
-    private String joinDate;
+    private LocalDate joinDate;
 
 
 
@@ -43,7 +45,7 @@ public class Employee {
             String department,
             String position,
             String contact,
-            String joinDate
+            LocalDate joinDate
     ) {
 
         this.id = id;
@@ -112,10 +114,17 @@ public class Employee {
 
 
 
-    public String getJoinDate() {
+    public LocalDate getJoinDate() {
 
         return joinDate;
 
     }
 
+
+    @Override
+    public String toString() {
+
+        return id + " - " + firstName + " " + lastName;
+
+    }
 }
