@@ -1,0 +1,221 @@
+/* ==========================================================================
+   SYSTEM IDENTITY VARIABLES & CORE DECORATIONS
+   ========================================================================== */
+
+.root {
+    -fx-primary-maroon: #800000;
+    -fx-accent-yellow: #ffe600;
+    -fx-text-dark: #1a1a1a;
+    -fx-text-muted: #4a5568;
+    -fx-bg-light: #ffffff;
+    -fx-bg-hover: #f7fafc;
+    -fx-border-color-muted: #cbd5e0;
+
+    /* Smooth global transitions for interactions */
+    -fx-font-family: "Arial", "Segoe UI", sans-serif;
+}
+
+/* Smooth background scrolling across container elements */
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* ==========================================================================
+   SIDEBAR NAVIGATION CONTROL STYLES (Micro-Interactions)
+   ========================================================================== */
+
+#sidebarNavigationContainer .button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-opacity: 0.82;
+    -fx-font-weight: normal;
+    -fx-background-radius: 6px;
+    /* JavaFX property to ease hover visual entry over 120ms */
+    -fx-animate-color-to-hover: true;
+}
+
+#sidebarNavigationContainer .button:hover {
+    -fx-background-color: rgba(255, 230, 0, 0.15); /* Subtle Canary tint overlay */
+    -fx-text-fill: #ffe600;
+    -fx-opacity: 1.0;
+    -fx-font-weight: bold;
+    -fx-translate-x: 4px; /* Soft slide-in animation feedback */
+}
+
+#sidebarNavigationContainer .button:pressed {
+    -fx-background-color: rgba(255, 230, 0, 0.25);
+    -fx-translate-x: 2px;
+}
+
+/* Active Page State Indicator helper styling class */
+.sidebar-active {
+    -fx-background-color: #ffe600 !important;
+    -fx-text-fill: #800000 !important;
+    -fx-font-weight: bold !important;
+    -fx-opacity: 1.0 !important;
+}
+
+/* ==========================================================================
+   BUTTON STRUCTURAL FRAMEWORK INTERACTIONS
+   ========================================================================== */
+
+/* Maroon Primary Action Buttons */
+.button[style*="-fx-background-color: #800000"],
+.button[style*="-fx-background-color: #800000;"] {
+    -fx-background-color: #800000;
+    -fx-transition: all 0.2s ease-in-out;
+}
+.button[style*="-fx-background-color: #800000"]:hover,
+.button[style*="-fx-background-color: #800000;"]:hover {
+    -fx-background-color: #990000; /* Soft glowing brightness lift */
+    -fx-scale-x: 1.02; /* Clean spatial expansion scaling pulse */
+    -fx-scale-y: 1.02;
+}
+.button[style*="-fx-background-color: #800000"]:pressed,
+.button[style*="-fx-background-color: #800000;"]:pressed {
+    -fx-scale-x: 0.98; /* Satisfying physical press bounce-down */
+    -fx-scale-y: 0.98;
+}
+
+/* Green Success Entry Buttons */
+.button[style*="-fx-background-color: #38a169"] {
+    -fx-background-color: #38a169;
+}
+.button[style*="-fx-background-color: #38a169"]:hover {
+    -fx-background-color: #2f855a;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+.button[style*="-fx-background-color: #38a169"]:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* Dismiss / Neutral Accent Buttons */
+.button[style*="-fx-background-color: #e2e8f0"] {
+    -fx-background-color: #e2e8f0;
+}
+.button[style*="-fx-background-color: #e2e8f0"]:hover {
+    -fx-background-color: #cbd5e0;
+}
+
+/* White Outlined Secondary Buttons */
+.button[style*="-fx-background-color: #ffffff"][style*="-fx-border-color: #800000"] {
+    -fx-background-color: #ffffff;
+}
+.button[style*="-fx-background-color: #ffffff"][style*="-fx-border-color: #800000"]:hover {
+    -fx-background-color: #fff5f5;
+    -fx-scale-x: 1.01;
+    -fx-scale-y: 1.01;
+}
+
+/* Top Right Window Control Header Switches (✕ and ☰) */
+#btnTopClose:hover, #btnHamburgerMenuToggle:hover, #btnNotificationsAlert:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2) !important;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+/* ==========================================================================
+   INPUT TEXTFIELDS & DATA CAPTURE HOVER EFFICIENCIES
+   ========================================================================== */
+
+.text-field, .text-area, .combo-box {
+    -fx-background-insets: 0;
+    -fx-border-color: #cbd5e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-background-color: #ffffff;
+    -fx-prompt-text-fill: #a0aec0;
+}
+
+/* Dynamic Focus Ring Activation */
+.text-field:focused, .text-area:focused, .combo-box:focused {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #800000; /* Institutional focus lock */
+    -fx-border-width: 1.5px;
+    /* Soft glowing drop shadow box indicator ring */
+    -fx-effect: dropshadow(three-pass-box, rgba(128, 0, 0, 0.15), 6, 0, 0, 0);
+}
+
+/* Read-Only textfield parameters clean mask */
+.text-field:disabled, .text-field[editable="false"] {
+    -fx-background-color: #f7fafc !important;
+    -fx-border-color: #e2e8f0 !important;
+    -fx-text-fill: #4a5568;
+    -fx-opacity: 1.0;
+}
+
+/* ==========================================================================
+   DATA TABLE DESIGN SYSTEM (Modernized & Clean)
+   ========================================================================== */
+
+.table-view {
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #edf2f7;
+    -fx-border-width: 1px;
+}
+
+/* Flat Table Header Block Formatting styling layout */
+.table-view .column-header-background {
+    -fx-background-color: #f7fafc;
+    -fx-padding: 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: #f7fafc;
+    -fx-border-color: transparent transparent #edf2f7 transparent;
+    -fx-border-width: 0 0 2px 0;
+    -fx-padding: 12px 8px;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #4a5568;
+    -fx-font-weight: bold;
+    -fx-font-family: "Arial";
+    -fx-font-size: 12px;
+}
+
+/* Table View Row Interactions */
+.table-row-cell {
+    -fx-background-color: #ffffff;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0;
+}
+
+/* Alternate cell background for clean line reading */
+.table-row-cell:odd {
+    -fx-background-color: #fcfdfd;
+}
+
+/* Elegant row hover tracking visual */
+.table-row-cell:hover {
+    -fx-background-color: #fffdf0 !important; /* Soft Canary shimmer */
+    -fx-cursor: hand;
+}
+
+/* Selected Table Row Lock State Parameters */
+.table-row-cell:selected {
+    -fx-background-color: #fff9db !important;
+    -fx-text-fill: #800000;
+}
+.table-row-cell:selected .table-cell {
+    -fx-text-fill: #800000;
+    -fx-font-weight: bold;
+}
+
+/* Clean up JavaFX structural default border lines */
+.table-cell {
+    -fx-border-color: transparent transparent #edf2f7 transparent;
+    -fx-padding: 10px 8px;
+    -fx-font-size: 13px;
+}
+.table-view .placeholder .label {
+    -fx-text-fill: #a0aec0;
+    -fx-font-size: 14px;
+}

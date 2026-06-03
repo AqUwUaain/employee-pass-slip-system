@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="activityLogsStructure" prefHeight="720.0" prefWidth="1150.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ActivityLogsController">
+
+    <!-- TOP BRAND HEADER BAR (Matches Dashboard.fxml exactly) -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="75.0" style="-fx-background-color: #ffffff; -fx-border-color: #800000 transparent #800000 transparent; -fx-border-width: 4px 0 1px 0; -fx-padding: 0 25px 0 15px;" BorderPane.alignment="CENTER">
+            <children>
+                <!-- PUP Institutional Logo -->
+                <ImageView fitHeight="55.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../images/pup_logo.png" />
+                    </image>
+                </ImageView>
+
+                <!-- Branding Text Stack -->
+                <VBox alignment="CENTER_LEFT" spacing="2.0">
+                    <children>
+                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 21px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;" text="Polytechnic University of the Philippines" />
+                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 17px; -fx-font-style: italic; -fx-text-fill: #333333;" text="Santa Rosa Campus" />
+                    </children>
+                    <HBox.margin>
+                        <Insets left="15.0" />
+                    </HBox.margin>
+                </VBox>
+
+                <StackPane HBox.hgrow="ALWAYS" />
+
+                <!-- Utility Notification and Menu Controls -->
+                <HBox alignment="CENTER" spacing="15.0">
+                    <children>
+                        <Button fx:id="btnNotificationsAlert" mnemonicParsing="false" style="-fx-background-color: #800000; -fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-background-radius: 4px; -fx-cursor: hand;" text="🔔" prefHeight="35.0" prefWidth="35.0" />
+                        <Button fx:id="btnHamburgerMenuToggle" mnemonicParsing="false" style="-fx-background-color: #800000; -fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-background-radius: 4px; -fx-cursor: hand;" text="☰" prefHeight="35.0" prefWidth="35.0" />
+                    </children>
+                </HBox>
+            </children>
+        </HBox>
+    </top>
+
+    <!-- LEFT REGISTRY NAVIGATION SIDEBAR PANEL (Matches Dashboard.fxml exactly) -->
+    <left>
+        <VBox fx:id="sidebarNavigationContainer" prefWidth="240.0" style="-fx-background-color: #800000; -fx-padding: 25px 0 15px 0;" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
+            <children>
+                <!-- Large Main Round Logo Frame -->
+                <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../images/pup_logo.png" />
+                    </image>
+                    <VBox.margin>
+                        <Insets bottom="40.0" />
+                    </VBox.margin>
+                </ImageView>
+
+                <!-- Navigation Control Item Switches -->
+                <VBox spacing="10.0" VBox.vgrow="ALWAYS" style="-fx-padding: 0 12px;">
+                    <children>
+                        <Button fx:id="btnSidebarDashboard" alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-padding: 12px 15px; -fx-background-radius: 5px;" text="Dashboard" />
+                        <Button fx:id="btnSidebarMonitoring" alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-padding: 12px 15px; -fx-background-radius: 5px;" text="Monitoring and Logs" />
+                        <Button fx:id="btnSidebarEmployees" alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-padding: 12px 15px; -fx-background-radius: 5px;" text="Employee Management" />
+                        <Button fx:id="btnSidebarReports" alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-padding: 12px 15px; -fx-background-radius: 5px;" text="Report Generation &amp; History" />
+                    </children>
+                </VBox>
+
+                <!-- Structural Sidebar Brand Footer Signature -->
+                <Label style="-fx-text-fill: #ffffff; -fx-font-size: 12px; -fx-opacity: 0.85;" text="2026 PUP - SRC" />
+            </children>
+        </VBox>
+    </left>
+
+    <!-- WORKSPACE REGION EMBEDDING THE DETAILED LOGS OVERVIEW -->
+    <center>
+        <VBox spacing="25.0" style="-fx-padding: 30px 40px;">
+            <children>
+
+                <!-- SEARCH AND FILTER UTILITY TOOLBAR ROW -->
+                <HBox alignment="CENTER_LEFT" spacing="15.0" style="-fx-background-color: #ffffff; -fx-padding: 15px 20px; -fx-background-radius: 8px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 6, 0, 0, 2); -fx-border-color: #edf2f7; -fx-border-radius: 8px; -fx-border-width: 1px;">
+                    <children>
+                        <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #4a5568; -fx-font-size: 11px;" text="Search Audit Trails" />
+                                <TextField fx:id="txtSearchLogs" maxWidth="Infinity" promptText="Filter logs by employee name, action, or context tag..." style="-fx-font-size: 14px; -fx-padding: 8px 12px; -fx-background-color: #ffffff; -fx-border-color: #cbd5e0; -fx-border-radius: 4px;" />
+                            </children>
+                        </VBox>
+                        <VBox alignment="BOTTOM_CENTER">
+                            <children>
+                                <Button fx:id="btnClearLogsFilter" mnemonicParsing="false" style="-fx-background-color: #e2e8f0; -fx-text-fill: #4a5568; -fx-font-size: 14px; -fx-padding: 8px 16px; -fx-background-radius: 4px; -fx-cursor: hand;" text="Reset Filter" />
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+
+                <!-- FULL EXPANDED ACTIVITY TRACKER WINDOW BOX -->
+                <VBox spacing="12.0" VBox.vgrow="ALWAYS">
+                    <children>
+                        <!-- Section Title Header Row -->
+                        <HBox alignment="CENTER_LEFT" spacing="8.0">
+                            <children>
+                                <Label style="-fx-font-size: 16px;" text="📊" />
+                                <Label style="-fx-font-family: 'Arial'; -fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #800000;" text="COMPLETE SYSTEM SYSTEM AUDIT LOGS" />
+                            </children>
+                        </HBox>
+
+                        <!-- Scrollable Feed View Wrapper Frame -->
+                        <ScrollPane fitToWidth="true" style="-fx-background: #ffffff; -fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-width: 1px;" VBox.vgrow="ALWAYS">
+                            <content>
+                                <VBox fx:id="logsFeedContentContainer" style="-fx-background-color: #ffffff;">
+                                    <children>
+
+                                        <!-- Log Strip Node 1 -->
+                                        <HBox alignment="CENTER_LEFT" style="-fx-padding: 15px 20px; -fx-border-color: transparent transparent #edf2f7 transparent; -fx-border-width: 0 0 1px 0;">
+                                            <children>
+                                                <VBox style="-fx-background-color: #ffe600; -fx-pref-width: 4px; -fx-pref-height: 22px;" />
+                                                <Label style="-fx-font-size: 14px; -fx-text-fill: #2d3748; -fx-padding: 0 0 0 12px;" text="Created Trinity Jax's profile." />
+                                                <StackPane HBox.hgrow="ALWAYS" />
+                                                <Label style="-fx-font-size: 12px; -fx-text-fill: #a0aec0;" text="3s ago" />
+                                            </children>
+                                        </HBox>
+
+                                        <!-- Log Strip Node 2 -->
+                                        <HBox alignment="CENTER_LEFT" style="-fx-padding: 15px 20px; -fx-border-color: transparent transparent #edf2f7 transparent; -fx-border-width: 0 0 1px 0;">
+                                            <children>
+                                                <VBox style="-fx-background-color: #ffe600; -fx-pref-width: 4px; -fx-pref-height: 22px;" />
+                                                <Label style="-fx-font-size: 14px; -fx-text-fill: #2d3748; -fx-padding: 0 0 0 12px;" text="Issued Maxwell Sterling's pass slip." />
+                                                <StackPane HBox.hgrow="ALWAYS" />
+                                                <Label style="-fx-font-size: 12px; -fx-text-fill: #a0aec0;" text="10m ago" />
+                                            </children>
+                                        </HBox>
+
+                                        <!-- Log Strip Node 3 -->
+                                        <HBox alignment="CENTER_LEFT" style="-fx-padding: 15px 20px; -fx-border-color: transparent transparent #edf2f7 transparent; -fx-border-width: 0 0 1px 0;">
+                                            <children>
+                                                <VBox style="-fx-background-color: #ffe600; -fx-pref-width: 4px; -fx-pref-height: 22px;" />
+                                                <Label style="-fx-font-size: 14px; -fx-text-fill: #2d3748; -fx-padding: 0 0 0 12px;" text="Recorded Maxwell Sterling's timeout." />
+                                                <StackPane HBox.hgrow="ALWAYS" />
+                                                <Label style="-fx-font-size: 12px; -fx-text-fill: #a0aec0;" text="1hr ago" />
+                                            </children>
+                                        </HBox>
+
+                                        <!-- Log Strip Node 4 -->
+                                        <HBox alignment="CENTER_LEFT" style="-fx-padding: 15px 20px; -fx-border-color: transparent transparent #edf2f7 transparent; -fx-border-width: 0 0 1px 0;">
+                                            <children>
+                                                <VBox style="-fx-background-color: #ffe600; -fx-pref-width: 4px; -fx-pref-height: 22px;" />
+                                                <Label style="-fx-font-size: 14px; -fx-text-fill: #2d3748; -fx-padding: 0 0 0 12px;" text="Issued Leo Vance's pass slip." />
+                                                <StackPane HBox.hgrow="ALWAYS" />
+                                                <Label style="-fx-font-size: 12px; -fx-text-fill: #a0aec0;" text="30m ago" />
+                                            </children>
+                                        </HBox>
+
+                                        <!-- Log Strip Node 5 -->
+                                        <HBox alignment="CENTER_LEFT" style="-fx-padding: 15px 20px; -fx-border-color: transparent transparent #edf2f7 transparent; -fx-border-width: 0 0 1px 0;">
+                                            <children>
+                                                <VBox style="-fx-background-color: #ffe600; -fx-pref-width: 4px; -fx-pref-height: 22px;" />
+                                                <Label style="-fx-font-size: 14px; -fx-text-fill: #2d3748; -fx-padding: 0 0 0 12px;" text="Created Ivy Calder's profile." />
+                                                <StackPane HBox.hgrow="ALWAYS" />
+                                                <Label style="-fx-font-size: 12px; -fx-text-fill: #a0aec0;" text="2hrs ago" />
+                                            </children>
+                                        </HBox>
+
+                                    </children>
+                                </VBox>
+                            </content>
+                        </ScrollPane>
+                    </children>
+                </VBox>
+
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

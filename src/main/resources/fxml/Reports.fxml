@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" controller="controllers.ReportsController">
+    <HBox styleClass="branding-header" style="-fx-background-color: maroon; -fx-padding: 10;">
+        <ImageView fx:id="logoImageView" fitWidth="100.0" fitHeight="100.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../assets/pup_logo.png" />
+            </image>
+        </ImageView>
+        <VBox alignment="CENTER_LEFT" spacing="5">
+            <Label text="Polytechnic University of the Philippines" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <Label text="Santa Rosa Campus" style="-fx-text-fill: yellow; -fx-font-size: 18px;"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS" />
+        <Button text="Search" style="-fx-background-color: darkred; -fx-text-fill: white;"/>
+        <Button text="Add Employee" style="-fx-background-color: darkred; -fx-text-fill: white;"/>
+    </HBox>
+
+    <VBox spacing="20" style="-fx-padding: 20;" AnchorPane.topAnchor="120.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <HBox spacing="30" alignment="CENTER">
+            <VBox styleClass="card-calendar" style="-fx-background-color: #f8f0dc; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0); -fx-pref-width: 200;">
+                <HBox style="-fx-background-color: gold; -fx-padding: 5;">
+                    <Label text="May 26, 2026" style="-fx-font-size: 16px;"/>
+                </HBox>
+                <Label text="17" style="-fx-font-size: 80px; -fx-text-fill: maroon; -fx-font-weight: bold;"/>
+                <Label text="pass slips" style="-fx-font-size: 14px; -fx-text-fill: maroon;"/>
+            </VBox>
+
+            <VBox styleClass="card-calendar" style="-fx-background-color: #f8f0dc; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0); -fx-pref-width: 200;">
+                <HBox style="-fx-background-color: maroon; -fx-padding: 5;">
+                    <Label text="MAY" style="-fx-font-size: 16px; -fx-text-fill: white;"/>
+                </HBox>
+                <Label text="26" style="-fx-font-size: 80px; -fx-text-fill: maroon; -fx-font-weight: bold;"/>
+                <Label text="pass slips" style="-fx-font-size: 14px; -fx-text-fill: maroon;"/>
+            </VBox>
+        </HBox>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <ImageView fitWidth="20.0" fitHeight="20.0">
+                <image>
+                    <Image url="@../assets/timer_icon.png" />
+                </image>
+            </ImageView>
+            <Label text="PASS SLIP ISSUANCE RECENT HISTORY" style="-fx-font-size: 18px; -fx-text-fill: maroon; -fx-font-weight: bold;"/>
+        </HBox>
+
+        <VBox fx:id="recentHistoryList" spacing="10" style="-fx-pref-height: 250px;">
+            <HBox spacing="10">
+                <Label text="Maxwell Sterling" styleClass="128" prefWidth="150" />
+                <Label text="Education" styleClass="16:30" prefWidth="120" />
+                <Label text="18:00" styleClass="05/26/26" prefWidth="120" />
+                <Label text="01:30:00" prefWidth="120" />
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Evangeline Ross" prefWidth="150" />
+                <Label text="Cream" prefWidth="120" />
+                <Label text="14:00" prefWidth="120" />
+                <Label text="02:00:00" prefWidth="120" />
+            </HBox>
+        </VBox>
+    </VBox>
+</AnchorPane>
