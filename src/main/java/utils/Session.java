@@ -8,4 +8,15 @@ public class Session {
 
     public static String currentRole;
 
+    public static int selectedEmployeeId;
+
+    public static void clear() {
+
+        currentUserId = 0;
+        currentUsername = null;
+        currentRole = null;
+        selectedEmployeeId = 0;
+
+    }
+
 }

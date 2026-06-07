@@ -1,12 +1,12 @@
 package controllers;
 
 import database.DatabaseConnection;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-import ui.AdminDashboardUI;
-import ui.StaffDashboardUI;
+import utils.NavigationHelper;
 import utils.Session;
 
 import java.sql.Connection;
@@ -15,12 +15,17 @@ import java.sql.ResultSet;
 
 public class LoginController {
 
-    public static void login(
-            TextField usernameField,
-            PasswordField passwordField,
-            Label messageLabel,
-            Stage stage
-    ) {
+    @FXML
+    private TextField emailField;
+
+    @FXML
+    private PasswordField passwordField;
+
+    @FXML
+    private Label messageLabel;
+
+    @FXML
+    private void handleLogin(ActionEvent event) {
 
         try {
 
@@ -37,7 +42,7 @@ public class LoginController {
 
             statement.setString(
                     1,
-                    usernameField.getText()
+                    emailField.getText()
             );
 
             statement.setString(
@@ -48,43 +53,44 @@ public class LoginController {
             ResultSet resultSet =
                     statement.executeQuery();
 
+            if (resultSet.next()) {
 
-
-            if(resultSet.next()) {
+                Session.currentUserId =
+                        resultSet.getInt("id");
 
                 String role =
                         resultSet.getString("role");
 
-
-
-                // SAVE CURRENT SESSION
                 Session.currentRole = role;
 
                 Session.currentUsername =
-                        usernameField.getText();
+                        emailField.getText();
 
-
-
-                // ACTIVITY LOG
                 ActivityLogController.logActivity(
                         "User Logged In"
                 );
 
+                if (role.equalsIgnoreCase("ADMIN")) {
 
-
-                // ADMIN
-                if(role.equalsIgnoreCase("ADMIN")) {
-
-                    AdminDashboardUI.show(stage);
+                    NavigationHelper.navigateTo(
+                            emailField,
+                            "/fxml/Dashboard.fxml"
+                    );
 
                 }
+                else if (role.equalsIgnoreCase("STAFF")) {
 
+                    NavigationHelper.navigateTo(
+                            emailField,
+                            "/fxml/StaffDashboard.fxml"
+                    );
 
+                }
+                else {
 
-                // STAFF
-                else if(role.equalsIgnoreCase("STAFF")) {
-
-                    StaffDashboardUI.show(stage);
+                    messageLabel.setText(
+                            "Unknown user role."
+                    );
 
                 }
 
@@ -92,7 +98,7 @@ public class LoginController {
             else {
 
                 messageLabel.setText(
-                        "INVALID LOGIN"
+                        "Invalid username or password."
                 );
 
             }
@@ -103,11 +109,10 @@ public class LoginController {
             e.printStackTrace();
 
             messageLabel.setText(
-                    "DATABASE ERROR"
+                    "Database error."
             );
 
         }
 
     }
-
 }

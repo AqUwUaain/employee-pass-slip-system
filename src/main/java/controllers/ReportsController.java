@@ -4,16 +4,65 @@ import database.DatabaseConnection;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import models.ActivityLog;
+import utils.NavigationHelper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.format.DateTimeFormatter;
 
 public class ReportsController {
+
+    @FXML
+    private Button btnOpenDashboard;
+
+    @FXML
+    private Button btnOpenEmployees;
+
+    @FXML
+    private Label lblTotalEmployees;
+
+    @FXML
+    private Label lblTotalPassSlips;
+
+    @FXML
+    private VBox recentHistoryList;
+
+    @FXML
+    private void initialize() {
+
+        btnOpenDashboard.setOnAction(
+                event -> NavigationHelper.navigateToDashboard(
+                        btnOpenDashboard
+                )
+        );
+
+        btnOpenEmployees.setOnAction(
+                event -> NavigationHelper.navigateTo(
+                        btnOpenEmployees,
+                        "/fxml/EmployeeController.fxml"
+                )
+        );
+
+        loadReports(
+                lblTotalEmployees,
+                lblTotalPassSlips,
+                new Label(),
+                new Label(),
+                new Label()
+        );
+
+        loadRecentHistory();
+
+    }
 
     public static void loadReports(
 
@@ -228,6 +277,56 @@ public class ReportsController {
         }
 
         return logs;
+
+    }
+
+    private void loadRecentHistory() {
+
+        recentHistoryList.getChildren().clear();
+
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern(
+                        "yyyy-MM-dd HH:mm"
+                );
+
+        for (ActivityLog log : getLogs()) {
+
+            HBox row =
+                    new HBox(10);
+
+            Label userLabel =
+                    new Label(log.getUsername());
+
+            userLabel.setPrefWidth(180);
+
+            Label actionLabel =
+                    new Label(log.getAction());
+
+            actionLabel.setPrefWidth(320);
+
+            Region spacer =
+                    new Region();
+
+            HBox.setHgrow(
+                    spacer,
+                    Priority.ALWAYS
+            );
+
+            Label timeLabel =
+                    new Label(
+                            log.getCreatedAt().format(formatter)
+                    );
+
+            row.getChildren().addAll(
+                    userLabel,
+                    actionLabel,
+                    spacer,
+                    timeLabel
+            );
+
+            recentHistoryList.getChildren().add(row);
+
+        }
 
     }
 

@@ -1,6 +1,10 @@
 package controllers;
 
 import database.DatabaseConnection;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import utils.NavigationHelper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,6 +15,68 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class MonitoringController {
+
+    @FXML
+    private Button btnSidebarDashboard;
+
+    @FXML
+    private Button btnSidebarMonitoring;
+
+    @FXML
+    private Button btnSidebarEmployees;
+
+    @FXML
+    private Button btnSidebarReports;
+
+    @FXML
+    private Button btnRefreshMonitoringFeed;
+
+    @FXML
+    private Label lblScannerStatus;
+
+    @FXML
+    private Label lblTotalInCampusCount;
+
+    @FXML
+    private Label lblActiveAlertsCount;
+
+    @FXML
+    private void initialize() {
+
+        btnSidebarDashboard.setOnAction(
+                event -> NavigationHelper.navigateToDashboard(
+                        btnSidebarDashboard
+                )
+        );
+
+        btnSidebarMonitoring.setOnAction(
+                event -> NavigationHelper.navigateTo(
+                        btnSidebarMonitoring,
+                        "/fxml/Monitoring.fxml"
+                )
+        );
+
+        btnSidebarEmployees.setOnAction(
+                event -> NavigationHelper.navigateTo(
+                        btnSidebarEmployees,
+                        "/fxml/EmployeeController.fxml"
+                )
+        );
+
+        btnSidebarReports.setOnAction(
+                event -> NavigationHelper.navigateTo(
+                        btnSidebarReports,
+                        "/fxml/Reports.fxml"
+                )
+        );
+
+        btnRefreshMonitoringFeed.setOnAction(
+                event -> loadSummary()
+        );
+
+        loadSummary();
+
+    }
 
     public static void updateExpiredPassSlips() {
 
@@ -153,6 +219,73 @@ public class MonitoringController {
         }
 
         return data.toString();
+
+    }
+
+    private void loadSummary() {
+
+        try {
+
+            Connection connection =
+                    DatabaseConnection.connect();
+
+            if (connection == null) {
+                lblScannerStatus.setText("OFFLINE");
+                lblTotalInCampusCount.setText("0");
+                lblActiveAlertsCount.setText("0");
+                return;
+            }
+
+            lblScannerStatus.setText("ONLINE");
+
+            PreparedStatement outStatement =
+                    connection.prepareStatement(
+                            """
+                            SELECT COUNT(*)
+                            FROM pass_slips
+                            WHERE status = 'OUT'
+                            """
+                    );
+
+            ResultSet outResult =
+                    outStatement.executeQuery();
+
+            if (outResult.next()) {
+                lblTotalInCampusCount.setText(
+                        String.valueOf(
+                                outResult.getInt(1)
+                        )
+                );
+            }
+
+            PreparedStatement expiredStatement =
+                    connection.prepareStatement(
+                            """
+                            SELECT COUNT(*)
+                            FROM pass_slips
+                            WHERE status = 'EXPIRED'
+                            """
+                    );
+
+            ResultSet expiredResult =
+                    expiredStatement.executeQuery();
+
+            if (expiredResult.next()) {
+                lblActiveAlertsCount.setText(
+                        String.valueOf(
+                                expiredResult.getInt(1)
+                        )
+                );
+            }
+
+        }
+        catch (Exception e) {
+
+            lblScannerStatus.setText("OFFLINE");
+            lblTotalInCampusCount.setText("0");
+            lblActiveAlertsCount.setText("0");
+
+        }
 
     }
 

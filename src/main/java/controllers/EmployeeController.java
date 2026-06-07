@@ -1,8 +1,13 @@
 package controllers;
 
 import database.DatabaseConnection;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import models.Employee;
+import utils.NavigationHelper;
+import utils.Session;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,6 +16,73 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class EmployeeController {
+
+    @FXML
+    private Button btnSidebarDashboard;
+
+    @FXML
+    private Button btnSidebarMonitoring;
+
+    @FXML
+    private Button btnSidebarEmployees;
+
+    @FXML
+    private Button btnSidebarReports;
+
+    @FXML
+    private VBox btnGatewayViewList;
+
+    @FXML
+    private VBox btnGatewayAddEmployee;
+
+    @FXML
+    private void initialize() {
+
+        btnSidebarDashboard.setOnAction(
+                event -> NavigationHelper.navigateToDashboard(
+                        btnSidebarDashboard
+                )
+        );
+
+        btnSidebarMonitoring.setOnAction(
+                event -> NavigationHelper.navigateTo(
+                        btnSidebarMonitoring,
+                        "/fxml/Monitoring.fxml"
+                )
+        );
+
+        btnSidebarEmployees.setOnAction(
+                event -> NavigationHelper.navigateTo(
+                        btnSidebarEmployees,
+                        "/fxml/EmployeeController.fxml"
+                )
+        );
+
+        btnSidebarReports.setOnAction(
+                event -> NavigationHelper.navigateTo(
+                        btnSidebarReports,
+                        "/fxml/Reports.fxml"
+                )
+        );
+
+        btnGatewayViewList.setOnMouseClicked(
+                event -> NavigationHelper.navigateTo(
+                        btnGatewayViewList,
+                        "/fxml/EmployeeList.fxml"
+                )
+        );
+
+        btnGatewayAddEmployee.setOnMouseClicked(
+                event -> {
+                    Session.selectedEmployeeId = 0;
+                    NavigationHelper.navigateTo(
+                            btnGatewayAddEmployee,
+                            "/fxml/EmployeeForm.fxml"
+                    );
+                }
+        );
+
+    }
 
     // ADD EMPLOYEE
     public static void addEmployee(
