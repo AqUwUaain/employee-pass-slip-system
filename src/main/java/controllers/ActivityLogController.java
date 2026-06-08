@@ -33,6 +33,18 @@ public class ActivityLogController {
     private Button btnSidebarReports;
 
     @FXML
+    private Button btnSidebarUsers;
+
+    @FXML
+    private Button btnLogout;
+
+    @FXML
+    private Button btnNotificationsAlert;
+
+    @FXML
+    private Button btnHamburgerMenuToggle;
+
+    @FXML
     private Button btnClearLogsFilter;
 
     @FXML
@@ -45,31 +57,30 @@ public class ActivityLogController {
     private void initialize() {
 
         btnSidebarDashboard.setOnAction(
-                event -> NavigationHelper.navigateToDashboard(
-                        btnSidebarDashboard
-                )
+                event -> NavigationHelper.navigateToDashboard(btnSidebarDashboard)
         );
 
         btnSidebarMonitoring.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnSidebarMonitoring,
-                        "/fxml/Monitoring.fxml"
-                )
+                event -> NavigationHelper.navigateTo(btnSidebarMonitoring, "/fxml/Monitoring.fxml")
         );
 
         btnSidebarEmployees.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnSidebarEmployees,
-                        "/fxml/EmployeeController.fxml"
-                )
+                event -> NavigationHelper.navigateTo(btnSidebarEmployees, "/fxml/EmployeeController.fxml")
         );
 
         btnSidebarReports.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnSidebarReports,
-                        "/fxml/Reports.fxml"
-                )
+                event -> NavigationHelper.navigateTo(btnSidebarReports, "/fxml/Reports.fxml")
         );
+
+        if (btnSidebarUsers != null)
+            btnSidebarUsers.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarUsers, "/fxml/User.fxml"));
+        if (btnLogout != null)
+            btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
+
+        if (btnNotificationsAlert != null)
+            btnNotificationsAlert.setOnAction(e -> NavigationHelper.navigateTo(btnNotificationsAlert, "/fxml/ActivityLog.fxml"));
+        if (btnHamburgerMenuToggle != null)
+            btnHamburgerMenuToggle.setOnAction(e -> NavigationHelper.navigateTo(btnHamburgerMenuToggle, "/fxml/User.fxml"));
 
         btnClearLogsFilter.setOnAction(
                 event -> {
@@ -100,54 +111,31 @@ public class ActivityLogController {
 
     }
 
-    public static void logActivity(String action) {
+    public static void logActivity(String action, int employeeId) {
 
         try {
 
             Connection connection =
                     DatabaseConnection.connect();
 
-
-
-            String query =
-                    """
-                    INSERT INTO activity_logs
-                    (
-                        username,
-                        action
-                    )
-                    VALUES (?, ?)
+            String query = """
+                    INSERT INTO activity_logs (username, action, employee_id)
+                    VALUES (?, ?, ?)
                     """;
-
-
 
             PreparedStatement statement =
                     connection.prepareStatement(query);
 
-
-
-            statement.setString(
-                    1,
-                    Session.currentUsername
-            );
-
-
-
-            statement.setString(
-                    2,
-                    action
-            );
-
-
+            statement.setString(1, Session.currentUsername);
+            statement.setString(2, action);
+            statement.setInt(3, employeeId);
 
             statement.executeUpdate();
 
         }
 
         catch (Exception e) {
-
             e.printStackTrace();
-
         }
 
     }
@@ -157,61 +145,42 @@ public class ActivityLogController {
         logsFeedContentContainer.getChildren().clear();
 
         DateTimeFormatter formatter =
-                DateTimeFormatter.ofPattern(
-                        "yyyy-MM-dd HH:mm"
-                );
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         for (models.ActivityLog log : logs) {
 
-            HBox row =
-                    new HBox();
+            HBox row = new HBox();
 
             row.setAlignment(Pos.CENTER_LEFT);
             row.setStyle(
-                    "-fx-padding: 15px 20px; -fx-border-color: transparent transparent #edf2f7 transparent; -fx-border-width: 0 0 1px 0;"
+                    "-fx-padding: 12px 16px; -fx-background-radius: 8px;"
             );
+            row.setOnMouseEntered(ev -> row.setStyle("-fx-padding: 12px 16px; -fx-background-radius: 8px; -fx-background-color: #3D3229;"));
+            row.setOnMouseExited(ev -> row.setStyle("-fx-padding: 12px 16px; -fx-background-radius: 8px;"));
 
-            VBox accent =
-                    new VBox();
-
+            VBox accent = new VBox();
             accent.setStyle(
-                    "-fx-background-color: #ffe600; -fx-pref-width: 4px; -fx-pref-height: 22px;"
+                    "-fx-background-color: #D4A853; -fx-pref-width: 4px; -fx-pref-height: 22px; -fx-background-radius: 2px;"
             );
 
-            Label message =
-                    new Label(
-                            log.getUsername()
-                                    + " - "
-                                    + log.getAction()
-                    );
-
+            Label message = new Label(
+                    log.getUsername() + " - " + log.getAction()
+            );
             message.setStyle(
-                    "-fx-font-size: 14px; -fx-text-fill: #2d3748; -fx-padding: 0 0 0 12px;"
+                    "-fx-font-size: 13px; -fx-text-fill: #E7E5E4; -fx-padding: 0 0 0 12px;"
             );
 
-            Region spacer =
-                    new Region();
+            Region spacer = new Region();
+            HBox.setHgrow(spacer, Priority.ALWAYS);
 
-            HBox.setHgrow(
-                    spacer,
-                    Priority.ALWAYS
+            Label timestamp = new Label(
+                    log.getCreatedAt().format(formatter)
             );
-
-            Label timestamp =
-                    new Label(
-                            log.getCreatedAt().format(formatter)
-                    );
-
             timestamp.setStyle(
-                    "-fx-font-size: 12px; -fx-text-fill: #a0aec0;"
+                    "-fx-font-size: 12px; -fx-text-fill: #78716C;"
             );
 
-            row.getChildren().addAll(
-                    accent,
-                    message,
-                    spacer,
-                    timestamp
-            );
+            row.getChildren().addAll(accent, message, spacer, timestamp);
 
             logsFeedContentContainer.getChildren().add(row);
 

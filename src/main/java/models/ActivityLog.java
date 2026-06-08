@@ -10,14 +10,15 @@ public class ActivityLog {
 
     private String action;
 
+    private int employeeId;
+
     private LocalDateTime createdAt;
-
-
 
     public ActivityLog(
             int id,
             String username,
             String action,
+            int employeeId,
             LocalDateTime createdAt
     ) {
 
@@ -27,40 +28,30 @@ public class ActivityLog {
 
         this.action = action;
 
+        this.employeeId = employeeId;
+
         this.createdAt = createdAt;
 
     }
 
-
-
     public int getId() {
-
         return id;
-
     }
-
-
 
     public String getUsername() {
-
         return username;
-
     }
-
-
 
     public String getAction() {
-
         return action;
-
     }
 
-
+    public int getEmployeeId() {
+        return employeeId;
+    }
 
     public LocalDateTime getCreatedAt() {
-
         return createdAt;
-
     }
 
 }

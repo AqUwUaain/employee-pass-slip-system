@@ -7,11 +7,20 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public final class NavigationHelper {
 
     private NavigationHelper() {
     }
+
+    private static final Map<String, FXMLLoader> loaderCache = new LinkedHashMap<>(16, 0.75f, true) {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<String, FXMLLoader> eldest) {
+            return size() > 12;
+        }
+    };
 
     public static void navigateTo(Node source, String fxmlPath) {
 
@@ -74,6 +83,7 @@ public final class NavigationHelper {
     public static void logout(Node source) {
 
         Session.clear();
+        loaderCache.clear();
         navigateTo(source, "/fxml/Login.fxml");
 
     }

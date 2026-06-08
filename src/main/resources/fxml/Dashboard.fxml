@@ -14,269 +14,245 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="mainDashboardStructure" prefHeight="720.0" prefWidth="1150.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DashboardController">
-
-    <top>
-        <HBox alignment="CENTER_LEFT" prefHeight="75.0" style="-fx-background-color: #ffffff; -fx-border-color: #800000 transparent #800000 transparent; -fx-border-width: 4px 0 1px 0; -fx-padding: 0 25px 0 15px;" BorderPane.alignment="CENTER">
+<BorderPane fx:id="mainDashboardStructure" prefHeight="720.0" prefWidth="1180.0" style="-fx-background-color: #1E1B18;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DashboardController">
+    <!-- LEFT: Dark luxe sidebar -->
+    <left>
+        <VBox fx:id="sidebarNavigationContainer" prefWidth="240.0" styleClass="sidebar-dark" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
             <children>
-                <ImageView fitHeight="55.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/pup_logo.png" />
-                    </image>
-                </ImageView>
-
-                <VBox alignment="CENTER_LEFT" spacing="2.0">
+                <!-- Logo -->
+                <VBox alignment="CENTER" spacing="8.0" style="-fx-padding: 0 0 36px 0;">
                     <children>
-                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 21px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;" text="Polytechnic University of the Philippines" />
-                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 17px; -fx-font-style: italic; -fx-text-fill: #333333;" text="Santa Rosa Campus" />
+                        <ImageView fitHeight="56.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/pup_logo.png" /></image>
+                        </ImageView>
+                        <Label text="PUP SRC" style="-fx-text-fill: #D4A853; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 4px 16px; -fx-background-color: rgba(212,168,83,0.12); -fx-background-radius: 8px;" />
                     </children>
-                    <HBox.margin>
-                        <Insets left="15.0" />
-                    </HBox.margin>
                 </VBox>
-
-                <StackPane HBox.hgrow="ALWAYS" />
-
-                <HBox alignment="CENTER" spacing="15.0">
+                <!-- Navigation -->
+                <VBox spacing="4.0" VBox.vgrow="ALWAYS" style="-fx-padding: 0 14px;">
                     <children>
-                        <Button fx:id="btnNotificationsAlert" mnemonicParsing="false" style="-fx-background-color: #800000; -fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-background-radius: 4px; -fx-cursor: hand;" text="🔔" prefHeight="35.0" prefWidth="35.0" />
-                        <Button fx:id="btnHamburgerMenuToggle" mnemonicParsing="false" style="-fx-background-color: #800000; -fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-background-radius: 4px; -fx-cursor: hand;" text="☰" prefHeight="35.0" prefWidth="35.0" />
+                        <Label text="MAIN MENU" style="-fx-text-fill: rgba(255,255,255,0.25); -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 0 8px 8px 8px;" />
+                        <Button fx:id="btnSidebarDashboard" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Dashboard" styleClass="nav-item nav-active" />
+                        <Button fx:id="btnSidebarMonitoring" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Monitoring" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarEmployees" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Employees" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarReports" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Reports" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarUsers" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Users" styleClass="nav-item" />
+                        <Label text="ACCOUNT" style="-fx-text-fill: rgba(255,255,255,0.25); -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 16px 8px 8px 8px;" />
+                        <Button fx:id="btnLogout" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Logout" styleClass="nav-item" />
+                    </children>
+                </VBox>
+                <!-- Footer -->
+                <VBox alignment="CENTER" style="-fx-padding: 16px;">
+                    <Label text="2026 PUP — SRC" style="-fx-text-fill: rgba(255,255,255,0.2); -fx-font-size: 10px;" />
+                </VBox>
+            </children>
+        </VBox>
+    </left>
+    <!-- TOP: Header bar -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="62.0" styleClass="header-clean" BorderPane.alignment="CENTER">
+            <children>
+                <VBox spacing="2.0">
+                    <children>
+                        <Label text="Dashboard" styleClass="pg-title" />
+                    </children>
+                </VBox>
+                <StackPane HBox.hgrow="ALWAYS" />
+                <HBox spacing="12.0" alignment="CENTER">
+                    <children>
+                        <Button fx:id="btnNotificationsAlert" mnemonicParsing="false" text="&#x1F514;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
+                        <Button fx:id="btnHamburgerMenuToggle" mnemonicParsing="false" text="&#x2699;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
                     </children>
                 </HBox>
             </children>
         </HBox>
     </top>
-
-    <left>
-        <VBox fx:id="sidebarNavigationContainer" prefWidth="240.0" style="-fx-background-color: #800000; -fx-padding: 25px 0 15px 0;" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
-            <children>
-                <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/pup_logo.png" />
-                    </image>
-                    <VBox.margin>
-                        <Insets bottom="40.0" />
-                    </VBox.margin>
-                </ImageView>
-
-                <VBox spacing="10.0" VBox.vgrow="ALWAYS" style="-fx-padding: 0 12px;">
-                    <children>
-                        <Button fx:id="btnSidebarDashboard" alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: rgba(255,255,255,0.15); -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-padding: 12px 15px; -fx-background-radius: 5px;" text="Dashboard" />
-                        <Button fx:id="btnSidebarMonitoring" alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-padding: 12px 15px; -fx-background-radius: 5px;" text="Monitoring and Logs" />
-                        <Button fx:id="btnSidebarEmployees" alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-padding: 12px 15px; -fx-background-radius: 5px;" text="Employee Management" />
-                        <Button fx:id="btnSidebarReports" alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-padding: 12px 15px; -fx-background-radius: 5px;" text="Report Generation &amp; History" />
-                    </children>
-                </VBox>
-
-                <Label style="-fx-text-fill: #ffffff; -fx-font-size: 12px; -fx-opacity: 0.85;" text="2026 PUP - SRC" />
-            </children>
-        </VBox>
-    </left>
-
+    <!-- CENTER: Main content -->
     <center>
-        <ScrollPane fitToWidth="true" style="-fx-background: #ffffff; -fx-background-color: #ffffff; -fx-border-color: transparent;" BorderPane.alignment="CENTER">
+        <ScrollPane fitToWidth="true" style="-fx-background: #1E1B18; -fx-background-color: #1E1B18; -fx-border-color: transparent;" BorderPane.alignment="CENTER">
             <content>
-                <VBox spacing="35.0" style="-fx-padding: 30px 40px;">
+                <VBox spacing="24.0" style="-fx-padding: 28px 36px;">
                     <children>
-
-                        <HBox alignment="CENTER" spacing="25.0">
+                        <!-- Stats row -->
+                        <HBox alignment="CENTER" spacing="18.0">
                             <children>
-
-                                <VBox fx:id="cardCreatePassSlip" alignment="CENTER" prefHeight="165.0" prefWidth="185.0" style="-fx-background-color: #800000; -fx-background-radius: 18px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, 4); -fx-cursor: hand;">
+                                <!-- Create Pass Slip -->
+                                <VBox fx:id="cardCreatePassSlip" alignment="CENTER" prefHeight="160.0" prefWidth="210.0" styleClass="stat-dark" style="-fx-cursor: hand;">
                                     <children>
-                                        <HBox alignment="CENTER_LEFT" style="-fx-background-color: #ffe600; -fx-background-radius: 18px 18px 0 0; -fx-padding: 6px 12px;" prefWidth="185.0">
+                                        <VBox alignment="CENTER_LEFT" styleClass="stat-header" prefWidth="210.0">
+                                            <children><Label text="NEW PASS SLIP" style="-fx-text-fill: #1C0A04; -fx-font-size: 10px; -fx-font-weight: bold;" /></children>
+                                        </VBox>
+                                        <VBox alignment="CENTER" spacing="8.0" VBox.vgrow="ALWAYS">
                                             <children>
-                                                <Label style="-fx-font-weight: bold; -fx-text-fill: #800000; -fx-font-size: 11px;" text="📝 Create Pass Slip" />
+                                                <Label text="&#x1F4CB;" style="-fx-font-size: 42px;" />
+                                                <Label text="Create Entry" styleClass="stat-label" />
                                             </children>
-                                        </HBox>
-                                        <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
-                                            <children>
-                                                <Label style="-fx-text-fill: #ffe600; -fx-font-size: 55px; -fx-font-weight: bold;" text="🗋+" />
-                                            </children>
+                                            <padding><Insets bottom="10.0" /></padding>
                                         </VBox>
                                     </children>
                                 </VBox>
-
-                                <VBox alignment="CENTER" prefHeight="165.0" prefWidth="185.0" style="-fx-background-color: #800000; -fx-background-radius: 18px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, 4);">
+                                <!-- Daily Counter -->
+                                <VBox alignment="CENTER" prefHeight="160.0" prefWidth="210.0" styleClass="stat-dark">
                                     <children>
-                                        <HBox alignment="CENTER" style="-fx-background-color: #ffe600; -fx-background-radius: 18px 18px 0 0; -fx-padding: 6px 12px;" prefWidth="185.0">
+                                        <VBox alignment="CENTER_LEFT" styleClass="stat-header" prefWidth="210.0">
+                                            <children><Label fx:id="lblDailyDate" text="TODAY" style="-fx-text-fill: #1C0A04; -fx-font-size: 10px; -fx-font-weight: bold;" /></children>
+                                        </VBox>
+                                        <VBox alignment="CENTER" spacing="4.0" VBox.vgrow="ALWAYS">
                                             <children>
-                                                <Label style="-fx-font-weight: bold; -fx-text-fill: #800000; -fx-font-size: 11px;" text="📅 May 26, 2026" />
+                                                <Label fx:id="lblDailyCounter" text="0" styleClass="stat-value" />
+                                                <Label text="pass slips today" styleClass="stat-label" />
                                             </children>
-                                        </HBox>
-                                        <VBox alignment="CENTER" VBox.vgrow="ALWAYS" spacing="0.0">
-                                            <children>
-                                                <Label fx:id="lblDailyCounter" style="-fx-text-fill: #ffffff; -fx-font-size: 65px; -fx-font-weight: bold; -fx-line-spacing: 0px;" text="17" />
-                                                <Label style="-fx-text-fill: #ffe600; -fx-font-size: 12px; -fx-font-weight: bold;" text="pass slips" />
-                                            </children>
-                                            <padding>
-                                                <Insets bottom="10.0" />
-                                            </padding>
+                                            <padding><Insets bottom="10.0" /></padding>
                                         </VBox>
                                     </children>
                                 </VBox>
-
-                                <VBox alignment="CENTER" prefHeight="165.0" prefWidth="185.0" style="-fx-background-color: #800000; -fx-background-radius: 18px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, 4);">
+                                <!-- Monthly Counter -->
+                                <VBox alignment="CENTER" prefHeight="160.0" prefWidth="210.0" styleClass="stat-light">
                                     <children>
-                                        <HBox alignment="CENTER" style="-fx-background-color: #ffe600; -fx-background-radius: 18px 18px 0 0; -fx-padding: 6px 12px;" prefWidth="185.0">
+                                        <VBox alignment="CENTER_LEFT" styleClass="stat-header" prefWidth="210.0">
+                                            <children><Label fx:id="lblMonthlyLabel" text="THIS MONTH" style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 10px; -fx-font-weight: bold;" /></children>
+                                        </VBox>
+                                        <VBox alignment="CENTER" spacing="4.0" VBox.vgrow="ALWAYS">
                                             <children>
-                                                <Label style="-fx-font-weight: bold; -fx-text-fill: #800000; -fx-font-size: 11px;" text="📅 MAY" />
+                                                <Label fx:id="lblMonthlyCounter" text="0" styleClass="stat-value" />
+                                                <Label text="pass slips" styleClass="stat-label" />
                                             </children>
-                                        </HBox>
-                                        <VBox alignment="CENTER" VBox.vgrow="ALWAYS" spacing="0.0">
-                                            <children>
-                                                <Label fx:id="lblMonthlyCounter" style="-fx-text-fill: #ffffff; -fx-font-size: 65px; -fx-font-weight: bold;" text="26" />
-                                                <Label style="-fx-text-fill: #ffe600; -fx-font-size: 12px; -fx-font-weight: bold;" text="pass slips" />
-                                            </children>
-                                            <padding>
-                                                <Insets bottom="10.0" />
-                                            </padding>
+                                            <padding><Insets bottom="10.0" /></padding>
                                         </VBox>
                                     </children>
                                 </VBox>
-
                             </children>
                         </HBox>
-
-                        <HBox spacing="35.0" VBox.vgrow="ALWAYS">
+                        <!-- Activity + Calendar -->
+                        <HBox spacing="18.0" VBox.vgrow="ALWAYS">
                             <children>
-
-                                <VBox spacing="12.0" HBox.hgrow="ALWAYS">
+                                <!-- Activity Tracker -->
+                                <VBox spacing="12.0" HBox.hgrow="ALWAYS" styleClass="card" style="-fx-padding: 22px;">
                                     <children>
-                                        <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                        <Label text="Activity Tracker" styleClass="sec-title" />
+                                        <VBox style="-fx-background-color: #1E1B18; -fx-background-radius: 12px; -fx-padding: 6px;">
                                             <children>
-                                                <Label style="-fx-font-size: 16px;" text="📊" />
-                                                <Label style="-fx-font-family: 'Arial'; -fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #800000;" text="ACTIVITY TRACKER" />
-                                            </children>
-                                        </HBox>
-
-                                        <VBox style="-fx-border-color: #e0e0e0; -fx-border-width: 1px; -fx-background-color: #ffffff;">
-                                            <children>
-                                                <HBox alignment="CENTER_LEFT" style="-fx-padding: 12px 15px; -fx-border-color: transparent transparent #edf2f7 transparent; -fx-border-width: 0 0 1px 0;">
+                                                <HBox alignment="CENTER_LEFT" style="-fx-padding: 12px 14px;">
                                                     <children>
-                                                        <VBox style="-fx-background-color: #ffe600; -fx-pref-width: 4px; -fx-pref-height: 20px;" />
-                                                        <Label style="-fx-font-size: 14px; -fx-text-fill: #2d3748; -fx-padding: 0 0 0 10px;" text="Created Trinity Jax's profile." />
+                                                        <Label text="&#x25CF;" style="-fx-text-fill: #D4A853; -fx-font-size: 10px;" />
+                                                        <Label text="Created Trinity Jax's profile." style="-fx-font-size: 13px; -fx-text-fill: #D6CCC2; -fx-padding: 0 0 0 10px;" />
                                                         <StackPane HBox.hgrow="ALWAYS" />
-                                                        <Label style="-fx-font-size: 11px; -fx-text-fill: #a0aec0;" text="3s ago" />
+                                                        <Label text="3s ago" style="-fx-font-size: 11px; -fx-text-fill: #A8A29E;" />
                                                     </children>
                                                 </HBox>
-                                                <HBox alignment="CENTER_LEFT" style="-fx-padding: 12px 15px; -fx-border-color: transparent transparent #edf2f7 transparent; -fx-border-width: 0 0 1px 0;">
+                                                <HBox alignment="CENTER_LEFT" style="-fx-padding: 12px 14px;">
                                                     <children>
-                                                        <VBox style="-fx-background-color: #ffe600; -fx-pref-width: 4px; -fx-pref-height: 20px;" />
-                                                        <Label style="-fx-font-size: 14px; -fx-text-fill: #2d3748; -fx-padding: 0 0 0 10px;" text="Issued Maxwell Sterling's pass slip." />
+                                                        <Label text="&#x25CF;" style="-fx-text-fill: #D4A853; -fx-font-size: 10px;" />
+                                                        <Label text="Issued Maxwell Sterling's pass slip." style="-fx-font-size: 13px; -fx-text-fill: #D6CCC2; -fx-padding: 0 0 0 10px;" />
                                                         <StackPane HBox.hgrow="ALWAYS" />
-                                                        <Label style="-fx-font-size: 11px; -fx-text-fill: #a0aec0;" text="10m ago" />
+                                                        <Label text="10m ago" style="-fx-font-size: 11px; -fx-text-fill: #A8A29E;" />
                                                     </children>
                                                 </HBox>
-                                                <HBox alignment="CENTER_LEFT" style="-fx-padding: 12px 15px; -fx-border-color: transparent transparent #edf2f7 transparent; -fx-border-width: 0 0 1px 0;">
+                                                <HBox alignment="CENTER_LEFT" style="-fx-padding: 12px 14px;">
                                                     <children>
-                                                        <VBox style="-fx-background-color: #ffe600; -fx-pref-width: 4px; -fx-pref-height: 20px;" />
-                                                        <Label style="-fx-font-size: 14px; -fx-text-fill: #2d3748; -fx-padding: 0 0 0 10px;" text="Recorded Maxwell Sterling's timeout." />
+                                                        <Label text="&#x25CF;" style="-fx-text-fill: #D4A853; -fx-font-size: 10px;" />
+                                                        <Label text="Recorded Maxwell Sterling's return." style="-fx-font-size: 13px; -fx-text-fill: #D6CCC2; -fx-padding: 0 0 0 10px;" />
                                                         <StackPane HBox.hgrow="ALWAYS" />
-                                                        <Label style="-fx-font-size: 11px; -fx-text-fill: #a0aec0;" text="1hr ago" />
+                                                        <Label text="1hr ago" style="-fx-font-size: 11px; -fx-text-fill: #A8A29E;" />
                                                     </children>
                                                 </HBox>
-                                                <HBox alignment="CENTER_LEFT" style="-fx-padding: 12px 15px; -fx-border-color: transparent transparent #edf2f7 transparent; -fx-border-width: 0 0 1px 0;">
+                                                <HBox alignment="CENTER_LEFT" style="-fx-padding: 12px 14px;">
                                                     <children>
-                                                        <VBox style="-fx-background-color: #ffe600; -fx-pref-width: 4px; -fx-pref-height: 20px;" />
-                                                        <Label style="-fx-font-size: 14px; -fx-text-fill: #2d3748; -fx-padding: 0 0 0 10px;" text="Issued Leo Vance's pass slip." />
+                                                        <Label text="&#x25CF;" style="-fx-text-fill: #D4A853; -fx-font-size: 10px;" />
+                                                        <Label text="Issued Leo Vance's pass slip." style="-fx-font-size: 13px; -fx-text-fill: #D6CCC2; -fx-padding: 0 0 0 10px;" />
                                                         <StackPane HBox.hgrow="ALWAYS" />
-                                                        <Label style="-fx-font-size: 11px; -fx-text-fill: #a0aec0;" text="30m ago" />
+                                                        <Label text="30m ago" style="-fx-font-size: 11px; -fx-text-fill: #A8A29E;" />
                                                     </children>
                                                 </HBox>
-                                                <HBox alignment="CENTER_LEFT" style="-fx-padding: 12px 15px;">
+                                                <HBox alignment="CENTER_LEFT" style="-fx-padding: 12px 14px;">
                                                     <children>
-                                                        <VBox style="-fx-background-color: #ffe600; -fx-pref-width: 4px; -fx-pref-height: 20px;" />
-                                                        <Label style="-fx-font-size: 14px; -fx-text-fill: #2d3748; -fx-padding: 0 0 0 10px;" text="Created Ivy Calder's profile." />
+                                                        <Label text="&#x25CF;" style="-fx-text-fill: #D4A853; -fx-font-size: 10px;" />
+                                                        <Label text="Created Ivy Calder's profile." style="-fx-font-size: 13px; -fx-text-fill: #D6CCC2; -fx-padding: 0 0 0 10px;" />
                                                         <StackPane HBox.hgrow="ALWAYS" />
-                                                        <Label style="-fx-font-size: 11px; -fx-text-fill: #a0aec0;" text="2hrs ago" />
+                                                        <Label text="2hrs ago" style="-fx-font-size: 11px; -fx-text-fill: #A8A29E;" />
                                                     </children>
                                                 </HBox>
                                             </children>
                                         </VBox>
                                     </children>
                                 </VBox>
-
-                                <VBox alignment="TOP_CENTER" prefWidth="280.0" style="-fx-background-color: #800000; -fx-background-radius: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 6, 0, 0, 2);">
+                                <!-- Calendar -->
+                                <VBox alignment="TOP_CENTER" prefWidth="260.0" styleClass="stat-dark">
                                     <children>
-                                        <HBox alignment="CENTER" style="-fx-background-color: #ffe600; -fx-background-radius: 15px 15px 0 0; -fx-padding: 8px 0;">
+                                        <HBox alignment="CENTER" styleClass="stat-header" prefWidth="260.0">
                                             <children>
-                                                <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #800000; -fx-font-size: 14px;" text="&lt;  MAY 2026  &gt;" />
+                                                <Label text="&#x25C0;" style="-fx-text-fill: #D4A853; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 0 10px; -fx-cursor: hand;" />
+                                                <Label text="MAY 2026" style="-fx-text-fill: #D4A853; -fx-font-size: 13px; -fx-font-weight: bold;" />
+                                                <Label text="&#x25B6;" style="-fx-text-fill: #D4A853; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 0 10px; -fx-cursor: hand;" />
                                             </children>
                                         </HBox>
-
-                                        <GridPane style="-fx-padding: 12px;" vgap="8.0" hgap="4.0" alignment="CENTER">
+                                        <GridPane style="-fx-padding: 14px;" vgap="5.0" hgap="2.0" alignment="CENTER">
                                             <columnConstraints>
-                                                <ColumnConstraints halignment="CENTER" minWidth="32.0" />
-                                                <ColumnConstraints halignment="CENTER" minWidth="32.0" />
-                                                <ColumnConstraints halignment="CENTER" minWidth="32.0" />
-                                                <ColumnConstraints halignment="CENTER" minWidth="32.0" />
-                                                <ColumnConstraints halignment="CENTER" minWidth="32.0" />
-                                                <ColumnConstraints halignment="CENTER" minWidth="32.0" />
-                                                <ColumnConstraints halignment="CENTER" minWidth="32.0" />
+                                                <ColumnConstraints halignment="CENTER" minWidth="30.0" /><ColumnConstraints halignment="CENTER" minWidth="30.0" /><ColumnConstraints halignment="CENTER" minWidth="30.0" /><ColumnConstraints halignment="CENTER" minWidth="30.0" /><ColumnConstraints halignment="CENTER" minWidth="30.0" /><ColumnConstraints halignment="CENTER" minWidth="30.0" /><ColumnConstraints halignment="CENTER" minWidth="30.0" />
                                             </columnConstraints>
                                             <rowConstraints>
-                                                <RowConstraints minHeight="20.0" valignment="CENTER" />
-                                                <RowConstraints minHeight="28.0" valignment="CENTER" />
-                                                <RowConstraints minHeight="28.0" valignment="CENTER" />
-                                                <RowConstraints minHeight="28.0" valignment="CENTER" />
-                                                <RowConstraints minHeight="28.0" valignment="CENTER" />
-                                                <RowConstraints minHeight="28.0" valignment="CENTER" />
+                                                <RowConstraints minHeight="20.0" valignment="CENTER" /><RowConstraints minHeight="26.0" valignment="CENTER" /><RowConstraints minHeight="26.0" valignment="CENTER" /><RowConstraints minHeight="26.0" valignment="CENTER" /><RowConstraints minHeight="26.0" valignment="CENTER" /><RowConstraints minHeight="26.0" valignment="CENTER" />
                                             </rowConstraints>
                                             <children>
-                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #ffe600;" text="SUN" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #ffe600;" text="MON" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #ffe600;" text="TUE" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #ffe600;" text="WED" GridPane.columnIndex="3" GridPane.rowIndex="0" />
-                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #ffe600;" text="THU" GridPane.columnIndex="4" GridPane.rowIndex="0" />
-                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #ffe600;" text="FRI" GridPane.columnIndex="5" GridPane.rowIndex="0" />
-                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #ffe600;" text="SAT" GridPane.columnIndex="6" GridPane.rowIndex="0" />
-
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="1" GridPane.columnIndex="5" GridPane.rowIndex="1" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="2" GridPane.columnIndex="6" GridPane.rowIndex="1" />
-
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="3" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="4" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="5" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="6" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="7" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="8" GridPane.columnIndex="5" GridPane.rowIndex="2" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="9" GridPane.columnIndex="6" GridPane.rowIndex="2" />
-
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="10" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="11" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="12" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="13" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="14" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="15" GridPane.columnIndex="5" GridPane.rowIndex="3" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="16" GridPane.columnIndex="6" GridPane.rowIndex="3" />
-
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="17" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="18" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="19" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="20" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="21" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="22" GridPane.columnIndex="5" GridPane.rowIndex="4" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="23" GridPane.columnIndex="6" GridPane.rowIndex="4" />
-
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="24" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="25" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                <Label style="-fx-font-size: 16px; -fx-text-fill: #ffe600; -fx-font-weight: bold; -fx-underline: true;" text="26" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="27" GridPane.columnIndex="3" GridPane.rowIndex="5" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="28" GridPane.columnIndex="4" GridPane.rowIndex="5" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="29" GridPane.columnIndex="5" GridPane.rowIndex="5" />
-                                                <Label style="-fx-font-size: 15px; -fx-text-fill: #ffffff;" text="30" GridPane.columnIndex="6" GridPane.rowIndex="5" />
+                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #D4A853;" text="SUN" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #D4A853;" text="MON" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #D4A853;" text="TUE" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #D4A853;" text="WED" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #D4A853;" text="THU" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #D4A853;" text="FRI" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #D4A853;" text="SAT" GridPane.columnIndex="6" GridPane.rowIndex="0" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="1" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="2" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="3" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="4" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="5" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="6" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="7" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="8" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="9" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="10" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="11" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="12" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="13" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="14" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="15" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="16" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="17" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="18" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="19" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="20" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="21" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="22" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="23" GridPane.columnIndex="6" GridPane.rowIndex="4" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="24" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="25" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                <Label style="-fx-font-size: 14px; -fx-text-fill: #D4A853; -fx-font-weight: bold; -fx-underline: true;" text="26" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="27" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="28" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="29" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+                                                <Label style="-fx-font-size: 13px; -fx-text-fill: white;" text="30" GridPane.columnIndex="6" GridPane.rowIndex="5" />
                                             </children>
                                         </GridPane>
                                     </children>
                                 </VBox>
-
                             </children>
                         </HBox>
-
                     </children>
                 </VBox>
             </content>
         </ScrollPane>
     </center>
+    <!-- BOTTOM: Timer bar -->
+    <bottom>
+        <VBox styleClass="timer-bar">
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                    <children>
+                        <Label text="&#x23F1;  LIVE TIMER" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #D4A853;" />
+                        <Label fx:id="lblLiveTimer" text="No employees currently out" style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.8);" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </bottom>
 </BorderPane>

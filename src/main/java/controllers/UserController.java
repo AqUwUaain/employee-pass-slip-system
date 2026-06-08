@@ -11,6 +11,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import utils.NavigationHelper;
+import utils.PasswordUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,6 +30,18 @@ public class UserController {
 
     @FXML
     private Button btnSidebarReports;
+
+    @FXML
+    private Button btnSidebarUsers;
+
+    @FXML
+    private Button btnLogout;
+
+    @FXML
+    private Button btnNotificationsAlert;
+
+    @FXML
+    private Button btnHamburgerMenuToggle;
 
     @FXML
     private Label lblTotalUsers;
@@ -76,37 +89,33 @@ public class UserController {
     private void initialize() {
 
         btnSidebarDashboard.setOnAction(
-                event -> NavigationHelper.navigateToDashboard(
-                        btnSidebarDashboard
-                )
+                event -> NavigationHelper.navigateToDashboard(btnSidebarDashboard)
         );
 
         btnSidebarMonitoring.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnSidebarMonitoring,
-                        "/fxml/Monitoring.fxml"
-                )
+                event -> NavigationHelper.navigateTo(btnSidebarMonitoring, "/fxml/Monitoring.fxml")
         );
 
         btnSidebarEmployees.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnSidebarEmployees,
-                        "/fxml/EmployeeController.fxml"
-                )
+                event -> NavigationHelper.navigateTo(btnSidebarEmployees, "/fxml/EmployeeController.fxml")
         );
 
         btnSidebarReports.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnSidebarReports,
-                        "/fxml/Reports.fxml"
-                )
+                event -> NavigationHelper.navigateTo(btnSidebarReports, "/fxml/Reports.fxml")
         );
 
+        if (btnSidebarUsers != null)
+            btnSidebarUsers.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarUsers, "/fxml/User.fxml"));
+        if (btnLogout != null)
+            btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
+
+        if (btnNotificationsAlert != null)
+            btnNotificationsAlert.setOnAction(e -> NavigationHelper.navigateTo(btnNotificationsAlert, "/fxml/ActivityLog.fxml"));
+        if (btnHamburgerMenuToggle != null)
+            btnHamburgerMenuToggle.setOnAction(e -> NavigationHelper.navigateTo(btnHamburgerMenuToggle, "/fxml/User.fxml"));
+
         cmbUserRole.setItems(
-                FXCollections.observableArrayList(
-                        "ADMIN",
-                        "STAFF"
-                )
+                FXCollections.observableArrayList("ADMIN", "STAFF")
         );
 
         colUserRefId.setCellValueFactory(
@@ -127,25 +136,19 @@ public class UserController {
                 )
         );
 
-        btnClearUserForm.setOnAction(
-                event -> clearForm()
-        );
+        btnClearUserForm.setOnAction(event -> clearForm());
 
-        btnSaveUserRegistry.setOnAction(
-                event -> {
-                    createUser(
-                            txtUserName,
-                            txtUserPassword,
-                            cmbUserRole,
-                            lblUserMessage
-                    );
-                    refreshUsers();
-                }
-        );
+        btnSaveUserRegistry.setOnAction(event -> {
+            createUser(
+                    txtUserName,
+                    txtUserPassword,
+                    cmbUserRole,
+                    lblUserMessage
+            );
+            refreshUsers();
+        });
 
-        btnRevokeAccess.setOnAction(
-                event -> revokeSelectedUser()
-        );
+        btnRevokeAccess.setOnAction(event -> revokeSelectedUser());
 
         refreshUsers();
 
@@ -169,176 +172,86 @@ public class UserController {
         String role =
                 roleBox.getValue();
 
-
-
-        // USERNAME VALIDATION
-        if(username.isEmpty()) {
-
-            messageLabel.setText(
-                    "USERNAME REQUIRED"
-            );
-
+        if (username.isEmpty()) {
+            messageLabel.setText("USERNAME REQUIRED");
             return;
-
         }
 
-
-
-        // PASSWORD VALIDATION
-        if(password.isEmpty()) {
-
-            messageLabel.setText(
-                    "PASSWORD REQUIRED"
-            );
-
+        if (!username.contains("@")) {
+            messageLabel.setText("USERNAME MUST CONTAIN '@'");
             return;
-
         }
 
-
-
-        // PASSWORD LENGTH
-        if(password.length() < 4) {
-
-            messageLabel.setText(
-                    "PASSWORD TOO SHORT"
-            );
-
+        if (password.isEmpty()) {
+            messageLabel.setText("PASSWORD REQUIRED");
             return;
-
         }
 
-
-
-        // ROLE VALIDATION
-        if(role == null) {
-
-            messageLabel.setText(
-                    "SELECT ROLE"
-            );
-
+        if (password.length() < 4) {
+            messageLabel.setText("PASSWORD TOO SHORT");
             return;
-
         }
 
-
+        if (role == null) {
+            messageLabel.setText("SELECT ROLE");
+            return;
+        }
 
         try {
 
             Connection connection =
                     DatabaseConnection.connect();
 
-
-
-            // CHECK DUPLICATE USERNAME
             String checkQuery =
                     "SELECT * FROM users WHERE username = ?";
 
             PreparedStatement checkStatement =
                     connection.prepareStatement(checkQuery);
 
-            checkStatement.setString(
-                    1,
-                    username
-            );
+            checkStatement.setString(1, username);
 
             ResultSet resultSet =
                     checkStatement.executeQuery();
 
-
-
-            if(resultSet.next()) {
-
-                messageLabel.setText(
-                        "USERNAME ALREADY EXISTS"
-                );
-
+            if (resultSet.next()) {
+                messageLabel.setText("USERNAME ALREADY EXISTS");
                 return;
-
             }
 
+            String hashedPassword = PasswordUtils.hashPassword(password);
 
-
-            // INSERT USER
             String insertQuery =
-
-                    "INSERT INTO users " +
-                            "(username, password, role) " +
-                            "VALUES (?, ?, ?)";
-
-
+                    "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
 
             PreparedStatement statement =
                     connection.prepareStatement(insertQuery);
 
+            statement.setString(1, username);
+            statement.setString(2, hashedPassword);
+            statement.setString(3, role);
 
+            int inserted = statement.executeUpdate();
 
-            statement.setString(
-                    1,
-                    username
-            );
+            if (inserted > 0) {
 
-            statement.setString(
-                    2,
-                    password
-            );
-
-            statement.setString(
-                    3,
-                    role
-            );
-
-
-
-            int inserted =
-                    statement.executeUpdate();
-
-
-
-
-            if(inserted > 0) {
-
-                // ACTIVITY LOG
                 ActivityLogController.logActivity(
-                        "Created User: "
-                                + username
+                        "Created User: " + username,
+                        0
                 );
 
+                messageLabel.setText("USER CREATED");
 
-
-                messageLabel.setText(
-                        "USER CREATED"
-                );
-
-
-
-                // CLEAR FIELDS
                 usernameField.clear();
-
                 passwordField.clear();
-
                 roleBox.setValue(null);
 
+            } else {
+                messageLabel.setText("FAILED TO CREATE USER");
             }
 
-            else {
-
-                messageLabel.setText(
-                        "FAILED TO CREATE USER"
-                );
-
-            }
-
-        }
-
-        catch (Exception e) {
-
+        } catch (Exception e) {
             e.printStackTrace();
-
-            messageLabel.setText(
-                    "DATABASE ERROR"
-            );
-
+            messageLabel.setText("DATABASE ERROR");
         }
 
     }
@@ -360,13 +273,11 @@ public class UserController {
     }
 
     private void clearForm() {
-
         txtUserId.clear();
         txtUserName.clear();
         txtUserPassword.clear();
         cmbUserRole.setValue(null);
         lblUserMessage.setText("");
-
     }
 
     private void revokeSelectedUser() {
@@ -388,8 +299,7 @@ public class UserController {
         if (deleted) {
             lblUserMessage.setText("User removed.");
             refreshUsers();
-        }
-        else {
+        } else {
             lblUserMessage.setText("Failed to remove user.");
         }
 

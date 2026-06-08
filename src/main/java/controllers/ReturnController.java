@@ -1,11 +1,14 @@
 package controllers;
 
 import database.DatabaseConnection;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import utils.NavigationHelper;
+import utils.TimerService;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -53,46 +56,32 @@ public class ReturnController {
     private TextField txtReturnTimeInStamp;
 
     private int activePassSlipId;
+    private int activeEmployeeId;
 
     @FXML
     private void initialize() {
 
         btnSidebarDashboard.setOnAction(
-                event -> NavigationHelper.navigateToDashboard(
-                        btnSidebarDashboard
-                )
+                event -> NavigationHelper.navigateToDashboard(btnSidebarDashboard)
         );
 
         btnSidebarMonitoring.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnSidebarMonitoring,
-                        "/fxml/Monitoring.fxml"
-                )
+                event -> NavigationHelper.navigateTo(btnSidebarMonitoring, "/fxml/Monitoring.fxml")
         );
 
         btnSidebarEmployees.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnSidebarEmployees,
-                        "/fxml/EmployeeController.fxml"
-                )
+                event -> NavigationHelper.navigateTo(btnSidebarEmployees, "/fxml/EmployeeController.fxml")
         );
 
         btnSidebarReports.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnSidebarReports,
-                        "/fxml/Reports.fxml"
-                )
+                event -> NavigationHelper.navigateTo(btnSidebarReports, "/fxml/Reports.fxml")
         );
 
-        btnFetchActiveSlip.setOnAction(
-                event -> fetchActiveSlip()
-        );
+        btnFetchActiveSlip.setOnAction(event -> fetchActiveSlip());
 
-        btnConfirmReturnLog.setOnAction(
-                event -> processReturn()
-        );
+        btnConfirmReturnLog.setOnAction(event -> processReturn());
 
-        loadSummary();
+        loadSummaryAsync();
 
     }
 
@@ -102,12 +91,8 @@ public class ReturnController {
 
             Connection connection = DatabaseConnection.connect();
 
-
-
-
-            // GET TIME OUT
             String getQuery = """
-                    SELECT time_out
+                    SELECT time_out, employee_id
                     FROM pass_slips
                     WHERE id = ?
                     """;
@@ -119,92 +104,53 @@ public class ReturnController {
 
             ResultSet resultSet = getStatement.executeQuery();
 
-
-
-
-            if(resultSet.next()) {
+            if (resultSet.next()) {
 
                 LocalDateTime timeOut =
-                        resultSet.getTimestamp("time_out")
-                                .toLocalDateTime();
+                        resultSet.getTimestamp("time_out").toLocalDateTime();
 
-                LocalDateTime timeIn =
-                        LocalDateTime.now();
+                int employeeId = resultSet.getInt("employee_id");
 
+                LocalDateTime timeIn = LocalDateTime.now();
 
-
-
-                // COMPUTE DURATION
-                Duration duration =
-                        Duration.between(timeOut, timeIn);
-
+                Duration duration = Duration.between(timeOut, timeIn);
+                long totalMinutes = duration.toMinutes();
                 long hours = duration.toHours();
+                long minutes = totalMinutes % 60;
 
-                long minutes = duration.toMinutes() % 60;
+                String durationText = hours + " hrs " + minutes + " mins";
 
-                String durationText =
-                        hours + " hrs " + minutes + " mins";
-
-
-
-
-                // UPDATE PASS SLIP
                 String updateQuery = """
                         UPDATE pass_slips
-                        SET
-                        time_in = ?,
-                        duration = ?,
-                        status = 'RETURNED'
+                        SET time_in = ?, duration = ?, duration_minutes = ?, status = 'RETURNED'
                         WHERE id = ?
                         """;
 
                 PreparedStatement updateStatement =
                         connection.prepareStatement(updateQuery);
 
-                updateStatement.setTimestamp(
-                        1,
-                        java.sql.Timestamp.valueOf(timeIn)
-                );
+                updateStatement.setTimestamp(1, java.sql.Timestamp.valueOf(timeIn));
+                updateStatement.setString(2, durationText);
+                updateStatement.setLong(3, totalMinutes);
+                updateStatement.setInt(4, passSlipId);
 
-                updateStatement.setString(
-                        2,
-                        durationText
-                );
+                int updated = updateStatement.executeUpdate();
 
-                updateStatement.setInt(
-                        3,
-                        passSlipId
-                );
+                if (updated > 0) {
+                    TimerService.markReturned(employeeId);
 
-                int updated =
-                        updateStatement.executeUpdate();
-
-
-
-
-                if(updated > 0) {
-
-                    // ACTIVITY LOG
                     ActivityLogController.logActivity(
-                            "Returned Pass Slip ID: "
-                                    + passSlipId
+                            "Returned Pass Slip ID: " + passSlipId,
+                            employeeId
                     );
-
                 }
-
-
-
 
                 return updated > 0;
 
             }
 
-        }
-
-        catch (Exception e) {
-
+        } catch (Exception e) {
             e.printStackTrace();
-
         }
 
         return false;
@@ -216,9 +162,7 @@ public class ReturnController {
         try {
 
             int searchValue =
-                    Integer.parseInt(
-                            txtReturnSearchId.getText().trim()
-                    );
+                    Integer.parseInt(txtReturnSearchId.getText().trim());
 
             Connection connection =
                     DatabaseConnection.connect();
@@ -228,30 +172,25 @@ public class ReturnController {
                 return;
             }
 
-            PreparedStatement statement =
-                    connection.prepareStatement(
-                            """
-                            SELECT p.id, e.first_name, e.last_name
-                            FROM pass_slips p
-                            JOIN employees e
-                              ON p.employee_id = e.id
-                            WHERE p.status = 'OUT'
-                              AND (p.id = ? OR e.id = ?)
-                            ORDER BY p.id DESC
-                            LIMIT 1
-                            """
-                    );
+            PreparedStatement statement = connection.prepareStatement("""
+                    SELECT p.id, p.employee_id, e.first_name, e.last_name
+                    FROM pass_slips p
+                    JOIN employees e ON p.employee_id = e.id
+                    WHERE p.status = 'OUT'
+                      AND (p.id = ? OR e.id = ?)
+                    ORDER BY p.id DESC
+                    LIMIT 1
+                    """);
 
             statement.setInt(1, searchValue);
             statement.setInt(2, searchValue);
 
-            ResultSet resultSet =
-                    statement.executeQuery();
+            ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
 
-                activePassSlipId =
-                        resultSet.getInt("id");
+                activePassSlipId = resultSet.getInt("id");
+                activeEmployeeId = resultSet.getInt("employee_id");
 
                 txtReturnEmployeeName.setText(
                         resultSet.getString("first_name")
@@ -260,23 +199,20 @@ public class ReturnController {
                 );
 
                 lblReturnStatusMessage.setText(
-                        "Active pass slip found: "
-                                + activePassSlipId
+                        "Active pass slip found: " + activePassSlipId
                 );
 
-            }
-            else {
+            } else {
                 activePassSlipId = 0;
+                activeEmployeeId = 0;
                 txtReturnEmployeeName.clear();
                 lblReturnStatusMessage.setText("No active pass slip found.");
             }
 
-        }
-        catch (Exception e) {
-
+        } catch (Exception e) {
             activePassSlipId = 0;
+            activeEmployeeId = 0;
             lblReturnStatusMessage.setText("Enter a valid slip or employee ID.");
-
         }
 
     }
@@ -288,8 +224,7 @@ public class ReturnController {
             return;
         }
 
-        boolean success =
-                recordReturn(activePassSlipId);
+        boolean success = recordReturn(activePassSlipId);
 
         if (success) {
             lblReturnStatusMessage.setText("Return recorded successfully.");
@@ -297,47 +232,40 @@ public class ReturnController {
             txtReturnEmployeeName.clear();
             txtReturnTimeInStamp.clear();
             activePassSlipId = 0;
-            loadSummary();
-        }
-        else {
+            activeEmployeeId = 0;
+            loadSummaryAsync();
+        } else {
             lblReturnStatusMessage.setText("Unable to record return.");
         }
 
     }
 
-    private void loadSummary() {
+    private void loadSummaryAsync() {
 
-        try {
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                try {
 
-            Connection connection =
-                    DatabaseConnection.connect();
+                    Connection connection =
+                            DatabaseConnection.connect();
 
-            if (connection == null) {
-                return;
-            }
+                    if (connection == null) {
+                        return null;
+                    }
 
-            PreparedStatement outStatement =
-                    connection.prepareStatement(
-                            """
-                            SELECT COUNT(*)
-                            FROM pass_slips
-                            WHERE status = 'OUT'
-                            """
+                    PreparedStatement outStatement = connection.prepareStatement(
+                            "SELECT COUNT(*) FROM pass_slips WHERE status = 'OUT'"
                     );
 
-            ResultSet outResult =
-                    outStatement.executeQuery();
+                    ResultSet outResult = outStatement.executeQuery();
 
-            if (outResult.next()) {
-                lblTotalCurrentlyOut.setText(
-                        String.valueOf(
-                                outResult.getInt(1)
-                        )
-                );
-            }
+                    int outCount = 0;
+                    if (outResult.next()) {
+                        outCount = outResult.getInt(1);
+                    }
 
-            PreparedStatement returnedStatement =
-                    connection.prepareStatement(
+                    PreparedStatement returnedStatement = connection.prepareStatement(
                             """
                             SELECT COUNT(*)
                             FROM pass_slips
@@ -346,24 +274,33 @@ public class ReturnController {
                             """
                     );
 
-            ResultSet returnedResult =
-                    returnedStatement.executeQuery();
+                    ResultSet returnedResult = returnedStatement.executeQuery();
 
-            if (returnedResult.next()) {
-                lblTotalReturnedToday.setText(
-                        String.valueOf(
-                                returnedResult.getInt(1)
-                        )
-                );
+                    int retCount = 0;
+                    if (returnedResult.next()) {
+                        retCount = returnedResult.getInt(1);
+                    }
+
+                    int finalOutCount = outCount;
+                    int finalRetCount = retCount;
+                    Platform.runLater(() -> {
+                        lblTotalCurrentlyOut.setText(String.valueOf(finalOutCount));
+                        lblTotalReturnedToday.setText(String.valueOf(finalRetCount));
+                    });
+
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        lblTotalCurrentlyOut.setText("0");
+                        lblTotalReturnedToday.setText("0");
+                    });
+                }
+                return null;
             }
+        };
 
-        }
-        catch (Exception e) {
-
-            lblTotalCurrentlyOut.setText("0");
-            lblTotalReturnedToday.setText("0");
-
-        }
+        Thread thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
 
     }
 

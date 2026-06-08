@@ -1,5 +1,6 @@
 package controllers;
 
+import database.DatabaseConnection;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
@@ -28,6 +29,18 @@ public class EmployeeFormController {
 
     @FXML
     private DatePicker joinDatePicker;
+
+    @FXML
+    private TextField managerField;
+
+    @FXML
+    private TextField emailField;
+
+    @FXML
+    private TextField addressField;
+
+    @FXML
+    private TextField emergencyContactField;
 
     @FXML
     private Label titleLabel;
@@ -76,24 +89,25 @@ public class EmployeeFormController {
         titleLabel.setText("Edit Employee");
         btnSaveEmployee.setText("Update Employee");
 
-        firstNameField.setText(
-                employee.getFirstName()
-        );
-        lastNameField.setText(
-                employee.getLastName()
-        );
-        departmentField.setText(
-                employee.getDepartment()
-        );
-        positionField.setText(
-                employee.getPosition()
-        );
-        contactField.setText(
-                employee.getContact()
-        );
-        joinDatePicker.setValue(
-                employee.getJoinDate()
-        );
+        firstNameField.setText(employee.getFirstName());
+        lastNameField.setText(employee.getLastName());
+        departmentField.setText(employee.getDepartment());
+        positionField.setText(employee.getPosition());
+        contactField.setText(employee.getContact());
+        joinDatePicker.setValue(employee.getJoinDate());
+
+        if (employee.getManager() != null) {
+            managerField.setText(employee.getManager());
+        }
+        if (employee.getEmail() != null) {
+            emailField.setText(employee.getEmail());
+        }
+        if (employee.getAddress() != null) {
+            addressField.setText(employee.getAddress());
+        }
+        if (employee.getEmergencyContact() != null) {
+            emergencyContactField.setText(employee.getEmergencyContact());
+        }
 
     }
 
@@ -108,7 +122,11 @@ public class EmployeeFormController {
                             lastNameField.getText(),
                             departmentField.getText(),
                             positionField.getText(),
-                            contactField.getText()
+                            contactField.getText(),
+                            managerField.getText(),
+                            emailField.getText(),
+                            addressField.getText(),
+                            emergencyContactField.getText()
                     );
 
             if (updated) {
@@ -131,6 +149,10 @@ public class EmployeeFormController {
                 positionField.getText(),
                 contactField.getText(),
                 joinDatePicker.getValue(),
+                managerField.getText(),
+                emailField.getText(),
+                addressField.getText(),
+                emergencyContactField.getText(),
                 messageLabel
         );
 

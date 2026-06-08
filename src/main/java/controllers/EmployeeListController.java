@@ -1,10 +1,12 @@
 package controllers;
 
 import database.DatabaseConnection;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -147,14 +149,6 @@ public class EmployeeListController {
                 cellData -> new ReadOnlyStringWrapper("View Profile")
         );
 
-        filteredEmployees =
-                new FilteredList<>(
-                        getEmployees(),
-                        employee -> true
-                );
-
-        employeeTableView.setItems(filteredEmployees);
-
         employeeTableView.setOnMouseClicked(
                 event -> {
                     Employee selectedEmployee =
@@ -180,48 +174,60 @@ public class EmployeeListController {
         );
 
         btnFilterAll.setOnAction(
-                event -> applyFilter(
-                        txtSearchEmployee.getText(),
-                        null
-                )
+                event -> applyFilter(txtSearchEmployee.getText(), null)
         );
 
         btnFilterEducation.setOnAction(
-                event -> applyFilter(
-                        txtSearchEmployee.getText(),
-                        "Education"
-                )
+                event -> applyFilter(txtSearchEmployee.getText(), "Education")
         );
 
         btnFilterIT.setOnAction(
-                event -> applyFilter(
-                        txtSearchEmployee.getText(),
-                        "IT"
-                )
+                event -> applyFilter(txtSearchEmployee.getText(), "IT")
         );
 
         btnFilterEngineering.setOnAction(
-                event -> applyFilter(
-                        txtSearchEmployee.getText(),
-                        "Engineering"
-                )
+                event -> applyFilter(txtSearchEmployee.getText(), "Engineering")
         );
 
         btnFilterHRM.setOnAction(
-                event -> applyFilter(
-                        txtSearchEmployee.getText(),
-                        "HRM"
-                )
+                event -> applyFilter(txtSearchEmployee.getText(), "HRM")
         );
 
         btnFilterAccountancy.setOnAction(
-                event -> applyFilter(
-                        txtSearchEmployee.getText(),
-                        "Accountancy"
-                )
+                event -> applyFilter(txtSearchEmployee.getText(), "Accountancy")
         );
 
-        updateSummary();
+        loadEmployeesAsync();
+
+    }
+
+    private void loadEmployeesAsync() {
+
+        Task<ObservableList<Employee>> task = new Task<>() {
+            @Override
+            protected ObservableList<Employee> call() {
+                return getEmployees();
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            ObservableList<Employee> employees = task.getValue();
+            filteredEmployees = new FilteredList<>(employees, employee -> true);
+            employeeTableView.setItems(filteredEmployees);
+
+            lblTotalEmployees.setText(String.valueOf(employees.size()));
+
+            Set<String> departments = employees.stream()
+                    .map(Employee::getDepartment)
+                    .filter(value -> value != null && !value.isBlank())
+                    .collect(Collectors.toSet());
+
+            lblTotalDepartments.setText(String.valueOf(departments.size()));
+        });
+
+        Thread thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
 
     }
 
@@ -253,7 +259,11 @@ public class EmployeeListController {
                         resultSet.getString("department"),
                         resultSet.getString("position"),
                         resultSet.getString("contact"),
-                        resultSet.getDate("join_date").toLocalDate()
+                        resultSet.getDate("join_date").toLocalDate(),
+                        resultSet.getString("manager"),
+                        resultSet.getString("email"),
+                        resultSet.getString("address"),
+                        resultSet.getString("emergency_contact")
                 );
 
                 employeeList.add(employee);
@@ -262,19 +272,16 @@ public class EmployeeListController {
 
         }
         catch (Exception e) {
-
             e.printStackTrace();
-
         }
 
         return employeeList;
 
     }
 
-    private void applyFilter(
-            String keyword,
-            String department
-    ) {
+    private void applyFilter(String keyword, String department) {
+
+        if (filteredEmployees == null) return;
 
         filteredEmployees.setPredicate(employee -> {
 
@@ -298,31 +305,6 @@ public class EmployeeListController {
             return matchesKeyword && matchesDepartment;
 
         });
-
-    }
-
-    private void updateSummary() {
-
-        ObservableList<Employee> employees =
-                getEmployees();
-
-        lblTotalEmployees.setText(
-                String.valueOf(
-                        employees.size()
-                )
-        );
-
-        Set<String> departments =
-                employees.stream()
-                        .map(Employee::getDepartment)
-                        .filter(value -> value != null && !value.isBlank())
-                        .collect(Collectors.toSet());
-
-        lblTotalDepartments.setText(
-                String.valueOf(
-                        departments.size()
-                )
-        );
 
     }
 

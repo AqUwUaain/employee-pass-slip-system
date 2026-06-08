@@ -18,7 +18,13 @@ public class Employee {
 
     private LocalDate joinDate;
 
+    private String manager;
 
+    private String email;
+
+    private String address;
+
+    private String emergencyContact;
 
     // SIMPLE CONSTRUCTOR
     public Employee(
@@ -35,8 +41,6 @@ public class Employee {
 
     }
 
-
-
     // FULL CONSTRUCTOR
     public Employee(
             int id,
@@ -45,7 +49,11 @@ public class Employee {
             String department,
             String position,
             String contact,
-            LocalDate joinDate
+            LocalDate joinDate,
+            String manager,
+            String email,
+            String address,
+            String emergencyContact
     ) {
 
         this.id = id;
@@ -62,64 +70,59 @@ public class Employee {
 
         this.joinDate = joinDate;
 
+        this.manager = manager;
+
+        this.email = email;
+
+        this.address = address;
+
+        this.emergencyContact = emergencyContact;
+
     }
-
-
 
     public int getId() {
-
         return id;
-
     }
-
-
 
     public String getFirstName() {
-
         return firstName;
-
     }
-
-
 
     public String getLastName() {
-
         return lastName;
-
     }
-
-
 
     public String getDepartment() {
-
         return department;
-
     }
-
-
 
     public String getPosition() {
-
         return position;
-
     }
-
-
 
     public String getContact() {
-
         return contact;
-
     }
-
-
 
     public LocalDate getJoinDate() {
-
         return joinDate;
-
     }
 
+    public String getManager() {
+        return manager;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getEmergencyContact() {
+        return emergencyContact;
+    }
 
     @Override
     public String toString() {

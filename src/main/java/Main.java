@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import database.DatabaseConnection;
+import database.DatabaseMigration;
 
 public class Main extends Application {
 
@@ -26,6 +27,7 @@ public class Main extends Application {
     public static void main(String[] args) {
 
         DatabaseConnection.connect();
+        DatabaseMigration.runMigrations();
 
         launch();
     }

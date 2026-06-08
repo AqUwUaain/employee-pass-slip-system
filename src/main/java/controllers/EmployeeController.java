@@ -30,6 +30,18 @@ public class EmployeeController {
     private Button btnSidebarReports;
 
     @FXML
+    private Button btnSidebarUsers;
+
+    @FXML
+    private Button btnLogout;
+
+    @FXML
+    private Button btnNotificationsAlert;
+
+    @FXML
+    private Button btnHamburgerMenuToggle;
+
+    @FXML
     private VBox btnGatewayViewList;
 
     @FXML
@@ -65,6 +77,16 @@ public class EmployeeController {
                 )
         );
 
+        if (btnSidebarUsers != null)
+            btnSidebarUsers.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarUsers, "/fxml/User.fxml"));
+        if (btnLogout != null)
+            btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
+
+        if (btnNotificationsAlert != null)
+            btnNotificationsAlert.setOnAction(e -> NavigationHelper.navigateTo(btnNotificationsAlert, "/fxml/ActivityLog.fxml"));
+        if (btnHamburgerMenuToggle != null)
+            btnHamburgerMenuToggle.setOnAction(e -> NavigationHelper.navigateTo(btnHamburgerMenuToggle, "/fxml/User.fxml"));
+
         btnGatewayViewList.setOnMouseClicked(
                 event -> NavigationHelper.navigateTo(
                         btnGatewayViewList,
@@ -93,11 +115,14 @@ public class EmployeeController {
             String position,
             String contact,
             LocalDate joinDate,
+            String manager,
+            String email,
+            String address,
+            String emergencyContact,
             Label messageLabel
 
     ) {
 
-        // EMPTY FIELD VALIDATION
         if(firstName.isBlank() ||
                 lastName.isBlank() ||
                 department.isBlank() ||
@@ -105,64 +130,32 @@ public class EmployeeController {
                 contact.isBlank() ||
                 joinDate == null) {
 
-            messageLabel.setText(
-                    "COMPLETE ALL FIELDS"
-            );
-
+            messageLabel.setText("COMPLETE ALL FIELDS");
             return;
 
         }
 
-
-
-        // CONTACT VALIDATION
         if(!contact.matches("[0-9]+")) {
-
-            messageLabel.setText(
-                    "CONTACT MUST BE NUMBERS ONLY"
-            );
-
+            messageLabel.setText("CONTACT MUST BE NUMBERS ONLY");
             return;
-
         }
 
-
-
-        // CONTACT LENGTH
         if(contact.length() < 7) {
-
-            messageLabel.setText(
-                    "INVALID CONTACT NUMBER"
-            );
-
+            messageLabel.setText("INVALID CONTACT NUMBER");
             return;
-
         }
-
-
 
         try {
 
             Connection connection =
                     DatabaseConnection.connect();
 
-
-
-            String sql =
-                    """
+            String sql = """
                     INSERT INTO employees
-                    (
-                    first_name,
-                    last_name,
-                    department,
-                    position,
-                    contact,
-                    join_date
-                    )
-                    VALUES (?, ?, ?, ?, ?, ?)
+                    (first_name, last_name, department, position,
+                     contact, join_date, manager, email, address, emergency_contact)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """;
-
-
 
             PreparedStatement preparedStatement =
                     connection.prepareStatement(sql);
@@ -172,49 +165,31 @@ public class EmployeeController {
             preparedStatement.setString(3, department);
             preparedStatement.setString(4, position);
             preparedStatement.setString(5, contact);
-
-            preparedStatement.setDate(
-                    6,
-                    java.sql.Date.valueOf(joinDate)
-            );
-
-
+            preparedStatement.setDate(6, java.sql.Date.valueOf(joinDate));
+            preparedStatement.setString(7, manager != null ? manager : "");
+            preparedStatement.setString(8, email != null ? email : "");
+            preparedStatement.setString(9, address != null ? address : "");
+            preparedStatement.setString(10, emergencyContact != null ? emergencyContact : "");
 
             preparedStatement.executeUpdate();
 
-
-
-            // ACTIVITY LOG
             ActivityLogController.logActivity(
-                    "Added Employee: "
-                            + firstName
-                            + " "
-                            + lastName
+                    "Added Employee: " + firstName + " " + lastName,
+                    0
             );
 
-
-
-            messageLabel.setText(
-                    "EMPLOYEE ADDED SUCCESSFULLY"
-            );
+            messageLabel.setText("EMPLOYEE ADDED SUCCESSFULLY");
 
         }
 
         catch (Exception e) {
 
-            messageLabel.setText(
-                    "FAILED TO ADD EMPLOYEE"
-            );
-
+            messageLabel.setText("FAILED TO ADD EMPLOYEE");
             e.printStackTrace();
 
         }
 
     }
-
-
-
-
 
     // UPDATE EMPLOYEE
     public static boolean updateEmployee(
@@ -224,7 +199,11 @@ public class EmployeeController {
             String lastName,
             String department,
             String position,
-            String contact
+            String contact,
+            String manager,
+            String email,
+            String address,
+            String emergencyContact
 
     ) {
 
@@ -233,21 +212,13 @@ public class EmployeeController {
             Connection connection =
                     DatabaseConnection.connect();
 
-
-
-            String query =
-                    """
+            String query = """
                     UPDATE employees
-                    SET
-                        first_name = ?,
-                        last_name = ?,
-                        department = ?,
-                        position = ?,
-                        contact = ?
+                    SET first_name = ?, last_name = ?, department = ?,
+                        position = ?, contact = ?, manager = ?,
+                        email = ?, address = ?, emergency_contact = ?
                     WHERE id = ?
                     """;
-
-
 
             PreparedStatement statement =
                     connection.prepareStatement(query);
@@ -257,43 +228,32 @@ public class EmployeeController {
             statement.setString(3, department);
             statement.setString(4, position);
             statement.setString(5, contact);
-            statement.setInt(6, id);
+            statement.setString(6, manager != null ? manager : "");
+            statement.setString(7, email != null ? email : "");
+            statement.setString(8, address != null ? address : "");
+            statement.setString(9, emergencyContact != null ? emergencyContact : "");
+            statement.setInt(10, id);
 
-
-
-            int updated =
-                    statement.executeUpdate();
-
-
+            int updated = statement.executeUpdate();
 
             if(updated > 0) {
-
-                // ACTIVITY LOG
                 ActivityLogController.logActivity(
-                        "Updated Employee ID: " + id
+                        "Updated Employee ID: " + id,
+                        id
                 );
-
             }
-
-
 
             return updated > 0;
 
         }
 
         catch (Exception e) {
-
             e.printStackTrace();
-
         }
 
         return false;
 
     }
-
-
-
-
 
     // GET ALL EMPLOYEES
     public static ArrayList<Employee> getAllEmployees() {
@@ -301,53 +261,35 @@ public class EmployeeController {
         ArrayList<Employee> employeeList =
                 new ArrayList<>();
 
-
-
         try {
 
             Connection connection =
                     DatabaseConnection.connect();
 
-
-
-            String query =
-                    "SELECT * FROM employees";
-
-
+            String query = "SELECT * FROM employees";
 
             PreparedStatement statement =
                     connection.prepareStatement(query);
 
-
-
             ResultSet resultSet =
                     statement.executeQuery();
-
-
 
             while(resultSet.next()) {
 
                 Employee employee =
                         new Employee(
-
                                 resultSet.getInt("id"),
-
                                 resultSet.getString("first_name"),
-
                                 resultSet.getString("last_name"),
-
                                 resultSet.getString("department"),
-
                                 resultSet.getString("position"),
-
                                 resultSet.getString("contact"),
-
-                                resultSet.getDate("join_date")
-                                        .toLocalDate()
-
+                                resultSet.getDate("join_date").toLocalDate(),
+                                resultSet.getString("manager"),
+                                resultSet.getString("email"),
+                                resultSet.getString("address"),
+                                resultSet.getString("emergency_contact")
                         );
-
-
 
                 employeeList.add(employee);
 
@@ -356,12 +298,8 @@ public class EmployeeController {
         }
 
         catch (Exception e) {
-
             e.printStackTrace();
-
         }
-
-
 
         return employeeList;
 

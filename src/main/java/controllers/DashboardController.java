@@ -1,10 +1,13 @@
 package controllers;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import utils.NavigationHelper;
+import utils.TimerService;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -33,6 +36,12 @@ public class DashboardController {
     private Button btnSidebarReports;
 
     @FXML
+    private Button btnSidebarUsers;
+
+    @FXML
+    private Button btnLogout;
+
+    @FXML
     private VBox cardCreatePassSlip;
 
     @FXML
@@ -40,6 +49,9 @@ public class DashboardController {
 
     @FXML
     private Label lblMonthlyCounter;
+
+    @FXML
+    private Label lblLiveTimer;
 
     @FXML
     private void initialize() {
@@ -72,6 +84,19 @@ public class DashboardController {
                 )
         );
 
+        if (btnSidebarUsers != null)
+            btnSidebarUsers.setOnAction(
+                    event -> NavigationHelper.navigateTo(
+                            btnSidebarUsers,
+                            "/fxml/User.fxml"
+                    )
+            );
+
+        if (btnLogout != null)
+            btnLogout.setOnAction(
+                    event -> NavigationHelper.logout(btnLogout)
+            );
+
         btnNotificationsAlert.setOnAction(
                 event -> NavigationHelper.navigateTo(
                         btnNotificationsAlert,
@@ -93,69 +118,108 @@ public class DashboardController {
                 )
         );
 
-        loadSummaryCounts();
+        loadSummaryCountsAsync();
+        loadLiveTimer();
+        startLiveTimerRefresh();
 
     }
 
-    private void loadSummaryCounts() {
+    private void loadSummaryCountsAsync() {
 
-        try {
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                try {
 
-            Connection connection =
-                    DatabaseConnection.connect();
+                    Connection connection =
+                            DatabaseConnection.connect();
 
-            if (connection == null) {
-                return;
-            }
+                    if (connection == null) {
+                        return null;
+                    }
 
-            PreparedStatement dailyStatement =
-                    connection.prepareStatement(
-                            """
-                            SELECT COUNT(*)
-                            FROM pass_slips
-                            WHERE DATE(time_out) = CURRENT_DATE
-                            """
+                    PreparedStatement dailyStatement = connection.prepareStatement(
+                            "SELECT COUNT(*) FROM pass_slips WHERE DATE(time_out) = CURRENT_DATE"
                     );
 
-            ResultSet dailyResult =
-                    dailyStatement.executeQuery();
+                    ResultSet dailyResult = dailyStatement.executeQuery();
 
-            if (dailyResult.next()) {
-                lblDailyCounter.setText(
-                        String.valueOf(
-                                dailyResult.getInt(1)
-                        )
-                );
-            }
+                    int dailyCount = 0;
+                    if (dailyResult.next()) {
+                        dailyCount = dailyResult.getInt(1);
+                    }
 
-            PreparedStatement monthlyStatement =
-                    connection.prepareStatement(
+                    int finalDailyCount = dailyCount;
+                    Platform.runLater(() -> lblDailyCounter.setText(
+                            String.valueOf(finalDailyCount)
+                    ));
+
+                    PreparedStatement monthlyStatement = connection.prepareStatement(
                             """
-                            SELECT COUNT(*)
-                            FROM pass_slips
+                            SELECT COUNT(*) FROM pass_slips
                             WHERE EXTRACT(YEAR FROM time_out) = EXTRACT(YEAR FROM CURRENT_DATE)
                             AND EXTRACT(MONTH FROM time_out) = EXTRACT(MONTH FROM CURRENT_DATE)
                             """
                     );
 
-            ResultSet monthlyResult =
-                    monthlyStatement.executeQuery();
+                    ResultSet monthlyResult = monthlyStatement.executeQuery();
 
-            if (monthlyResult.next()) {
-                lblMonthlyCounter.setText(
-                        String.valueOf(
-                                monthlyResult.getInt(1)
-                        )
-                );
+                    int monthlyCount = 0;
+                    if (monthlyResult.next()) {
+                        monthlyCount = monthlyResult.getInt(1);
+                    }
+
+                    int finalMonthlyCount = monthlyCount;
+                    Platform.runLater(() -> lblMonthlyCounter.setText(
+                            String.valueOf(finalMonthlyCount)
+                    ));
+
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        lblDailyCounter.setText("0");
+                        lblMonthlyCounter.setText("0");
+                    });
+                }
+                return null;
             }
+        };
 
-        }
-        catch (Exception e) {
-
-            lblDailyCounter.setText("0");
-            lblMonthlyCounter.setText("0");
-
-        }
+        Thread thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
 
     }
+
+    private void loadLiveTimer() {
+
+        if (lblLiveTimer == null) return;
+
+        int outCount = TimerService.getOutCount();
+
+        if (outCount == 0) {
+            lblLiveTimer.setText("No employees currently out");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(outCount).append(" employee(s) currently out:\n\n");
+
+        for (TimerService.OutRecord record : TimerService.getOutRecords().values()) {
+            sb.append(record.employeeName)
+                    .append(" - ")
+                    .append(record.getElapsedText())
+                    .append("\n");
+        }
+
+        lblLiveTimer.setText(sb.toString());
+
+    }
+
+    private void startLiveTimerRefresh() {
+
+        TimerService.setOnUpdateCallback(this::loadLiveTimer);
+        TimerService.startAutoRefresh();
+
+    }
+
 }

@@ -1,0 +1,43 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run App" type="MavenRunConfiguration" factoryName="Maven">
+    <option name="mavenProperties" value="" />
+    <option name="externalRootPath" value="$MODULE_WORKING_DIR$" />
+    <option name="myPackageName" value="" />
+    <option name="myRunSettings" value="Maven.Run.WorkingDir" />
+    <option name="myRunSettings" value="Maven.Run.pomFile" />
+    <option name="myRunSettings" value="Maven.Run.profileName" />
+    <option name="myRunSettings" value="Maven.Run.resolveMod" />
+    <option name="myRunSettings" value="Maven.Run.skipTests" />
+    <option name="myRunSettings" value="Maven.Run.workingDir" />
+    <MavenSettings>
+      <option name="mavenGoals">
+        <list>
+          <option value="javafx:run" />
+        </list>
+      </option>
+      <option name="mavenOptions" value="" />
+      <option name="profiles" value="" />
+      <option name="extraProfiles" value="" />
+    </MavenSettings>
+    <option name="myDebugAssertions" value="" />
+    <option name="alternativeDebugPort" value="0" />
+    <option name="myEnvironmentProperties" value="" />
+    <option name="myExternalDirectoryPath" value="$MODULE_WORKING_DIR$/target" />
+    <option name="myExtensionProperties" value="" />
+    <option name="myModulePath" value="" />
+    <option name="myVMOptions" value="" />
+    <option name="myIncludeClasspath" value="true" />
+    <option name="myWrappers" value="true" />
+    <option name="resolveWorkspace" value="true" />
+    <option name="mavenCompilerPath" value="" />
+    <option name="myRunner" value="Maven.Runner" />
+    <option name="myRunnerParameters" value="" />
+    <option name="myRunnerParameters" value="-e" />
+    <ExternalSystemSettings>
+      <option name="ID" value="Maven" />
+      <option name="RunConfigurationTasks" value="" />
+    </ExternalSystemSettings>
+    <option name="projectName" value="employee-pass-slip-system" />
+    <option name="projectSdkOnTargetClasspath" value="true" />
+  </configuration>
+</component>

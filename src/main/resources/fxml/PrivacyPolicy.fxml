@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="TOP_CENTER" maxHeight="520.0" maxWidth="480.0" minHeight="520.0" minWidth="480.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.PrivacyPolicyController" style="-fx-background-color: #252220; -fx-background-radius: 18px; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 40, 0, 0, 10);">
+    <children>
+        <!-- Header -->
+        <VBox alignment="CENTER" style="-fx-background-color: linear-gradient(to right, #3D0C02, #5C1A10); -fx-background-radius: 18px 18px 0 0; -fx-padding: 24px;">
+            <children>
+                <Label text="PRIVACY POLICY" style="-fx-text-fill: #D4A853; -fx-font-size: 11px; -fx-font-weight: bold;" />
+                <Label text="Employee Pass Slip System" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
+            </children>
+        </VBox>
+        <!-- Content -->
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
+            <content>
+                <VBox spacing="14.0" style="-fx-padding: 24px 28px;">
+                    <children>
+                        <Label text="Data Collection" style="-fx-text-fill: #D4A853; -fx-font-size: 14px; -fx-font-weight: bold;" />
+                        <Label maxWidth="420.0" wrapText="true" text="The Employee Pass Slip System collects employee names, departments, and pass slip activity records (time out, time in, duration, reason, and status). This data is necessary for the system to function properly." style="-fx-text-fill: #D6CCC2; -fx-font-size: 12.5px; -fx-line-spacing: 4px;" />
+                        <Label text="Data Usage" style="-fx-text-fill: #D4A853; -fx-font-size: 14px; -fx-font-weight: bold;" />
+                        <Label maxWidth="420.0" wrapText="true" text="All collected data is strictly used for monitoring employee campus movement, generating reports, and ensuring security within the PUP Santa Rosa Campus. No data is shared with third parties." style="-fx-text-fill: #D6CCC2; -fx-font-size: 12.5px; -fx-line-spacing: 4px;" />
+                        <Label text="Data Security" style="-fx-text-fill: #D4A853; -fx-font-size: 14px; -fx-font-weight: bold;" />
+                        <Label maxWidth="420.0" wrapText="true" text="User passwords are stored using SHA-256 hashing. All database connections are encrypted via TLS. Access is restricted to authorized ADMIN and STAFF accounts only." style="-fx-text-fill: #D6CCC2; -fx-font-size: 12.5px; -fx-line-spacing: 4px;" />
+                        <Label text="Your Rights" style="-fx-text-fill: #D4A853; -fx-font-size: 14px; -fx-font-weight: bold;" />
+                        <Label maxWidth="420.0" wrapText="true" text="Authorized users may request access to or deletion of their activity records by contacting the system administrator. This system complies with the Data Privacy Act of 2012 (RA 10173) of the Philippines." style="-fx-text-fill: #D6CCC2; -fx-font-size: 12.5px; -fx-line-spacing: 4px;" />
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+        <!-- Footer -->
+        <HBox alignment="CENTER" style="-fx-padding: 16px 28px 22px 28px;">
+            <children>
+                <Button fx:id="btnClosePrivacy" maxWidth="Infinity" mnemonicParsing="false" prefHeight="40.0" text="I Understand" style="-fx-background-color: linear-gradient(to right, #C9951A, #D4A853); -fx-text-fill: #1C1917; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10px; -fx-cursor: hand; -fx-pref-width: 200;" />
+            </children>
+        </HBox>
+    </children>
+</VBox>

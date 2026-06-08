@@ -67,7 +67,8 @@ public class DeleteEmployeeController {
                 // ACTIVITY LOG
                 ActivityLogController.logActivity(
                         "Deleted Employee ID: "
-                                + employeeId
+                                + employeeId,
+                        employeeId
                 );
 
             }

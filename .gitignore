@@ -30,4 +30,8 @@ bin/
 .DS_Store
 
 .env
+target/
+.idea/
+*.iml
+pass_slip_report.csv
 

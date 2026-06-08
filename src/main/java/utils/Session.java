@@ -19,4 +19,8 @@ public class Session {
 
     }
 
+    public static boolean isAdmin() {
+        return "ADMIN".equalsIgnoreCase(currentRole);
+    }
+
 }
