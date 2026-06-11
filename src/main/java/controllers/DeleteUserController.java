@@ -25,6 +25,10 @@ public class DeleteUserController {
             int rowsAffected =
                     statement.executeUpdate();
 
+            if (rowsAffected > 0) {
+                ActivityLogController.logActivity("Deleted User ID: " + userId, 0);
+            }
+
             return rowsAffected > 0;
 
         }

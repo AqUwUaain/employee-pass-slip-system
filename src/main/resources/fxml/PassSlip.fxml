@@ -102,7 +102,7 @@
                                 <VBox style="-fx-border-color: transparent transparent #3D3229 transparent; -fx-border-width: 0 0 2px 0; -fx-padding: 8px 10px;">
                                     <children>
                                         <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2;" text="PURPOSE :" />
-                                        <TextArea fx:id="txtSlipPurpose" prefHeight="55.0" promptText="Specify official destination reason or campus exit context declarations..." style="-fx-background-color: transparent; -fx-control-inner-background: transparent; -fx-background-insets: 0; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-text-fill: #F5F5F4;" wrapText="true" />
+                                        <TextArea fx:id="txtSlipPurpose" prefHeight="55.0" promptText="Specify official destination reason or campus exit context declarations..." style="-fx-background-color: transparent; -fx-control-inner-background: #1C0A04; -fx-background-insets: 0; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-text-fill: #FFFFFF;" wrapText="true" />
                                     </children>
                                 </VBox>
 

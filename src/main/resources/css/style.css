@@ -91,6 +91,37 @@
 }
 .btn-danger:hover { -fx-background-color: rgba(220,38,38,0.2); }
 
+/* CUSTOM SCROLLBARS */
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+.scroll-pane .scroll-bar:vertical,
+.scroll-pane .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+.scroll-pane .scroll-bar:vertical .thumb,
+.scroll-pane .scroll-bar:horizontal .thumb {
+    -fx-background-color: #3D3229;
+    -fx-background-radius: 10px;
+}
+.scroll-pane .scroll-bar:vertical .thumb:hover,
+.scroll-pane .scroll-bar:horizontal .thumb:hover {
+    -fx-background-color: #4D4239;
+}
+.scroll-pane .scroll-bar .increment-button,
+.scroll-pane .scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+.scroll-pane .scroll-bar .increment-arrow,
+.scroll-pane .scroll-bar .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+
 /* SIDEBAR NAV */
 .nav-item {
     -fx-background-color: transparent;
@@ -354,3 +385,40 @@
 .msg-ok { -fx-text-fill: #34D399; -fx-font-weight: bold; }
 .msg-err { -fx-text-fill: #FCA5A5; -fx-font-weight: bold; }
 .msg-info { -fx-text-fill: #A8A29E; }
+
+.date-picker-popup {
+    -fx-background-color: #2D2520;
+    -fx-border-color: #7C0A02;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+.date-picker-popup .month-year-pane {
+    -fx-background-color: #7C0A02;
+}
+.date-picker-popup .month-year-pane .label {
+    -fx-text-fill: #ffe600;
+    -fx-font-weight: bold;
+}
+.date-picker-popup .calendar-grid {
+    -fx-background-color: #2D2520;
+}
+.date-picker-popup .day-cell {
+    -fx-text-fill: #FFFFFF;
+}
+.date-picker-popup .day-cell:hover {
+    -fx-background-color: #3D3229;
+}
+.date-picker-popup .selected {
+    -fx-background-color: #D4A853;
+    -fx-text-fill: #1C0A04;
+}
+.date-picker-popup .today {
+    -fx-border-color: #D4A853;
+}
+.date-picker-popup .day-name-cell {
+    -fx-text-fill: #D4A853;
+    -fx-font-weight: bold;
+}
+.date-picker-popup .left-arrow, .date-picker-popup .right-arrow {
+    -fx-background-color: #ffe600;
+}

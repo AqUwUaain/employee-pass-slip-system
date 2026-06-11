@@ -271,46 +271,43 @@ public class ReportsController {
     }
 
     public static ObservableList<ActivityLog> getLogs() {
+        return getLogs(0);
+    }
+
+    public static ObservableList<ActivityLog> getLogs(int limit) {
 
         ObservableList<ActivityLog> logs =
                 FXCollections.observableArrayList();
 
-        try {
+        try (Connection connection = DatabaseConnection.connect()) {
+            if (connection == null) return logs;
 
-            Connection connection =
-                    DatabaseConnection.connect();
-
-            String query = """
-                    SELECT * FROM activity_logs ORDER BY created_at DESC
-                    """;
-
-            PreparedStatement statement =
-                    connection.prepareStatement(query);
-
-            ResultSet resultSet =
-                    statement.executeQuery();
-
-            while (resultSet.next()) {
-
-                ActivityLog log =
-                        new ActivityLog(
-                                resultSet.getInt("id"),
-                                resultSet.getString("username"),
-                                resultSet.getString("action"),
-                                resultSet.getInt("employee_id"),
-                                resultSet.getTimestamp("created_at").toLocalDateTime()
-                        );
-
-                logs.add(log);
-
+            String query = "SELECT * FROM activity_logs ORDER BY timestamp DESC";
+            if (limit > 0) {
+                query += " LIMIT " + limit;
             }
 
+            try (PreparedStatement statement = connection.prepareStatement(query);
+                 ResultSet resultSet = statement.executeQuery()) {
+
+                while (resultSet.next()) {
+                    ActivityLog log = new ActivityLog(
+                            resultSet.getInt("id"),
+                            resultSet.getString("action"),
+                            resultSet.getString("description"),
+                            resultSet.getInt("user_id"),
+                            resultSet.getString("username"),
+                            resultSet.getTimestamp("timestamp").toLocalDateTime(),
+                            resultSet.getInt("employee_id")
+                    );
+                    logs.add(log);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return logs;
-
     }
 
     public static ObservableList<String[]> getEmployeePassSlipFrequency() {
@@ -450,6 +447,7 @@ public class ReportsController {
                     SELECT COUNT(*) FROM pass_slips
                     WHERE EXTRACT(YEAR FROM time_out) = EXTRACT(YEAR FROM CURRENT_DATE)
                     AND EXTRACT(MONTH FROM time_out) = EXTRACT(MONTH FROM CURRENT_DATE)
+                    AND status != 'REJECTED'
                     """
             );
 
@@ -501,7 +499,7 @@ public class ReportsController {
                 HBox.setHgrow(spacer, Priority.ALWAYS);
 
                 Label timeLabel = new Label(
-                        log.getCreatedAt().format(formatter)
+                        log.getTimestamp().format(formatter)
                 );
                 timeLabel.setStyle("-fx-text-fill: #78716C; -fx-font-size: 12px;");
 

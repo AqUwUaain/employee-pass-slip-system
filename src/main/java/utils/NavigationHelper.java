@@ -82,6 +82,7 @@ public final class NavigationHelper {
 
     public static void logout(Node source) {
 
+        controllers.ActivityLogController.logActivity("User Logged Out", 0);
         Session.clear();
         loaderCache.clear();
         navigateTo(source, "/fxml/Login.fxml");

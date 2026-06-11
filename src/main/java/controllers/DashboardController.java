@@ -1,17 +1,28 @@
 package controllers;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.util.Duration;
+import models.ActivityLog;
 import utils.NavigationHelper;
 import utils.TimerService;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import database.DatabaseConnection;
 
@@ -54,7 +65,29 @@ public class DashboardController {
     private Label lblLiveTimer;
 
     @FXML
+    private VBox vboxActivityTracker;
+
+    @FXML
+    private Label lblCalendarTitle;
+
+    @FXML
+    private Label btnPrevMonth;
+
+    @FXML
+    private Label btnNextMonth;
+
+    @FXML
+    private GridPane gridCalendar;
+
+    private YearMonth currentYearMonth;
+    private LocalDate selectedDate;
+    private Timeline autoRefreshTimeline;
+    private String currentFilter = "All";
+
+    @FXML
     private void initialize() {
+        currentYearMonth = YearMonth.now();
+        selectedDate = LocalDate.now();
 
         btnSidebarDashboard.setOnAction(
                 event -> NavigationHelper.navigateTo(
@@ -118,10 +151,223 @@ public class DashboardController {
                 )
         );
 
+        btnPrevMonth.setOnMouseClicked(event -> {
+            currentYearMonth = currentYearMonth.minusMonths(1);
+            loadCalendar();
+        });
+
+        btnNextMonth.setOnMouseClicked(event -> {
+            currentYearMonth = currentYearMonth.plusMonths(1);
+            loadCalendar();
+        });
+
+        loadDashboardData();
+        startAutoRefresh();
+        startLiveTimerRefresh();
+    }
+
+    private void loadDashboardData() {
         loadSummaryCountsAsync();
         loadLiveTimer();
-        startLiveTimerRefresh();
+        if (selectedDate != null && currentFilter.equals("DateSelection")) {
+             loadCalendarEvents(selectedDate);
+        } else {
+            loadActivities(currentFilter);
+        }
+        loadCalendar();
+    }
 
+    private void startAutoRefresh() {
+        autoRefreshTimeline = new Timeline(new KeyFrame(Duration.seconds(10), event -> {
+            loadSummaryCountsAsync();
+            loadLiveTimer();
+            if (selectedDate != null && currentFilter.equals("DateSelection")) {
+                loadCalendarEvents(selectedDate);
+            } else {
+                loadActivities(currentFilter);
+            }
+            // Update calendar labels without rebuilding the whole grid to preserve state
+            gridCalendar.getChildren().forEach(node -> {
+                if (node instanceof Label && GridPane.getRowIndex(node) > 0) {
+                    Label label = (Label) node;
+                    try {
+                        int day = Integer.parseInt(label.getText());
+                        updateDayLabelStyle(label, currentYearMonth.atDay(day));
+                    } catch (Exception ignored) {}
+                }
+            });
+        }));
+        autoRefreshTimeline.setCycleCount(Timeline.INDEFINITE);
+        autoRefreshTimeline.play();
+    }
+
+    private void loadActivities() {
+        loadActivities("All");
+    }
+
+    private void loadActivities(String filter) {
+        currentFilter = filter;
+        if (!filter.equals("DateSelection")) {
+            selectedDate = null;
+        }
+        
+        // Use a limit when getting all logs to avoid loading thousands
+        List<ActivityLog> allLogs = ReportsController.getLogs(filter.equals("All") || filter.equals("DateSelection") ? 100 : 0);
+        List<ActivityLog> filteredLogs = new ArrayList<>();
+
+        LocalDateTime now = LocalDateTime.now();
+        for (ActivityLog log : allLogs) {
+            boolean matches = false;
+            if ("All".equalsIgnoreCase(filter)) {
+                matches = true;
+            } else if ("Today".equalsIgnoreCase(filter)) {
+                matches = log.getTimestamp().toLocalDate().equals(now.toLocalDate());
+            } else if ("This Week".equalsIgnoreCase(filter)) {
+                matches = log.getTimestamp().isAfter(now.minusWeeks(1));
+            } else if ("This Month".equalsIgnoreCase(filter)) {
+                matches = log.getTimestamp().isAfter(now.minusMonths(1));
+            } else if ("DateSelection".equalsIgnoreCase(filter)) {
+                matches = selectedDate != null && log.getTimestamp().toLocalDate().equals(selectedDate);
+            } else {
+                // Filter by action type
+                matches = log.getAction().toLowerCase().contains(filter.toLowerCase());
+            }
+
+            if (matches) {
+                filteredLogs.add(log);
+            }
+        }
+
+        Platform.runLater(() -> {
+            vboxActivityTracker.getChildren().clear();
+            
+            // Add Filter UI
+            HBox filterBox = new HBox(10);
+            filterBox.setAlignment(Pos.CENTER_LEFT);
+            filterBox.setStyle("-fx-padding: 0 0 10 14;");
+            
+            String[] filters = {"All", "Today", "This Week", "This Month"};
+            for (String f : filters) {
+                Label fl = new Label(f);
+                boolean isActive = f.equals(currentFilter);
+                fl.setStyle("-fx-text-fill: " + (isActive ? "#D4A853" : "#78716C") + "; -fx-cursor: hand; -fx-font-size: 11px;" + (isActive ? "-fx-font-weight: bold;" : ""));
+                fl.setOnMouseClicked(e -> {
+                    loadActivities(f);
+                });
+                filterBox.getChildren().add(fl);
+            }
+            vboxActivityTracker.getChildren().add(filterBox);
+
+            if (filteredLogs.isEmpty()) {
+                VBox emptyBox = new VBox();
+                emptyBox.setAlignment(Pos.CENTER);
+                emptyBox.setStyle("-fx-padding: 40 0;");
+                Label noAct = new Label("No activities found");
+                noAct.setStyle("-fx-text-fill: #78716C; -fx-font-size: 13px;");
+                emptyBox.getChildren().add(noAct);
+                vboxActivityTracker.getChildren().add(emptyBox);
+            } else {
+                int count = 0;
+                for (ActivityLog log : filteredLogs) {
+                    if (count >= 20) break; 
+                    
+                    HBox row = new HBox(10);
+                    row.setAlignment(Pos.CENTER_LEFT);
+                    row.setStyle("-fx-padding: 8px 14px; -fx-background-radius: 8px;");
+                    row.setOnMouseEntered(e -> row.setStyle("-fx-padding: 8px 14px; -fx-background-color: rgba(212,168,83,0.05); -fx-background-radius: 8px;"));
+                    row.setOnMouseExited(e -> row.setStyle("-fx-padding: 8px 14px; -fx-background-radius: 8px;"));
+
+                    Label dot = new Label("●");
+                    dot.setStyle("-fx-text-fill: #D4A853; -fx-font-size: 10px;");
+
+                    Label actionLabel = new Label(log.getAction());
+                    actionLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #D6CCC2; -fx-padding: 0 0 0 10px;");
+                    
+                    StackPane spacer = new StackPane();
+                    HBox.setHgrow(spacer, Priority.ALWAYS);
+
+                    Label timeLabel = new Label(getRelativeTime(log.getTimestamp()));
+                    timeLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #A8A29E;");
+
+                    row.getChildren().addAll(dot, actionLabel, spacer, timeLabel);
+                    vboxActivityTracker.getChildren().add(row);
+                    count++;
+                }
+            }
+        });
+    }
+
+    private String getRelativeTime(LocalDateTime timestamp) {
+        java.time.Duration duration = java.time.Duration.between(timestamp, LocalDateTime.now());
+        long seconds = duration.getSeconds();
+        if (seconds < 60) return "Just now";
+        long minutes = duration.toMinutes();
+        if (minutes < 60) return minutes + "m ago";
+        long hours = duration.toHours();
+        if (hours < 24) return hours + "hr ago";
+        long days = duration.toDays();
+        if (days == 1) return "Yesterday";
+        return days + " days ago";
+    }
+
+    private void loadCalendar() {
+        lblCalendarTitle.setText(currentYearMonth.getMonth().name() + " " + currentYearMonth.getYear());
+        gridCalendar.getChildren().removeIf(node -> GridPane.getRowIndex(node) > 0);
+
+        LocalDate firstOfMonth = currentYearMonth.atDay(1);
+        int dayOfWeek = firstOfMonth.getDayOfWeek().getValue() % 7; // SUN = 0
+        int daysInMonth = currentYearMonth.lengthOfMonth();
+
+        int row = 1;
+        int col = dayOfWeek;
+
+        for (int day = 1; day <= daysInMonth; day++) {
+            final int dayOfMonth = day;
+            Label dayLabel = new Label(String.valueOf(day));
+            dayLabel.setAlignment(Pos.CENTER);
+            dayLabel.setPrefWidth(32);
+            dayLabel.setPrefHeight(28);
+            
+            updateDayLabelStyle(dayLabel, currentYearMonth.atDay(dayOfMonth));
+            
+            dayLabel.setOnMouseClicked(event -> {
+                selectedDate = currentYearMonth.atDay(dayOfMonth);
+                loadCalendar(); // Refresh styles to show selection
+                loadCalendarEvents(selectedDate);
+            });
+
+            gridCalendar.add(dayLabel, col, row);
+
+            col++;
+            if (col > 6) {
+                col = 0;
+                row++;
+            }
+        }
+    }
+
+    private void updateDayLabelStyle(Label label, LocalDate date) {
+        String style = "-fx-font-size: 13px; -fx-text-fill: #FFFFFF; -fx-cursor: hand; -fx-background-radius: 15px;";
+        
+        if (date.getMonth() != currentYearMonth.getMonth()) {
+            style = "-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.4); -fx-cursor: hand; -fx-background-radius: 15px;";
+        }
+        
+        if (date.equals(LocalDate.now())) {
+            style += "-fx-text-fill: #D4A853; -fx-font-weight: bold; -fx-border-color: rgba(212,168,83,0.5); -fx-border-radius: 15px;";
+        }
+        
+        if (date.equals(selectedDate)) {
+            style += "-fx-background-color: #D4A853; -fx-text-fill: #1C0A04; -fx-font-weight: bold;";
+        }
+        
+        label.setStyle(style);
+    }
+
+    private void loadCalendarEvents(LocalDate date) {
+        selectedDate = date;
+        currentFilter = "DateSelection";
+        loadActivities("DateSelection");
     }
 
     private void loadSummaryCountsAsync() {
@@ -139,7 +385,7 @@ public class DashboardController {
                     }
 
                     PreparedStatement dailyStatement = connection.prepareStatement(
-                            "SELECT COUNT(*) FROM pass_slips WHERE DATE(time_out) = CURRENT_DATE"
+                            "SELECT COUNT(*) FROM pass_slips WHERE time_out::date = CURRENT_DATE AND status != 'REJECTED'"
                     );
 
                     ResultSet dailyResult = dailyStatement.executeQuery();

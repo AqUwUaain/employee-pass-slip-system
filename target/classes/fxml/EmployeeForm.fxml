@@ -10,40 +10,48 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="TOP_CENTER" prefHeight="720.0" prefWidth="900.0" spacing="24.0" style="-fx-background-color: #f8fafc; -fx-padding: 30px;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EmployeeFormController">
+<VBox alignment="TOP_CENTER" prefHeight="820.0" prefWidth="900.0" spacing="24.0" style="-fx-background-color: #1E1B18; -fx-padding: 30px;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EmployeeFormController">
     <children>
-        <HBox alignment="CENTER_LEFT" spacing="14.0" style="-fx-background-color: #ffffff; -fx-padding: 18px 24px; -fx-background-radius: 12px; -fx-border-color: #e2e8f0; -fx-border-radius: 12px;">
+        <HBox alignment="CENTER_LEFT" spacing="14.0" style="-fx-background-color: #252220; -fx-padding: 18px 24px; -fx-background-radius: 12px; -fx-border-color: #3D3229; -fx-border-radius: 12px;">
             <children>
-                <Label fx:id="titleLabel" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #800000;" text="Add Employee" />
+                <Label fx:id="titleLabel" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #D4A853;" text="Add Employee" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Button fx:id="btnBack" mnemonicParsing="false" prefHeight="36.0" prefWidth="110.0" style="-fx-background-color: #e2e8f0; -fx-text-fill: #4a5568; -fx-font-weight: bold; -fx-background-radius: 6px;" text="Back" />
+                <Button fx:id="btnBack" mnemonicParsing="false" prefHeight="36.0" prefWidth="110.0" style="-fx-background-color: #2D2520; -fx-text-fill: #A8A29E; -fx-font-weight: bold; -fx-background-radius: 6px; -fx-border-color: #3D3229; -fx-border-radius: 6px;" text="Back" />
             </children>
         </HBox>
 
-        <VBox spacing="18.0" style="-fx-background-color: #ffffff; -fx-padding: 26px 28px; -fx-background-radius: 12px; -fx-border-color: #e2e8f0; -fx-border-radius: 12px;">
+        <VBox spacing="18.0" style="-fx-background-color: #252220; -fx-padding: 26px 28px; -fx-background-radius: 12px; -fx-border-color: #3D3229; -fx-border-radius: 12px;">
             <children>
                 <GridPane hgap="18.0" vgap="14.0">
                     <children>
-                        <Label text="First Name" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Label text="First Name" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                         <TextField fx:id="firstNameField" promptText="Enter first name" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                        <Label text="Last Name" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <Label text="Last Name" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                         <TextField fx:id="lastNameField" promptText="Enter last name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Label text="Department" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <Label text="Department" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                         <TextField fx:id="departmentField" promptText="Enter department" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <Label text="Position" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                        <Label text="Position" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="3" />
                         <TextField fx:id="positionField" promptText="Enter position" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <Label text="Contact Number" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                        <Label text="Contact Number" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="4" />
                         <TextField fx:id="contactField" promptText="Enter contact number" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        <Label text="Join Date" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                        <Label text="Join Date" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="5" />
                         <DatePicker fx:id="joinDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <Label text="Manager" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                        <TextField fx:id="managerField" promptText="Enter manager name" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <Label text="Email" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                        <TextField fx:id="emailField" promptText="Enter email address" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <Label text="Address" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                        <TextField fx:id="addressField" promptText="Enter address" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                        <Label text="Emergency Contact" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+                        <TextField fx:id="emergencyContactField" promptText="Enter emergency contact number" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                     </children>
                 </GridPane>
 
-                <Label fx:id="messageLabel" style="-fx-text-fill: #c53030; -fx-font-weight: bold;" text="" />
+                <Label fx:id="messageLabel" style="-fx-text-fill: #ef4444; -fx-font-weight: bold;" text="" />
 
                 <HBox alignment="CENTER_RIGHT">
                     <children>
-                        <Button fx:id="btnSaveEmployee" mnemonicParsing="false" prefHeight="38.0" prefWidth="180.0" style="-fx-background-color: #800000; -fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-background-radius: 6px;" text="Save Employee" />
+                        <Button fx:id="btnSaveEmployee" mnemonicParsing="false" prefHeight="38.0" prefWidth="180.0" style="-fx-background-color: #7C0A02; -fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-background-radius: 6px;" text="Save Employee" />
                     </children>
                     <padding>
                         <Insets top="6.0" />

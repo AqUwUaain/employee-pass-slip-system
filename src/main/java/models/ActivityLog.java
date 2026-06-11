@@ -5,53 +5,57 @@ import java.time.LocalDateTime;
 public class ActivityLog {
 
     private int id;
-
-    private String username;
-
     private String action;
-
+    private String description;
+    private int userId;
+    private String username;
+    private LocalDateTime timestamp;
     private int employeeId;
-
-    private LocalDateTime createdAt;
 
     public ActivityLog(
             int id,
-            String username,
             String action,
-            int employeeId,
-            LocalDateTime createdAt
+            String description,
+            int userId,
+            String username,
+            LocalDateTime timestamp,
+            int employeeId
     ) {
-
         this.id = id;
-
-        this.username = username;
-
         this.action = action;
-
+        this.description = description;
+        this.userId = userId;
+        this.username = username;
+        this.timestamp = timestamp;
         this.employeeId = employeeId;
-
-        this.createdAt = createdAt;
-
     }
 
     public int getId() {
         return id;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
     public String getAction() {
         return action;
     }
 
-    public int getEmployeeId() {
-        return employeeId;
+    public String getDescription() {
+        return description;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public int getUserId() {
+        return userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public int getEmployeeId() {
+        return employeeId;
     }
 
 }

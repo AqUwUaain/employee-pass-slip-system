@@ -112,6 +112,10 @@ public class ActivityLogController {
     }
 
     public static void logActivity(String action, int employeeId) {
+        logActivity(action, "", employeeId);
+    }
+
+    public static void logActivity(String action, String description, int employeeId) {
 
         try {
 
@@ -119,16 +123,18 @@ public class ActivityLogController {
                     DatabaseConnection.connect();
 
             String query = """
-                    INSERT INTO activity_logs (username, action, employee_id)
-                    VALUES (?, ?, ?)
+                    INSERT INTO activity_logs (username, action, description, employee_id, user_id)
+                    VALUES (?, ?, ?, ?, ?)
                     """;
 
             PreparedStatement statement =
                     connection.prepareStatement(query);
 
-            statement.setString(1, Session.currentUsername);
+            statement.setString(1, Session.currentUsername != null ? Session.currentUsername : "System");
             statement.setString(2, action);
-            statement.setInt(3, employeeId);
+            statement.setString(3, description);
+            statement.setInt(4, employeeId);
+            statement.setInt(5, Session.currentUserId);
 
             statement.executeUpdate();
 
@@ -174,7 +180,7 @@ public class ActivityLogController {
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
             Label timestamp = new Label(
-                    log.getCreatedAt().format(formatter)
+                    log.getTimestamp().format(formatter)
             );
             timestamp.setStyle(
                     "-fx-font-size: 12px; -fx-text-fill: #78716C;"

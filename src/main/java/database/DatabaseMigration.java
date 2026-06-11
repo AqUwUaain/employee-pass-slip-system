@@ -24,6 +24,7 @@ public class DatabaseMigration {
                     "ALTER TABLE employees ADD COLUMN IF NOT EXISTS email VARCHAR(255) DEFAULT ''",
                     "ALTER TABLE employees ADD COLUMN IF NOT EXISTS address TEXT DEFAULT ''",
                     "ALTER TABLE employees ADD COLUMN IF NOT EXISTS emergency_contact VARCHAR(255) DEFAULT ''",
+                    "CREATE TABLE IF NOT EXISTS activity_logs (id SERIAL PRIMARY KEY, action VARCHAR(255), description TEXT, user_id INT, username VARCHAR(255), timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
                     "ALTER TABLE activity_logs ADD COLUMN IF NOT EXISTS employee_id INT DEFAULT 0",
                     "ALTER TABLE pass_slips ADD COLUMN IF NOT EXISTS duration_minutes BIGINT DEFAULT 0"
             };

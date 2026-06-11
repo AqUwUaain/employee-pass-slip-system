@@ -9,150 +9,102 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import java.net.URL?>
 
-<HBox fx:id="mainRoot" prefHeight="700.0" prefWidth="1000.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
+<HBox fx:id="mainRoot" prefHeight="700.0" prefWidth="1060.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
     <children>
-
-        <!-- LEFT PANEL: Hero Banner Image & Text Overlays -->
+        <!-- LEFT: Full campus photo with overlay -->
         <StackPane fx:id="leftHeroPanel" HBox.hgrow="ALWAYS">
             <children>
-                <!-- Background Image -->
-                <ImageView fx:id="campusImageView" fitHeight="700.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="false" styleClass="hero-image">
-                    <image>
-                        <!-- Reference image file placed inside resources/images/ -->
-                        <Image url="@../images/pup_campus_bg.png" />
-                    </image>
+                <ImageView fx:id="campusImageView" fitHeight="700.0" fitWidth="560.0" pickOnBounds="true" preserveRatio="false">
+                    <image><Image url="@../images/pup_campus_bg.png" /></image>
                 </ImageView>
-
-                <!-- Dark Gradient overlay layer for text readability -->
-                <AnchorPane styleClass="hero-overlay" />
-
-                <!-- Left Hero Content -->
-                <VBox alignment="CENTER_LEFT" spacing="15.0">
+                <!-- Dark overlay with gradient -->
+                <StackPane style="-fx-background-color: linear-gradient(to bottom right, rgba(28,10,4,0.88), rgba(92,26,16,0.75));" />
+                <!-- Text content -->
+                <VBox alignment="CENTER_LEFT" spacing="20.0">
                     <children>
-                        <Label styleClass="welcome-headline" text="Welcome back!" wrapText="true" />
-                        <Label maxWidth="380.0" styleClass="welcome-subline" text="Good time management is the key to a seamless campus." wrapText="true" />
+                        <VBox spacing="8.0">
+                            <children>
+                                <Label text="Welcome back!" style="-fx-text-fill: #D4A853; -fx-font-size: 14px; -fx-font-weight: bold;" />
+                                <Label text="PUP Employee&#10;Pass Slip System" wrapText="true" style="-fx-text-fill: white; -fx-font-size: 44px; -fx-font-weight: bold; -fx-line-spacing: 6px;" />
+                            </children>
+                        </VBox>
+                        <Label maxWidth="360.0" text="Good time management is the key to a seamless campus. Track employee pass slips in real time." wrapText="true" style="-fx-text-fill: rgba(255,255,255,0.65); -fx-font-size: 15px; -fx-line-spacing: 5px;" />
                     </children>
-                    <padding>
-                        <Insets left="50.0" right="30.0" />
-                    </padding>
+                    <padding><Insets left="52.0" top="100.0" /></padding>
                 </VBox>
             </children>
         </StackPane>
-
-        <!-- RIGHT PANEL: Split Form Layout Container -->
-        <StackPane fx:id="rightFormPanel" prefWidth="500.0" styleClass="form-panel-background">
-            <children>
-                <!-- Form Card Wrapper -->
-                <VBox alignment="TOP_CENTER" maxWidth="400.0" spacing="20.0">
-                    <children>
-
-                        <!-- Header Context & Branding Section -->
-                        <VBox alignment="CENTER" spacing="8.0">
-                            <children>
-                                <Label styleClass="login-title" text="Login To" />
-                                <ImageView fx:id="universityLogoView" fitHeight="110.0" fitWidth="110.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@../images/pup_logo.png" />
-                                    </image>
-                                </ImageView>
-                                <Label alignment="CENTER" styleClass="institution-title" text="Polytechnic University&#10;of the Philippines" textAlignment="CENTER" wrapText="true" />
-                                <Label styleClass="campus-subtitle" text="Santa Rosa Campus" />
-                            </children>
-                            <VBox.margin>
-                                <Insets bottom="10.0" top="30.0" />
-                            </VBox.margin>
-                        </VBox>
-
-                        <!-- Input Fields Collection -->
-                        <VBox spacing="15.0">
-                            <children>
-                                <!-- Email Input Block -->
-                                <VBox spacing="5.0">
-                                    <children>
-                                        <HBox spacing="2.0">
-                                            <children>
-                                                <Label styleClass="input-label" text="Enter Email Address" />
-                                                <Label styleClass="required-asterisk" text="*" />
-                                            </children>
-                                        </HBox>
-                                        <TextField fx:id="emailField" promptText="name@admin.pup.edu.ph" styleClass="login-input-field" />
-                                    </children>
-                                </VBox>
-
-                                <!-- Password Input Block -->
-                                <VBox spacing="5.0">
-                                    <children>
-                                        <HBox spacing="2.0">
-                                            <children>
-                                                <Label styleClass="input-label" text="Enter Password" />
-                                                <Label styleClass="required-asterisk" text="*" />
-                                            </children>
-                                        </HBox>
-                                        <StackPane alignment="CENTER_RIGHT">
-                                            <children>
-                                                <PasswordField fx:id="passwordField" promptText="Password" styleClass="login-input-field" />
-                                                <!-- Visibility toggler icon mimicking the view-eye overlay -->
-                                                <Button fx:id="togglePasswordBtn" mnemonicParsing="false" styleClass="password-visibility-toggle" text="👁">
-                                                    <StackPane.margin>
-                                                        <Insets right="10.0" />
-                                                    </StackPane.margin>
-                                                </Button>
-                                            </children>
-                                        </StackPane>
-                                    </children>
-                                </VBox>
-                            </children>
-                        </VBox>
-
-                        <!-- Action / Utilities Toolbar Grid Row -->
-                        <HBox alignment="CENTER_LEFT">
-                            <children>
-                                <CheckBox fx:id="rememberMeCheckbox" mnemonicParsing="false" styleClass="remember-me-toggle" text="Remember me" />
-                                <StackPane HBox.hgrow="ALWAYS" />
-                                <Hyperlink fx:id="forgotPasswordLink" styleClass="form-link" text="Forgot Password?" />
-                            </children>
-                        </HBox>
-
-                        <Label fx:id="messageLabel"
-                               text=""
-                               style="-fx-text-fill: red;" />
-
-                        <!-- Execution Block Trigger -->
-                        <Button fx:id="loginSubmitButton" maxWidth="Infinity" mnemonicParsing="false" onAction="#handleLogin" prefHeight="45.0" styleClass="primary-login-button" text="Login">
-                            <VBox.margin>
-                                <Insets top="10.0" />
-                            </VBox.margin>
-                        </Button>
-
-                        <!-- Persistent Legal Footer context -->
-                        <VBox alignment="BOTTOM_CENTER" VBox.vgrow="ALWAYS">
-                            <children>
-                                <HBox alignment="CENTER" spacing="15.0">
-                                    <children>
-                                        <Hyperlink styleClass="footer-link" text="Privacy Policy" />
-                                        <Label styleClass="footer-divider" text="•" />
-                                        <Hyperlink styleClass="footer-link" text="Terms and Conditions" />
-                                    </children>
-                                </HBox>
-                            </children>
-                            <padding>
-                                <Insets bottom="15.0" />
-                            </padding>
-                        </VBox>
-
-                    </children>
-                    <padding>
-                        <Insets left="20.0" right="20.0" />
-                    </padding>
-                </VBox>
-            </children>
+        <!-- RIGHT: Login form on dark background -->
+        <StackPane fx:id="rightFormPanel" prefWidth="480.0" style="-fx-background-color: #1C0A04;">
+            <VBox alignment="CENTER" maxWidth="320.0" spacing="0.0">
+                <children>
+                    <!-- Branding -->
+                    <VBox alignment="CENTER" spacing="5.0">
+                        <children>
+                            <Label text="Sign in to" style="-fx-text-fill: rgba(255,255,255,0.35); -fx-font-size: 12px;" />
+                            <ImageView fx:id="universityLogoView" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+                                <image><Image url="@../images/pup_logo.png" /></image>
+                            </ImageView>
+                            <Label alignment="CENTER" text="Polytechnic University&#10;of the Philippines" textAlignment="CENTER" wrapText="true" style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold; -fx-line-spacing: 4px;" />
+                            <Label text="Santa Rosa Campus" style="-fx-text-fill: rgba(212,168,83,0.6); -fx-font-size: 12px;" />
+                        </children>
+                        <VBox.margin><Insets bottom="36.0" top="8.0" /></VBox.margin>
+                    </VBox>
+                    <!-- Email -->
+                    <VBox spacing="8.0">
+                        <children>
+                            <Label text="EMAIL ADDRESS" style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 11px; -fx-font-weight: bold;" />
+                            <TextField fx:id="emailField" promptText="name@admin.pup.edu.ph" style="-fx-background-color: rgba(255,255,255,0.06); -fx-border-color: rgba(255,255,255,0.08); -fx-border-width: 1.5px; -fx-border-radius: 12px; -fx-background-radius: 12px; -fx-padding: 14px 16px; -fx-font-size: 14px; -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.25);" />
+                        </children>
+                        <VBox.margin><Insets bottom="12.0" /></VBox.margin>
+                    </VBox>
+                    <!-- Password -->
+                    <VBox spacing="8.0">
+                        <children>
+                            <Label text="PASSWORD" style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 11px; -fx-font-weight: bold;" />
+                            <StackPane fx:id="passwordStackPane" alignment="CENTER_RIGHT">
+                                <children>
+                                    <PasswordField fx:id="passwordField" promptText="Enter your password" style="-fx-background-color: rgba(255,255,255,0.06); -fx-border-color: rgba(255,255,255,0.08); -fx-border-width: 1.5px; -fx-border-radius: 12px; -fx-background-radius: 12px; -fx-padding: 14px 16px; -fx-font-size: 14px; -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.25); -fx-pref-height: 46px;" />
+                                    <Button fx:id="togglePasswordBtn" mnemonicParsing="false" text="&#x1f441;" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 15px;">
+                                        <StackPane.margin><Insets right="12.0" /></StackPane.margin>
+                                    </Button>
+                                </children>
+                            </StackPane>
+                        </children>
+                        <VBox.margin><Insets bottom="8.0" /></VBox.margin>
+                    </VBox>
+                    <!-- Remember me / Forgot password -->
+                    <HBox alignment="CENTER_LEFT">
+                        <children>
+                            <CheckBox fx:id="rememberMeCheckbox" mnemonicParsing="false" text="Remember me" style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 12px;" />
+                            <StackPane HBox.hgrow="ALWAYS" />
+                            <Hyperlink fx:id="forgotPasswordLink" text="Forgot Password?" style="-fx-text-fill: #D4A853; -fx-font-size: 12px;" />
+                        </children>
+                        <HBox.margin><Insets top="6.0" /></HBox.margin>
+                    </HBox>
+                    <Label fx:id="messageLabel" text="" style="-fx-text-fill: #FCA5A5; -fx-font-size: 12px; -fx-padding: 6px 0;">
+                        <VBox.margin><Insets top="8.0" /></VBox.margin>
+                    </Label>
+                    <!-- Login button -->
+                    <Button fx:id="loginSubmitButton" maxWidth="Infinity" mnemonicParsing="false" onAction="#handleLogin" prefHeight="46.0" text="SIGN IN" style="-fx-background-color: linear-gradient(to right, #C9951A, #D4A853); -fx-text-fill: #1C1917; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(201,149,26,0.25), 10, 0, 0, 2);">
+                        <VBox.margin><Insets top="8.0" /></VBox.margin>
+                    </Button>
+                    <!-- Footer -->
+                    <HBox alignment="CENTER" spacing="14.0" VBox.vgrow="ALWAYS">
+                        <children>
+                            <Hyperlink fx:id="privacyPolicyLink" text="Privacy Policy" style="-fx-text-fill: rgba(255,255,255,0.35); -fx-font-size: 11px; -fx-cursor: hand;" />
+                            <Label text="|" style="-fx-text-fill: rgba(255,255,255,0.1); -fx-font-size: 11px;" />
+                            <Hyperlink fx:id="termsOfServiceLink" text="Terms of Service" style="-fx-text-fill: rgba(255,255,255,0.35); -fx-font-size: 11px; -fx-cursor: hand;" />
+                        </children>
+                        <HBox.margin><Insets top="48.0" /></HBox.margin>
+                    </HBox>
+                </children>
+                <padding><Insets left="8.0" right="8.0" /></padding>
+            </VBox>
         </StackPane>
-
     </children>
 </HBox>
