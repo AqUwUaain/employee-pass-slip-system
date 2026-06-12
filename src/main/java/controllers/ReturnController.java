@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import utils.NavigationHelper;
+import utils.PhilTime;
 import utils.TimerService;
 
 import java.sql.Connection;
@@ -111,7 +112,7 @@ public class ReturnController {
 
                 int employeeId = resultSet.getInt("employee_id");
 
-                LocalDateTime timeIn = LocalDateTime.now();
+                LocalDateTime timeIn = LocalDateTime.now(PhilTime.ZONE);
 
                 Duration duration = Duration.between(timeOut, timeIn);
                 long totalMinutes = duration.toMinutes();

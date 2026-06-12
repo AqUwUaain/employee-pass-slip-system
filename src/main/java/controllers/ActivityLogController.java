@@ -11,10 +11,13 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import utils.NavigationHelper;
+import utils.PhilTime;
 import utils.Session;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -128,8 +131,8 @@ public class ActivityLogController {
                     DatabaseConnection.connect();
 
             String query = """
-                    INSERT INTO activity_logs (username, action, description, employee_id, user_id)
-                    VALUES (?, ?, ?, ?, ?)
+                    INSERT INTO activity_logs (username, action, description, employee_id, user_id, timestamp)
+                    VALUES (?, ?, ?, ?, ?, ?)
                     """;
 
             PreparedStatement statement =
@@ -140,6 +143,7 @@ public class ActivityLogController {
             statement.setString(3, description);
             statement.setInt(4, employeeId);
             statement.setInt(5, Session.currentUserId);
+            statement.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now(PhilTime.ZONE)));
 
             statement.executeUpdate();
 

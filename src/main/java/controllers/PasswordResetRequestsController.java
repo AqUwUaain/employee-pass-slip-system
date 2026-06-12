@@ -10,11 +10,13 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import models.PasswordResetRequest;
 import utils.NavigationHelper;
+import utils.PhilTime;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class PasswordResetRequestsController {
@@ -142,13 +144,18 @@ public class PasswordResetRequestsController {
             Connection connection = DatabaseConnection.connect();
             String updateQuery;
             if ("APPROVED".equals(status)) {
-                updateQuery = "UPDATE password_reset_requests SET status = ?, approved_at = CURRENT_TIMESTAMP WHERE id = ?";
+                updateQuery = "UPDATE password_reset_requests SET status = ?, approved_at = ? WHERE id = ?";
             } else {
                 updateQuery = "UPDATE password_reset_requests SET status = ? WHERE id = ?";
             }
             PreparedStatement statement = connection.prepareStatement(updateQuery);
             statement.setString(1, status);
-            statement.setInt(2, selected.getId());
+            if ("APPROVED".equals(status)) {
+                statement.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now(PhilTime.ZONE)));
+                statement.setInt(3, selected.getId());
+            } else {
+                statement.setInt(2, selected.getId());
+            }
             int updated = statement.executeUpdate();
 
             if (updated > 0) {

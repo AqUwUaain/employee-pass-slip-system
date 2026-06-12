@@ -24,7 +24,7 @@ public class TimerService {
         }
 
         public long getElapsedMinutes() {
-            return ChronoUnit.MINUTES.between(timeOut, LocalDateTime.now());
+            return ChronoUnit.MINUTES.between(timeOut, LocalDateTime.now(PhilTime.ZONE));
         }
 
         public String getElapsedText() {
@@ -72,7 +72,7 @@ public class TimerService {
     public static void markOut(int employeeId, String employeeName) {
         outRecords.put(
                 employeeId,
-                new OutRecord(employeeId, employeeName, LocalDateTime.now())
+                new OutRecord(employeeId, employeeName, LocalDateTime.now(PhilTime.ZONE))
         );
     }
 

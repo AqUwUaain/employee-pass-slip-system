@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import utils.NavigationHelper;
+import utils.PhilTime;
 import utils.TimerService;
 
 import java.sql.Connection;
@@ -69,7 +70,7 @@ public class PassSlipController {
     @FXML
     private void initialize() {
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(PhilTime.ZONE);
 
         txtSlipYear.setText(String.valueOf(now.getYear()));
         txtSlipFormattedDate.setText(
@@ -216,7 +217,7 @@ public class PassSlipController {
 
             statement.setInt(1, Integer.parseInt(employeeId));
             statement.setString(2, reason.trim());
-            statement.setTimestamp(3, java.sql.Timestamp.valueOf(LocalDateTime.now()));
+            statement.setTimestamp(3, java.sql.Timestamp.valueOf(LocalDateTime.now(PhilTime.ZONE)));
             statement.setString(4, "OUT");
 
             int inserted = statement.executeUpdate();

@@ -293,41 +293,6 @@ public class LoginController {
 
             if (resultSet.next()) {
 
-                String storedPassword =
-                        resultSet.getString("password");
-
-                boolean passwordMatch = storedPassword.equals(password);
-
-                if (!passwordMatch && storedPassword.length() == 64) {
-                    passwordMatch = PasswordUtils.verifyPassword(password, storedPassword);
-                }
-
-                if (!passwordMatch) {
-                    messageLabel.setText("Invalid username or password.");
-                    return;
-                }
-
-                if (!storedPassword.equals(PasswordUtils.hashPassword(password))) {
-                    try {
-                        Connection conn2 = DatabaseConnection.connect();
-                        PreparedStatement upgrade = conn2.prepareStatement(
-                                "UPDATE users SET password = ? WHERE id = ?"
-                        );
-                        upgrade.setString(1, PasswordUtils.hashPassword(password));
-                        upgrade.setInt(2, resultSet.getInt("id"));
-                        upgrade.executeUpdate();
-                    } catch (Exception ignored) {}
-                }
-
-                // Remember Me
-                if (rememberMeCheckbox.isSelected()) {
-                    prefs.put("saved_email", email);
-                    prefs.putBoolean("remember_me", true);
-                } else {
-                    prefs.remove("saved_email");
-                    prefs.putBoolean("remember_me", false);
-                }
-
                 Session.currentUserId =
                         resultSet.getInt("id");
 
@@ -338,34 +303,72 @@ public class LoginController {
 
                 Session.currentUsername = email;
 
-                ActivityLogController.logActivity(
-                        "User Logged In",
-                        0
-                );
+                if (rememberMeCheckbox.isSelected()) {
+                    prefs.put("saved_email", email);
+                    prefs.putBoolean("remember_me", true);
+                } else {
+                    prefs.remove("saved_email");
+                    prefs.putBoolean("remember_me", false);
+                }
 
                 if (hasPendingPasswordReset(email)) {
                     showResetPasswordDialog(email);
-                } else if (role.equalsIgnoreCase("ADMIN")) {
+                } else {
 
-                    NavigationHelper.navigateTo(
-                            emailField,
-                            "/fxml/Dashboard.fxml"
+                    String storedPassword =
+                            resultSet.getString("password");
+
+                    boolean passwordMatch = storedPassword.equals(password);
+
+                    if (!passwordMatch && storedPassword.length() == 64) {
+                        passwordMatch = PasswordUtils.verifyPassword(password, storedPassword);
+                    }
+
+                    if (!passwordMatch) {
+                        messageLabel.setText("Invalid username or password.");
+                        return;
+                    }
+
+                    if (!storedPassword.equals(PasswordUtils.hashPassword(password))) {
+                        try {
+                            Connection conn2 = DatabaseConnection.connect();
+                            PreparedStatement upgrade = conn2.prepareStatement(
+                                    "UPDATE users SET password = ? WHERE id = ?"
+                            );
+                            upgrade.setString(1, PasswordUtils.hashPassword(password));
+                            upgrade.setInt(2, resultSet.getInt("id"));
+                            upgrade.executeUpdate();
+                        } catch (Exception ignored) {}
+                    }
+
+                    ActivityLogController.logActivity(
+                            "User Logged In",
+                            0
                     );
 
-                }
-                else if (role.equalsIgnoreCase("STAFF")) {
+                    if (role.equalsIgnoreCase("ADMIN")) {
 
-                    NavigationHelper.navigateTo(
-                            emailField,
-                            "/fxml/StaffDashboard.fxml"
-                    );
+                        NavigationHelper.navigateTo(
+                                emailField,
+                                "/fxml/Dashboard.fxml"
+                        );
 
-                }
-                else {
+                    }
+                    else if (role.equalsIgnoreCase("STAFF")) {
 
-                    messageLabel.setText(
-                            "Unknown user role."
-                    );
+                        NavigationHelper.navigateTo(
+                                emailField,
+                                "/fxml/StaffDashboard.fxml"
+                        );
+
+                    }
+                    else {
+
+                        messageLabel.setText(
+                                "Unknown user role."
+                        );
+
+                    }
 
                 }
 

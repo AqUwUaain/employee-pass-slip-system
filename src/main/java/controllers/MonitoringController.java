@@ -14,6 +14,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import models.PassSlip;
 import utils.NavigationHelper;
+import utils.PhilTime;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -206,11 +207,16 @@ public class MonitoringController {
                 try (Connection conn = database.DatabaseConnection.connect()) {
                     String sql = "UPDATE pass_slips SET status = ? WHERE id = ?";
                     if (newStatus.equals("RETURNED")) {
-                        sql = "UPDATE pass_slips SET status = ?, time_in = CURRENT_TIMESTAMP WHERE id = ?";
+                        sql = "UPDATE pass_slips SET status = ?, time_in = ? WHERE id = ?";
                     }
                     try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                         pstmt.setString(1, newStatus);
-                        pstmt.setInt(2, passSlip.getId());
+                        if (newStatus.equals("RETURNED")) {
+                            pstmt.setTimestamp(2, java.sql.Timestamp.valueOf(LocalDateTime.now(PhilTime.ZONE)));
+                            pstmt.setInt(3, passSlip.getId());
+                        } else {
+                            pstmt.setInt(2, passSlip.getId());
+                        }
                         pstmt.executeUpdate();
                     }
                 }
@@ -371,7 +377,7 @@ public class MonitoringController {
                 LocalDateTime timeOut =
                         timeOutTimestamp.toLocalDateTime();
 
-                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime now = LocalDateTime.now(PhilTime.ZONE);
 
                 long hours =
                         Duration.between(timeOut, now).toHours();

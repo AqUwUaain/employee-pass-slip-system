@@ -17,6 +17,7 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import models.ActivityLog;
 import utils.NavigationHelper;
+import utils.PhilTime;
 import utils.TimerService;
 
 import java.sql.Connection;
@@ -240,7 +241,7 @@ public class DashboardController {
         List<ActivityLog> allLogs = ReportsController.getLogs(filter.equals("All") || filter.equals("DateSelection") ? 100 : 0);
         List<ActivityLog> filteredLogs = new ArrayList<>();
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(PhilTime.ZONE);
         for (ActivityLog log : allLogs) {
             boolean matches = false;
             if ("All".equalsIgnoreCase(filter)) {
@@ -323,7 +324,7 @@ public class DashboardController {
     }
 
     private String getRelativeTime(LocalDateTime timestamp) {
-        java.time.Duration duration = java.time.Duration.between(timestamp, LocalDateTime.now());
+        java.time.Duration duration = java.time.Duration.between(timestamp, LocalDateTime.now(PhilTime.ZONE));
         long seconds = duration.getSeconds();
         if (seconds < 60) return "Just now";
         long minutes = duration.toMinutes();
