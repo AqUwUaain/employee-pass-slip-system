@@ -5,10 +5,15 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import models.ActivityLog;
 import utils.NavigationHelper;
@@ -50,6 +55,9 @@ public class DashboardController {
     private Button btnSidebarUsers;
 
     @FXML
+    private Button btnSidebarPasswordReset;
+
+    @FXML
     private Button btnLogout;
 
     @FXML
@@ -66,6 +74,9 @@ public class DashboardController {
 
     @FXML
     private VBox vboxActivityTracker;
+
+    @FXML
+    private Button btnViewAllActivity;
 
     @FXML
     private Label lblCalendarTitle;
@@ -125,16 +136,21 @@ public class DashboardController {
                     )
             );
 
+        if (btnSidebarPasswordReset != null)
+            btnSidebarPasswordReset.setOnAction(
+                    event -> NavigationHelper.navigateTo(
+                            btnSidebarPasswordReset,
+                            "/fxml/PasswordResetRequests.fxml"
+                    )
+            );
+
         if (btnLogout != null)
             btnLogout.setOnAction(
                     event -> NavigationHelper.logout(btnLogout)
             );
 
         btnNotificationsAlert.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnNotificationsAlert,
-                        "/fxml/ActivityLog.fxml"
-                )
+                event -> showNotificationPopup()
         );
 
         btnHamburgerMenuToggle.setOnAction(
@@ -143,6 +159,15 @@ public class DashboardController {
                         "/fxml/User.fxml"
                 )
         );
+
+        if (btnViewAllActivity != null) {
+            btnViewAllActivity.setOnAction(
+                    event -> NavigationHelper.navigateTo(
+                            btnViewAllActivity,
+                            "/fxml/ActivityLog.fxml"
+                    )
+            );
+        }
 
         cardCreatePassSlip.setOnMouseClicked(
                 event -> NavigationHelper.navigateTo(
@@ -466,6 +491,38 @@ public class DashboardController {
         TimerService.setOnUpdateCallback(this::loadLiveTimer);
         TimerService.startAutoRefresh();
 
+    }
+
+    private void showNotificationPopup() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NotificationPopup.fxml"));
+            Parent popup = loader.load();
+
+            Stage popupStage = new Stage();
+            popupStage.initStyle(StageStyle.UNDECORATED);
+            popupStage.initOwner(btnNotificationsAlert.getScene().getWindow());
+            popupStage.setScene(new Scene(popup));
+            popupStage.setResizable(false);
+
+            popupStage.setOnHidden(e -> {
+                // Refresh activity list when popup closes
+                loadActivities(currentFilter);
+            });
+
+            popupStage.show();
+
+            // Position near the bell icon
+            javafx.geometry.Bounds bounds = btnNotificationsAlert.localToScreen(
+                    btnNotificationsAlert.getBoundsInLocal());
+            if (bounds != null) {
+                popupStage.setX(bounds.getMaxX() - 360);
+                popupStage.setY(bounds.getMaxY() + 10);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            NavigationHelper.navigateTo(btnNotificationsAlert, "/fxml/ActivityLog.fxml");
+        }
     }
 
 }

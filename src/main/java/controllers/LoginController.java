@@ -91,7 +91,7 @@ public class LoginController {
         togglePasswordBtn.setOnAction(e -> togglePasswordVisibility());
 
         // Forgot Password
-        forgotPasswordLink.setOnAction(e -> messageLabel.setText("Contact admin to reset password."));
+        forgotPasswordLink.setOnAction(e -> showForgotPasswordDialog());
 
         // Privacy Policy
         privacyPolicyLink.setOnAction(e -> showModal("/fxml/PrivacyPolicy.fxml"));
@@ -147,6 +147,112 @@ public class LoginController {
         }
     }
 
+    private void showForgotPasswordDialog() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ForgotPassword.fxml"));
+            Parent root = loader.load();
+
+            ForgotPasswordController controller = loader.getController();
+            Stage dialogStage = new Stage();
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initStyle(StageStyle.UNDECORATED);
+            dialogStage.initOwner(emailField.getScene().getWindow());
+            controller.setDialogStage(dialogStage);
+
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+            dialogStage.setResizable(false);
+            dialogStage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean hasPendingPasswordReset(String email) {
+        try {
+            Connection connection = DatabaseConnection.connect();
+            String query = "SELECT id FROM password_reset_requests WHERE email = ? AND status = 'APPROVED' AND (used = FALSE OR used IS NULL) LIMIT 1";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+            boolean hasPending = resultSet.next();
+            resultSet.close();
+            statement.close();
+            connection.close();
+            return hasPending;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private int getPendingResetRequestId(String email) {
+        try {
+            Connection connection = DatabaseConnection.connect();
+            String query = "SELECT id FROM password_reset_requests WHERE email = ? AND status = 'APPROVED' AND (used = FALSE OR used IS NULL) LIMIT 1";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+            int id = -1;
+            if (resultSet.next()) {
+                id = resultSet.getInt("id");
+            }
+            resultSet.close();
+            statement.close();
+            connection.close();
+            return id;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    private void showResetPasswordDialog(String email) {
+        try {
+            int requestId = getPendingResetRequestId(email);
+            if (requestId == -1) {
+                navigateToDashboard();
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ResetPassword.fxml"));
+            Parent root = loader.load();
+
+            ResetPasswordController controller = loader.getController();
+            Stage dialogStage = new Stage();
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initStyle(StageStyle.UNDECORATED);
+            dialogStage.initOwner(emailField.getScene().getWindow());
+            controller.setDialogStage(dialogStage);
+            controller.setRequestInfo(email, requestId);
+
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+            dialogStage.setResizable(false);
+            dialogStage.showAndWait();
+
+            if (controller.isResetSuccessful()) {
+                navigateToDashboard();
+            } else {
+                messageLabel.setText("Password reset was cancelled or failed.");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            navigateToDashboard();
+        }
+    }
+
+    private void navigateToDashboard() {
+        String role = Session.currentRole;
+        if (role.equalsIgnoreCase("ADMIN")) {
+            NavigationHelper.navigateTo(emailField, "/fxml/Dashboard.fxml");
+        } else if (role.equalsIgnoreCase("STAFF")) {
+            NavigationHelper.navigateTo(emailField, "/fxml/StaffDashboard.fxml");
+        }
+    }
+
     @FXML
     private void handleLogin(ActionEvent event) {
 
@@ -160,6 +266,11 @@ public class LoginController {
 
         if (!email.contains("@")) {
             messageLabel.setText("Enter a valid email address.");
+            return;
+        }
+
+        if (!email.toLowerCase().endsWith("@pup.edu.ph")) {
+            messageLabel.setText("Email must end with @pup.edu.ph");
             return;
         }
 
@@ -232,7 +343,9 @@ public class LoginController {
                         0
                 );
 
-                if (role.equalsIgnoreCase("ADMIN")) {
+                if (hasPendingPasswordReset(email)) {
+                    showResetPasswordDialog(email);
+                } else if (role.equalsIgnoreCase("ADMIN")) {
 
                     NavigationHelper.navigateTo(
                             emailField,

@@ -31,6 +31,7 @@
                         <Button fx:id="btnSidebarEmployees" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Employees" styleClass="nav-item" />
                         <Button fx:id="btnSidebarReports" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Reports" styleClass="nav-item nav-active" />
                         <Button fx:id="btnSidebarUsers" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Users" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarPasswordReset" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Reset Requests" styleClass="nav-item" />
                         <Label text="ACCOUNT" style="-fx-text-fill: rgba(255,255,255,0.25); -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 16px 8px 8px 8px;" />
                         <Button fx:id="btnLogout" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Logout" styleClass="nav-item" />
                     </children>

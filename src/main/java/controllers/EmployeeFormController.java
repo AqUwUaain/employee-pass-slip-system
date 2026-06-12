@@ -46,6 +46,9 @@ public class EmployeeFormController {
     private Label titleLabel;
 
     @FXML
+    private Label formTitleLabel;
+
+    @FXML
     private Label messageLabel;
 
     @FXML
@@ -55,7 +58,53 @@ public class EmployeeFormController {
     private Button btnBack;
 
     @FXML
+    private Button btnSidebarDashboard;
+
+    @FXML
+    private Button btnSidebarMonitoring;
+
+    @FXML
+    private Button btnSidebarEmployees;
+
+    @FXML
+    private Button btnSidebarReports;
+
+    @FXML
+    private Button btnSidebarUsers;
+
+    @FXML
+    private Button btnSidebarPasswordReset;
+
+    @FXML
+    private Button btnLogout;
+
+    @FXML
+    private Button btnNotificationsAlert;
+
+    @FXML
+    private Button btnHamburgerMenuToggle;
+
+    @FXML
     private void initialize() {
+
+        if (btnSidebarDashboard != null)
+            btnSidebarDashboard.setOnAction(e -> NavigationHelper.navigateToDashboard(btnSidebarDashboard));
+        if (btnSidebarMonitoring != null)
+            btnSidebarMonitoring.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarMonitoring, "/fxml/Monitoring.fxml"));
+        if (btnSidebarEmployees != null)
+            btnSidebarEmployees.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarEmployees, "/fxml/EmployeeController.fxml"));
+        if (btnSidebarReports != null)
+            btnSidebarReports.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarReports, "/fxml/Reports.fxml"));
+        if (btnSidebarUsers != null)
+            btnSidebarUsers.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarUsers, "/fxml/User.fxml"));
+        if (btnSidebarPasswordReset != null)
+            btnSidebarPasswordReset.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarPasswordReset, "/fxml/PasswordResetRequests.fxml"));
+        if (btnLogout != null)
+            btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
+        if (btnNotificationsAlert != null)
+            btnNotificationsAlert.setOnAction(e -> NavigationHelper.navigateTo(btnNotificationsAlert, "/fxml/ActivityLog.fxml"));
+        if (btnHamburgerMenuToggle != null)
+            btnHamburgerMenuToggle.setOnAction(e -> NavigationHelper.navigateTo(btnHamburgerMenuToggle, "/fxml/User.fxml"));
 
         if (Session.selectedEmployeeId > 0) {
             loadEmployee();
@@ -87,6 +136,7 @@ public class EmployeeFormController {
         }
 
         titleLabel.setText("Edit Employee");
+        formTitleLabel.setText("Edit Employee");
         btnSaveEmployee.setText("Update Employee");
 
         firstNameField.setText(employee.getFirstName());

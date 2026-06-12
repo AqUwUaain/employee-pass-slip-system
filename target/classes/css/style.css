@@ -182,6 +182,82 @@
 .combo-box:focused { -fx-border-color: #C9951A; }
 .combo-box .list-cell { -fx-text-fill: #E7E5E4; -fx-font-size: 14px; }
 
+/* ComboBox Dropdown Popup */
+.combo-box-popup {
+    -fx-background-color: #2D2520;
+}
+.combo-box-popup .list-view {
+    -fx-background-color: #2D2520;
+    -fx-border-color: #3D3229;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+.combo-box-popup .list-view .list-cell {
+    -fx-background-color: #2D2520;
+    -fx-text-fill: #E7E5E4;
+    -fx-font-size: 14px;
+    -fx-padding: 8px 12px;
+}
+.combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: #3D3229;
+    -fx-text-fill: white;
+}
+.combo-box-popup .list-view .list-cell:filled:selected {
+    -fx-background-color: rgba(201,149,26,0.3);
+    -fx-text-fill: #D4A853;
+    -fx-font-weight: bold;
+}
+
+/* ChoiceBox Dropdown */
+.choice-box .context-menu {
+    -fx-background-color: #2D2520;
+    -fx-border-color: #3D3229;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+.choice-box .context-menu .menu-item {
+    -fx-background-color: #2D2520;
+    -fx-text-fill: #E7E5E4;
+}
+.choice-box .context-menu .menu-item:hover {
+    -fx-background-color: #3D3229;
+    -fx-text-fill: white;
+}
+.choice-box .context-menu .menu-item .label {
+    -fx-text-fill: #E7E5E4;
+}
+.choice-box .context-menu .menu-item:hover .label {
+    -fx-text-fill: white;
+}
+
+/* Context Menu (general) */
+.context-menu {
+    -fx-background-color: #2D2520;
+    -fx-border-color: #3D3229;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+.context-menu .menu-item {
+    -fx-background-color: #2D2520;
+    -fx-text-fill: #E7E5E4;
+}
+.context-menu .menu-item:hover {
+    -fx-background-color: #3D3229;
+    -fx-text-fill: white;
+}
+.context-menu .menu-item .label {
+    -fx-text-fill: #E7E5E4;
+}
+.context-menu .menu-item:hover .label {
+    -fx-text-fill: white;
+}
+.context-menu .separator .line {
+    -fx-border-color: #3D3229;
+}
+
 .date-picker {
     -fx-border-color: #3D3229;
     -fx-border-width: 1.5px;

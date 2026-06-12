@@ -35,6 +35,9 @@ public class UserController {
     private Button btnSidebarUsers;
 
     @FXML
+    private Button btnSidebarPasswordReset;
+
+    @FXML
     private Button btnLogout;
 
     @FXML
@@ -106,6 +109,8 @@ public class UserController {
 
         if (btnSidebarUsers != null)
             btnSidebarUsers.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarUsers, "/fxml/User.fxml"));
+        if (btnSidebarPasswordReset != null)
+            btnSidebarPasswordReset.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarPasswordReset, "/fxml/PasswordResetRequests.fxml"));
         if (btnLogout != null)
             btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
 
@@ -140,7 +145,7 @@ public class UserController {
 
         btnSaveUserRegistry.setOnAction(event -> {
             createUser(
-                    txtUserName,
+                    txtUserId,
                     txtUserPassword,
                     cmbUserRole,
                     lblUserMessage
@@ -174,26 +179,37 @@ public class UserController {
 
         if (username.isEmpty()) {
             messageLabel.setText("USERNAME REQUIRED");
+            messageLabel.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
             return;
         }
 
         if (!username.contains("@")) {
             messageLabel.setText("USERNAME MUST CONTAIN '@'");
+            messageLabel.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
+            return;
+        }
+
+        if (!username.toLowerCase().endsWith("@pup.edu.ph")) {
+            messageLabel.setText("EMAIL MUST END WITH @PUP.EDU.PH");
+            messageLabel.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
             return;
         }
 
         if (password.isEmpty()) {
             messageLabel.setText("PASSWORD REQUIRED");
+            messageLabel.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
             return;
         }
 
         if (password.length() < 4) {
             messageLabel.setText("PASSWORD TOO SHORT");
+            messageLabel.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
             return;
         }
 
         if (role == null) {
             messageLabel.setText("SELECT ROLE");
+            messageLabel.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
             return;
         }
 
@@ -239,7 +255,8 @@ public class UserController {
                         0
                 );
 
-                messageLabel.setText("USER CREATED");
+                messageLabel.setText("USER CREATED SUCCESSFULLY");
+                messageLabel.setStyle("-fx-text-fill: #34D399; -fx-font-weight: bold;");
 
                 usernameField.clear();
                 passwordField.clear();
@@ -247,11 +264,18 @@ public class UserController {
 
             } else {
                 messageLabel.setText("FAILED TO CREATE USER");
+                messageLabel.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
             }
+
+            statement.close();
+            resultSet.close();
+            checkStatement.close();
+            connection.close();
 
         } catch (Exception e) {
             e.printStackTrace();
-            messageLabel.setText("DATABASE ERROR");
+            messageLabel.setText("DATABASE ERROR: " + e.getMessage());
+            messageLabel.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
         }
 
     }
@@ -278,6 +302,7 @@ public class UserController {
         txtUserPassword.clear();
         cmbUserRole.setValue(null);
         lblUserMessage.setText("");
+        lblUserMessage.setStyle("");
     }
 
     private void revokeSelectedUser() {

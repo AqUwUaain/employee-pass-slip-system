@@ -39,6 +39,21 @@ public class EmployeeListController {
     private Button btnSidebarReports;
 
     @FXML
+    private Button btnSidebarUsers;
+
+    @FXML
+    private Button btnSidebarPasswordReset;
+
+    @FXML
+    private Button btnLogout;
+
+    @FXML
+    private Button btnNotificationsAlert;
+
+    @FXML
+    private Button btnHamburgerMenuToggle;
+
+    @FXML
     private VBox cardCreateEmployee;
 
     @FXML
@@ -114,6 +129,17 @@ public class EmployeeListController {
                         "/fxml/Reports.fxml"
                 )
         );
+
+        if (btnSidebarUsers != null)
+            btnSidebarUsers.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarUsers, "/fxml/User.fxml"));
+        if (btnSidebarPasswordReset != null)
+            btnSidebarPasswordReset.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarPasswordReset, "/fxml/PasswordResetRequests.fxml"));
+        if (btnLogout != null)
+            btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
+        if (btnNotificationsAlert != null)
+            btnNotificationsAlert.setOnAction(e -> NavigationHelper.navigateTo(btnNotificationsAlert, "/fxml/ActivityLog.fxml"));
+        if (btnHamburgerMenuToggle != null)
+            btnHamburgerMenuToggle.setOnAction(e -> NavigationHelper.navigateTo(btnHamburgerMenuToggle, "/fxml/User.fxml"));
 
         cardCreateEmployee.setOnMouseClicked(
                 event -> {

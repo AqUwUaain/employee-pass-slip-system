@@ -68,6 +68,9 @@ public class ReportsController {
     private Button btnSidebarUsers;
 
     @FXML
+    private Button btnSidebarPasswordReset;
+
+    @FXML
     private Button btnLogout;
 
     @FXML
@@ -83,6 +86,8 @@ public class ReportsController {
             btnSidebarReports.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarReports, "/fxml/Reports.fxml"));
         if (btnSidebarUsers != null)
             btnSidebarUsers.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarUsers, "/fxml/User.fxml"));
+        if (btnSidebarPasswordReset != null)
+            btnSidebarPasswordReset.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarPasswordReset, "/fxml/PasswordResetRequests.fxml"));
         if (btnLogout != null)
             btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
 

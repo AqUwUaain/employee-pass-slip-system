@@ -1,10 +1,13 @@
 package utils;
 
+import controllers.LogoutConfirmController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -82,10 +85,32 @@ public final class NavigationHelper {
 
     public static void logout(Node source) {
 
-        controllers.ActivityLogController.logActivity("User Logged Out", 0);
-        Session.clear();
-        loaderCache.clear();
-        navigateTo(source, "/fxml/Login.fxml");
+        try {
+            FXMLLoader loader = new FXMLLoader(NavigationHelper.class.getResource("/fxml/LogoutConfirm.fxml"));
+            Parent root = loader.load();
+
+            LogoutConfirmController controller = loader.getController();
+            Stage dialogStage = new Stage();
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initStyle(StageStyle.UNDECORATED);
+            dialogStage.initOwner(source.getScene().getWindow());
+            controller.setDialogStage(dialogStage);
+
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+            dialogStage.setResizable(false);
+            dialogStage.showAndWait();
+
+            if (controller.isConfirmed()) {
+                controllers.ActivityLogController.logActivity("User Logged Out", 0);
+                Session.clear();
+                loaderCache.clear();
+                navigateTo(source, "/fxml/Login.fxml");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 }
