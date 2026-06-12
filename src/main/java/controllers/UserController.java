@@ -90,6 +90,7 @@ public class UserController {
 
     @FXML
     private void initialize() {
+        NavigationHelper.setActiveButton(btnSidebarUsers);
 
         btnSidebarDashboard.setOnAction(
                 event -> NavigationHelper.navigateToDashboard(btnSidebarDashboard)

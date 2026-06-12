@@ -52,6 +52,7 @@ public class EmployeeController {
 
     @FXML
     private void initialize() {
+        NavigationHelper.setActiveButton(btnSidebarEmployees);
 
         btnSidebarDashboard.setOnAction(
                 event -> NavigationHelper.navigateToDashboard(

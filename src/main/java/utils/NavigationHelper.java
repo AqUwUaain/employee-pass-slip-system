@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -18,12 +19,34 @@ public final class NavigationHelper {
     private NavigationHelper() {
     }
 
+    private static final String ACTIVE_STYLE =
+            "-fx-background-color: #3D2A2A;" +
+            "-fx-text-fill: #D4A853;" +
+            "-fx-font-weight: bold;" +
+            "-fx-border-color: #D4A853;" +
+            "-fx-border-width: 0 0 0 3;" +
+            "-fx-border-radius: 12;" +
+            "-fx-background-radius: 12;" +
+            "-fx-background-insets: 0;" +
+            "-fx-focus-color: transparent;" +
+            "-fx-faint-focus-color: transparent;";
+
     private static final Map<String, FXMLLoader> loaderCache = new LinkedHashMap<>(16, 0.75f, true) {
         @Override
         protected boolean removeEldestEntry(Map.Entry<String, FXMLLoader> eldest) {
             return size() > 12;
         }
     };
+
+    public static void setActiveButton(Button button) {
+        if (button == null) return;
+        button.setStyle(ACTIVE_STYLE);
+        button.getStyleClass().remove("nav-item");
+        button.getStyleClass().add("nav-item");
+        if (!button.getStyleClass().contains("nav-active")) {
+            button.getStyleClass().add("nav-active");
+        }
+    }
 
     public static void navigateTo(Node source, String fxmlPath) {
 
@@ -48,6 +71,10 @@ public final class NavigationHelper {
 
             Scene scene =
                     new Scene(root);
+
+            scene.getStylesheets().add(
+                    NavigationHelper.class.getResource("/css/style.css").toExternalForm()
+            );
 
             stage.setScene(scene);
             stage.show();

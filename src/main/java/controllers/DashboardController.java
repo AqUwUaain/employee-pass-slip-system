@@ -98,6 +98,7 @@ public class DashboardController {
 
     @FXML
     private void initialize() {
+        NavigationHelper.setActiveButton(btnSidebarDashboard);
         currentYearMonth = YearMonth.now();
         selectedDate = LocalDate.now();
 

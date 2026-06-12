@@ -70,6 +70,8 @@ public class PasswordResetRequestsController {
 
     @FXML
     private void initialize() {
+        NavigationHelper.setActiveButton(btnSidebarPasswordReset);
+
         colId.setCellValueFactory(cellData -> new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getId()));
         colEmail.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getEmail()));
         colRequestedAt.setCellValueFactory(cellData -> {

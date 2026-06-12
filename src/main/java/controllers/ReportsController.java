@@ -75,6 +75,7 @@ public class ReportsController {
 
     @FXML
     private void initialize() {
+        NavigationHelper.setActiveButton(btnSidebarReports);
 
         if (btnSidebarDashboard != null)
             btnSidebarDashboard.setOnAction(e -> NavigationHelper.navigateToDashboard(btnSidebarDashboard));

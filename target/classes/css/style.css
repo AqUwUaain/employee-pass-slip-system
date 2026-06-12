@@ -24,6 +24,12 @@
 .button {
     -fx-cursor: hand;
     -fx-font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+.button:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 /* Gold Primary */
@@ -123,7 +129,7 @@
 }
 
 /* SIDEBAR NAV */
-.nav-item {
+Button.nav-item {
     -fx-background-color: transparent;
     -fx-text-fill: rgba(255,255,255,0.45);
     -fx-font-size: 13.5px;
@@ -135,25 +141,50 @@
     -fx-border-width: 0;
     -fx-border-radius: 12px;
     -fx-background-insets: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-cursor: hand;
 }
-.nav-item:hover {
+Button.nav-item:hover {
     -fx-background-color: rgba(255,255,255,0.06);
     -fx-text-fill: rgba(255,255,255,0.8);
     -fx-border-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
-.nav-active {
-    -fx-background-color: rgba(61,42,42,0.85) !important;
+Button.nav-item:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-color: transparent;
+}
+Button.nav-item:pressed {
+    -fx-background-color: rgba(255,255,255,0.04);
+}
+Button.nav-active {
+    -fx-background-color: #3D2A2A !important;
     -fx-text-fill: #D4A853 !important;
-    -fx-font-weight: bold;
+    -fx-font-weight: bold !important;
     -fx-border-color: #D4A853 !important;
     -fx-border-width: 0 0 0 3 !important;
     -fx-border-radius: 12px !important;
     -fx-background-radius: 12px !important;
     -fx-background-insets: 0 !important;
+    -fx-focus-color: transparent !important;
+    -fx-faint-focus-color: transparent !important;
 }
-.nav-active:hover {
-    -fx-background-color: rgba(81,56,56,0.9) !important;
+Button.nav-active:hover {
+    -fx-background-color: #4A3535 !important;
     -fx-text-fill: #D4A853 !important;
+    -fx-focus-color: transparent !important;
+    -fx-faint-focus-color: transparent !important;
+}
+Button.nav-active:focused {
+    -fx-background-color: #3D2A2A !important;
+    -fx-focus-color: transparent !important;
+    -fx-faint-focus-color: transparent !important;
+}
+Button.nav-active:pressed {
+    -fx-background-color: #352525 !important;
 }
 
 /* ==========================================================================

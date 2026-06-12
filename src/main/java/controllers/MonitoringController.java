@@ -94,6 +94,7 @@ public class MonitoringController {
 
     @FXML
     private void initialize() {
+        NavigationHelper.setActiveButton(btnSidebarMonitoring);
 
         btnSidebarDashboard.setOnAction(
                 event -> NavigationHelper.navigateToDashboard(btnSidebarDashboard)
