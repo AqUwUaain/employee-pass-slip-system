@@ -165,13 +165,13 @@
                                                 <RowConstraints minHeight="18.0" valignment="CENTER" /><RowConstraints minHeight="28.0" valignment="CENTER" /><RowConstraints minHeight="28.0" valignment="CENTER" /><RowConstraints minHeight="28.0" valignment="CENTER" /><RowConstraints minHeight="28.0" valignment="CENTER" /><RowConstraints minHeight="28.0" valignment="CENTER" /><RowConstraints minHeight="28.0" valignment="CENTER" />
                                             </rowConstraints>
                                             <children>
-                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #1C0A04;" text="SUN" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #1C0A04;" text="MON" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #1C0A04;" text="TUE" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #1C0A04;" text="WED" GridPane.columnIndex="3" GridPane.rowIndex="0" />
-                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #1C0A04;" text="THU" GridPane.columnIndex="4" GridPane.rowIndex="0" />
-                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #1C0A04;" text="FRI" GridPane.columnIndex="5" GridPane.rowIndex="0" />
-                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #1C0A04;" text="SAT" GridPane.columnIndex="6" GridPane.rowIndex="0" />
+                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #F7E7CE;" text="SUN" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #F7E7CE;" text="MON" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #F7E7CE;" text="TUE" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #F7E7CE;" text="WED" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #F7E7CE;" text="THU" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #F7E7CE;" text="FRI" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+                                                <Label style="-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #F7E7CE;" text="SAT" GridPane.columnIndex="6" GridPane.rowIndex="0" />
                                             </children>
                                         </GridPane>
                                     </children>
