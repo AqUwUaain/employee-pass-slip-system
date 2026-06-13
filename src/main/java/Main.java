@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 import database.DatabaseConnection;
 import database.DatabaseMigration;
 
-public class Main extends Application {
+public class  Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {

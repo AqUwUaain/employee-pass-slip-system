@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -62,41 +63,48 @@ public class LoginController {
 
     @FXML
     private void initialize() {
-
         // Load saved credentials
         String savedEmail = prefs.get("saved_email", "");
+        String savedPassword = prefs.get("saved_password", "");
         boolean rememberMe = prefs.getBoolean("remember_me", false);
 
         if (rememberMe && !savedEmail.isEmpty()) {
             emailField.setText(savedEmail);
             rememberMeCheckbox.setSelected(true);
+            // Fill password in both fields
+            if (!savedPassword.isEmpty()) {
+                passwordField.setText(savedPassword);
+                if (visiblePasswordField != null) {
+                    visiblePasswordField.setText(savedPassword);
+                }
+            }
         }
 
         // Show/hide password toggle
         visiblePasswordField = new TextField();
         visiblePasswordField.setPromptText("Enter your password");
         visiblePasswordField.setStyle(
-            "-fx-background-color: rgba(255,255,255,0.06); " +
-            "-fx-border-color: rgba(255,255,255,0.08); " +
-            "-fx-border-width: 1.5px; " +
-            "-fx-border-radius: 12px; " +
-            "-fx-background-radius: 12px; " +
-            "-fx-padding: 14px 16px; " +
-            "-fx-font-size: 14px; " +
-            "-fx-text-fill: white; " +
-            "-fx-prompt-text-fill: rgba(255,255,255,0.25); " +
-            "-fx-pref-height: 46px;"
+                "-fx-background-color: rgba(255,255,255,0.06); " +
+                        "-fx-border-color: rgba(255,255,255,0.08); " +
+                        "-fx-border-width: 1.5px; " +
+                        "-fx-border-radius: 12px; " +
+                        "-fx-background-radius: 12px; " +
+                        "-fx-padding: 14px 16px; " +
+                        "-fx-font-size: 14px; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-prompt-text-fill: rgba(255,255,255,0.25); " +
+                        "-fx-pref-height: 46px;"
         );
+
+        // If we loaded a saved password, also set it in the visible field
+        if (rememberMe && !savedPassword.isEmpty()) {
+            visiblePasswordField.setText(savedPassword);
+        }
 
         togglePasswordBtn.setOnAction(e -> togglePasswordVisibility());
 
-        // Forgot Password
         forgotPasswordLink.setOnAction(e -> showForgotPasswordDialog());
-
-        // Privacy Policy
         privacyPolicyLink.setOnAction(e -> showModal("/fxml/PrivacyPolicy.fxml"));
-
-        // Terms and Conditions
         termsOfServiceLink.setOnAction(e -> showModal("/fxml/TermsConditions.fxml"));
     }
 
@@ -125,14 +133,14 @@ public class LoginController {
 
             Stage modalStage = new Stage();
             modalStage.initModality(Modality.APPLICATION_MODAL);
-            modalStage.initStyle(StageStyle.UNDECORATED);
+            modalStage.initStyle(StageStyle.TRANSPARENT);
             modalStage.initOwner(emailField.getScene().getWindow());
 
             Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
             modalStage.setScene(scene);
             modalStage.setResizable(false);
 
-            // Wire close button
             Object controller = loader.getController();
             if (controller instanceof PrivacyPolicyController pc) {
                 pc.setCloseAction(e -> modalStage.close());
@@ -255,7 +263,6 @@ public class LoginController {
 
     @FXML
     private void handleLogin(ActionEvent event) {
-
         String email = emailField.getText().trim();
         String password = passwordVisible ? visiblePasswordField.getText().trim() : passwordField.getText().trim();
 
@@ -275,122 +282,70 @@ public class LoginController {
         }
 
         try {
-
-            Connection connection =
-                    DatabaseConnection.connect();
-
-            String query =
-                    "SELECT * FROM users " +
-                            "WHERE username = ?";
-
-            PreparedStatement statement =
-                    connection.prepareStatement(query);
-
+            Connection connection = DatabaseConnection.connect();
+            String query = "SELECT * FROM users WHERE username = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, email);
-
-            ResultSet resultSet =
-                    statement.executeQuery();
+            ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
+                String storedPassword = resultSet.getString("password");
+                boolean passwordMatch = storedPassword.equals(password);
 
-                Session.currentUserId =
-                        resultSet.getInt("id");
+                if (!passwordMatch && storedPassword.length() == 64) {
+                    passwordMatch = PasswordUtils.verifyPassword(password, storedPassword);
+                }
 
-                String role =
-                        resultSet.getString("role");
+                if (!passwordMatch) {
+                    messageLabel.setText("Invalid username or password.");
+                    return;
+                }
 
-                Session.currentRole = role;
+                if (!storedPassword.equals(PasswordUtils.hashPassword(password))) {
+                    try {
+                        Connection conn2 = DatabaseConnection.connect();
+                        PreparedStatement upgrade = conn2.prepareStatement(
+                                "UPDATE users SET password = ? WHERE id = ?"
+                        );
+                        upgrade.setString(1, PasswordUtils.hashPassword(password));
+                        upgrade.setInt(2, resultSet.getInt("id"));
+                        upgrade.executeUpdate();
+                    } catch (Exception ignored) {}
+                }
 
-                Session.currentUsername = email;
-
+                // --- Remember Me (now saves email AND password) ---
                 if (rememberMeCheckbox.isSelected()) {
                     prefs.put("saved_email", email);
+                    prefs.put("saved_password", password);   // store plain password
                     prefs.putBoolean("remember_me", true);
                 } else {
                     prefs.remove("saved_email");
+                    prefs.remove("saved_password");
                     prefs.putBoolean("remember_me", false);
                 }
 
+                Session.currentUserId = resultSet.getInt("id");
+                String role = resultSet.getString("role");
+                Session.currentRole = role;
+                Session.currentUsername = email;
+
+                ActivityLogController.logActivity("User Logged In", 0);
+
                 if (hasPendingPasswordReset(email)) {
                     showResetPasswordDialog(email);
+                } else if (role.equalsIgnoreCase("ADMIN")) {
+                    NavigationHelper.navigateTo(emailField, "/fxml/Dashboard.fxml");
+                } else if (role.equalsIgnoreCase("STAFF")) {
+                    NavigationHelper.navigateTo(emailField, "/fxml/StaffDashboard.fxml");
                 } else {
-
-                    String storedPassword =
-                            resultSet.getString("password");
-
-                    boolean passwordMatch = storedPassword.equals(password);
-
-                    if (!passwordMatch && storedPassword.length() == 64) {
-                        passwordMatch = PasswordUtils.verifyPassword(password, storedPassword);
-                    }
-
-                    if (!passwordMatch) {
-                        messageLabel.setText("Invalid username or password.");
-                        return;
-                    }
-
-                    if (!storedPassword.equals(PasswordUtils.hashPassword(password))) {
-                        try {
-                            Connection conn2 = DatabaseConnection.connect();
-                            PreparedStatement upgrade = conn2.prepareStatement(
-                                    "UPDATE users SET password = ? WHERE id = ?"
-                            );
-                            upgrade.setString(1, PasswordUtils.hashPassword(password));
-                            upgrade.setInt(2, resultSet.getInt("id"));
-                            upgrade.executeUpdate();
-                        } catch (Exception ignored) {}
-                    }
-
-                    ActivityLogController.logActivity(
-                            "User Logged In",
-                            0
-                    );
-
-                    if (role.equalsIgnoreCase("ADMIN")) {
-
-                        NavigationHelper.navigateTo(
-                                emailField,
-                                "/fxml/Dashboard.fxml"
-                        );
-
-                    }
-                    else if (role.equalsIgnoreCase("STAFF")) {
-
-                        NavigationHelper.navigateTo(
-                                emailField,
-                                "/fxml/StaffDashboard.fxml"
-                        );
-
-                    }
-                    else {
-
-                        messageLabel.setText(
-                                "Unknown user role."
-                        );
-
-                    }
-
+                    messageLabel.setText("Unknown user role.");
                 }
-
+            } else {
+                messageLabel.setText("Invalid username or password.");
             }
-            else {
-
-                messageLabel.setText(
-                        "Invalid username or password."
-                );
-
-            }
-
-        }
-        catch (Exception e) {
-
+        } catch (Exception e) {
             e.printStackTrace();
-
-            messageLabel.setText(
-                    "Database error."
-            );
-
+            messageLabel.setText("Database error.");
         }
-
     }
 }

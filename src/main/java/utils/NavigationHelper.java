@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -21,15 +22,15 @@ public final class NavigationHelper {
 
     private static final String ACTIVE_STYLE =
             "-fx-background-color: #3D2A2A;" +
-            "-fx-text-fill: #D4A853;" +
-            "-fx-font-weight: bold;" +
-            "-fx-border-color: #D4A853;" +
-            "-fx-border-width: 0 0 0 3;" +
-            "-fx-border-radius: 12;" +
-            "-fx-background-radius: 12;" +
-            "-fx-background-insets: 0;" +
-            "-fx-focus-color: transparent;" +
-            "-fx-faint-focus-color: transparent;";
+                    "-fx-text-fill: #D4A853;" +
+                    "-fx-font-weight: bold;" +
+                    "-fx-border-color: #D4A853;" +
+                    "-fx-border-width: 0 0 0 3;" +
+                    "-fx-border-radius: 12;" +
+                    "-fx-background-radius: 12;" +
+                    "-fx-background-insets: 0;" +
+                    "-fx-focus-color: transparent;" +
+                    "-fx-faint-focus-color: transparent;";
 
     private static final Map<String, FXMLLoader> loaderCache = new LinkedHashMap<>(16, 0.75f, true) {
         @Override
@@ -49,69 +50,36 @@ public final class NavigationHelper {
     }
 
     public static void navigateTo(Node source, String fxmlPath) {
-
-        Stage stage =
-                (Stage) source.getScene().getWindow();
-
+        Stage stage = (Stage) source.getScene().getWindow();
         navigateTo(stage, fxmlPath);
-
     }
 
     public static void navigateTo(Stage stage, String fxmlPath) {
-
         try {
-
-            FXMLLoader loader =
-                    new FXMLLoader(
-                            NavigationHelper.class.getResource(fxmlPath)
-                    );
-
-            Parent root =
-                    loader.load();
-
-            Scene scene =
-                    new Scene(root);
-
-            scene.getStylesheets().add(
-                    NavigationHelper.class.getResource("/css/style.css").toExternalForm()
-            );
-
+            FXMLLoader loader = new FXMLLoader(NavigationHelper.class.getResource(fxmlPath));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(NavigationHelper.class.getResource("/css/style.css").toExternalForm());
             stage.setScene(scene);
             stage.show();
-
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to load FXML: " + fxmlPath, e);
         }
-        catch (IOException e) {
-
-            throw new RuntimeException(
-                    "Unable to load FXML: " + fxmlPath,
-                    e
-            );
-
-        }
-
     }
 
     public static void navigateToDashboard(Node source) {
-
-        navigateTo(
-                source,
-                getDashboardFxml()
-        );
-
+        navigateTo(source, getDashboardFxml());
     }
 
     public static String getDashboardFxml() {
-
         if ("STAFF".equalsIgnoreCase(Session.currentRole)) {
             return "/fxml/StaffDashboard.fxml";
         }
-
         return "/fxml/Dashboard.fxml";
-
     }
 
+    // ==================== FIXED LOGOUT METHOD ====================
     public static void logout(Node source) {
-
         try {
             FXMLLoader loader = new FXMLLoader(NavigationHelper.class.getResource("/fxml/LogoutConfirm.fxml"));
             Parent root = loader.load();
@@ -119,11 +87,14 @@ public final class NavigationHelper {
             LogoutConfirmController controller = loader.getController();
             Stage dialogStage = new Stage();
             dialogStage.initModality(Modality.APPLICATION_MODAL);
-            dialogStage.initStyle(StageStyle.UNDECORATED);
+            // FIX: Use TRANSPARENT stage to remove white corners
+            dialogStage.initStyle(StageStyle.TRANSPARENT);
             dialogStage.initOwner(source.getScene().getWindow());
             controller.setDialogStage(dialogStage);
 
             Scene scene = new Scene(root);
+            // FIX: Make scene background transparent
+            scene.setFill(Color.TRANSPARENT);
             dialogStage.setScene(scene);
             dialogStage.setResizable(false);
             dialogStage.showAndWait();
@@ -134,10 +105,8 @@ public final class NavigationHelper {
                 loaderCache.clear();
                 navigateTo(source, "/fxml/Login.fxml");
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

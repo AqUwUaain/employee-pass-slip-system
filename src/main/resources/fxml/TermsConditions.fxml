@@ -1,46 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="TOP_CENTER" maxHeight="520.0" maxWidth="480.0" minHeight="520.0" minWidth="480.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TermsConditionsController" style="-fx-background-color: #252220; -fx-background-radius: 18px; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 40, 0, 0, 10);">
+<VBox alignment="TOP_CENTER"
+      maxHeight="520.0" maxWidth="480.0"
+      minHeight="520.0" minWidth="480.0"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.TermsConditionsController"
+      style="-fx-background-color: #252220; -fx-background-radius: 18px; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 18px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 40, 0, 0, 10);">
     <children>
         <!-- Header -->
-        <VBox alignment="CENTER" style="-fx-background-color: linear-gradient(to right, #3D0C02, #5C1A10); -fx-background-radius: 18px 18px 0 0; -fx-padding: 24px;">
+        <VBox alignment="CENTER"
+              style="-fx-background-color: linear-gradient(to right, #3D0C02, #5C1A10); -fx-background-radius: 18px 18px 0 0; -fx-padding: 24px;">
             <children>
                 <Label text="TERMS AND CONDITIONS" style="-fx-text-fill: #D4A853; -fx-font-size: 11px; -fx-font-weight: bold;" />
                 <Label text="Employee Pass Slip System" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
             </children>
         </VBox>
+
         <!-- Content -->
-        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                    style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent; -fx-control-inner-background: transparent;">
             <content>
                 <VBox spacing="14.0" style="-fx-padding: 24px 28px;">
                     <children>
                         <Label text="1. Acceptance of Terms" style="-fx-text-fill: #D4A853; -fx-font-size: 14px; -fx-font-weight: bold;" />
                         <Label maxWidth="420.0" wrapText="true" text="By accessing and using the Employee Pass Slip System, you agree to be bound by these Terms and Conditions. If you do not agree, do not use this system." style="-fx-text-fill: #D6CCC2; -fx-font-size: 12.5px; -fx-line-spacing: 4px;" />
+
                         <Label text="2. Authorized Use" style="-fx-text-fill: #D4A853; -fx-font-size: 14px; -fx-font-weight: bold;" />
                         <Label maxWidth="420.0" wrapText="true" text="This system is exclusively for authorized PUP Santa Rosa Campus personnel. Only ADMIN and STAFF accounts may access and operate the system. Unauthorized access is strictly prohibited." style="-fx-text-fill: #D6CCC2; -fx-font-size: 12.5px; -fx-line-spacing: 4px;" />
+
                         <Label text="3. Account Responsibility" style="-fx-text-fill: #D4A853; -fx-font-size: 14px; -fx-font-weight: bold;" />
                         <Label maxWidth="420.0" wrapText="true" text="Each user is responsible for maintaining the confidentiality of their login credentials. Users must not share their accounts. Any misuse of the system will result in account revocation." style="-fx-text-fill: #D6CCC2; -fx-font-size: 12.5px; -fx-line-spacing: 4px;" />
+
                         <Label text="4. Accurate Records" style="-fx-text-fill: #D4A853; -fx-font-size: 14px; -fx-font-weight: bold;" />
                         <Label maxWidth="420.0" wrapText="true" text="All pass slip entries must be accurate and truthful. Falsifying or tampering with employee movement records is a violation of campus policy and may result in disciplinary action." style="-fx-text-fill: #D6CCC2; -fx-font-size: 12.5px; -fx-line-spacing: 4px;" />
+
                         <Label text="5. System Availability" style="-fx-text-fill: #D4A853; -fx-font-size: 14px; -fx-font-weight: bold;" />
                         <Label maxWidth="420.0" wrapText="true" text="The system operates on a cloud-hosted PostgreSQL database. While we strive for 99.9% uptime, scheduled maintenance and unforeseen outages may occur. The institution is not liable for data loss during downtime." style="-fx-text-fill: #D6CCC2; -fx-font-size: 12.5px; -fx-line-spacing: 4px;" />
+
                         <Label text="6. Termination" style="-fx-text-fill: #D4A853; -fx-font-size: 14px; -fx-font-weight: bold;" />
                         <Label maxWidth="420.0" wrapText="true" text="The system administrator reserves the right to suspend or revoke any user account at any time without prior notice for violations of these terms." style="-fx-text-fill: #D6CCC2; -fx-font-size: 12.5px; -fx-line-spacing: 4px;" />
                     </children>
                 </VBox>
             </content>
         </ScrollPane>
+
         <!-- Footer -->
         <HBox alignment="CENTER" style="-fx-padding: 16px 28px 22px 28px;">
             <children>
-                <Button fx:id="btnCloseTerms" maxWidth="Infinity" mnemonicParsing="false" prefHeight="40.0" text="I Agree" style="-fx-background-color: linear-gradient(to right, #C9951A, #D4A853); -fx-text-fill: #1C1917; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10px; -fx-cursor: hand; -fx-pref-width: 200;" />
+                <Button fx:id="btnCloseTerms" maxWidth="Infinity" mnemonicParsing="false" prefHeight="40.0" text="I Agree"
+                        style="-fx-background-color: linear-gradient(to right, #C9951A, #D4A853); -fx-text-fill: #1C1917; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10px; -fx-cursor: hand; -fx-pref-width: 200;" />
             </children>
         </HBox>
     </children>
