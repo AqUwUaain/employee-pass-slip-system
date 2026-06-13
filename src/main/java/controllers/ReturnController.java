@@ -6,6 +6,8 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import utils.NavigationHelper;
 import utils.PhilTime;
@@ -33,6 +35,24 @@ public class ReturnController {
     private Button btnSidebarReports;
 
     @FXML
+    private Button btnSidebarLogReturn;
+
+    @FXML
+    private Button btnSidebarUsers;
+
+    @FXML
+    private Button btnSidebarPasswordReset;
+
+    @FXML
+    private Button btnNotificationsAlert;
+
+    @FXML
+    private Button btnHamburgerMenuToggle;
+
+    @FXML
+    private Button btnLogout;
+
+    @FXML
     private Button btnFetchActiveSlip;
 
     @FXML
@@ -56,6 +76,27 @@ public class ReturnController {
     @FXML
     private TextField txtReturnTimeInStamp;
 
+    @FXML
+    private TableView<?> tblOutstandingOutboundView;
+
+    @FXML
+    private TableColumn<?, ?> colReturnSlipId;
+
+    @FXML
+    private TableColumn<?, ?> colReturnEmployeeID;
+
+    @FXML
+    private TableColumn<?, ?> colReturnFullName;
+
+    @FXML
+    private TableColumn<?, ?> colReturnDepartment;
+
+    @FXML
+    private TableColumn<?, ?> colReturnTimeOut;
+
+    @FXML
+    private TableColumn<?, ?> colReturnExpectedIn;
+
     private int activePassSlipId;
     private int activeEmployeeId;
 
@@ -77,6 +118,23 @@ public class ReturnController {
         btnSidebarReports.setOnAction(
                 event -> NavigationHelper.navigateTo(btnSidebarReports, "/fxml/Reports.fxml")
         );
+
+        if (btnSidebarLogReturn != null)
+            btnSidebarLogReturn.setOnAction(
+                    event -> NavigationHelper.navigateTo(btnSidebarLogReturn, "/fxml/Return.fxml")
+            );
+
+        if (btnSidebarUsers != null)
+            btnSidebarUsers.setOnAction(
+                    event -> NavigationHelper.navigateTo(btnSidebarUsers, "/fxml/User.fxml")
+            );
+
+        if (btnSidebarPasswordReset != null)
+            btnSidebarPasswordReset.setOnAction(
+                    event -> NavigationHelper.navigateTo(btnSidebarPasswordReset, "/fxml/PasswordResetRequests.fxml")
+            );
+
+        NavigationHelper.setActiveButton(btnSidebarLogReturn);
 
         btnFetchActiveSlip.setOnAction(event -> fetchActiveSlip());
 

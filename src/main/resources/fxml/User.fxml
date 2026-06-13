@@ -38,6 +38,7 @@
                         <Button fx:id="btnSidebarMonitoring" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Monitoring" styleClass="nav-item" />
                         <Button fx:id="btnSidebarEmployees" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Employees" styleClass="nav-item" />
                         <Button fx:id="btnSidebarReports" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Reports" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Log Return" styleClass="nav-item" />
                         <Button fx:id="btnSidebarUsers" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Users" styleClass="nav-item nav-active" />
                         <Button fx:id="btnSidebarPasswordReset" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Reset Requests" styleClass="nav-item" />
                         <Label text="ACCOUNT" style="-fx-text-fill: rgba(255,255,255,0.25); -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 16px 8px 8px 8px;" />
@@ -93,12 +94,12 @@
                                 <VBox alignment="CENTER" prefHeight="125.0" prefWidth="320.0" styleClass="stat-light">
                                     <children>
                                         <VBox alignment="CENTER_LEFT" styleClass="stat-header" prefWidth="320.0">
-                                            <children><Label text="ACTIVE SESSIONS" style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 10px; -fx-font-weight: bold;" /></children>
+                                            <children><Label text="ACTIVE SESSIONS" style="-fx-text-fill: #1C0A04; -fx-font-size: 10px; -fx-font-weight: bold;" /></children>
                                         </VBox>
                                         <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
                                             <children>
-                                                <Label fx:id="lblActiveSessions" text="0 Active" style="-fx-text-fill: #FCA5A5; -fx-font-size: 38px; -fx-font-weight: bold;" />
-                                                <Label text="Handlers Online" style="-fx-text-fill: #A8A29E; -fx-font-size: 11px;" />
+                                                <Label fx:id="lblActiveSessions" text="0 Active" style="-fx-text-fill: white; -fx-font-size: 38px; -fx-font-weight: bold;" />
+                                                <Label text="Handlers Online" style="-fx-text-fill: rgba(212,168,83,0.8); -fx-font-size: 11px;" />
                                             </children>
                                         </VBox>
                                     </children>

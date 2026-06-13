@@ -56,11 +56,23 @@ public final class NavigationHelper {
 
     public static void navigateTo(Stage stage, String fxmlPath) {
         try {
+            boolean wasFullScreen = stage.isFullScreen();
+            double prevWidth = stage.getWidth();
+            double prevHeight = stage.getHeight();
+
             FXMLLoader loader = new FXMLLoader(NavigationHelper.class.getResource(fxmlPath));
             Parent root = loader.load();
             Scene scene = new Scene(root);
             scene.getStylesheets().add(NavigationHelper.class.getResource("/css/style.css").toExternalForm());
             stage.setScene(scene);
+
+            if (wasFullScreen) {
+                stage.setFullScreen(true);
+            } else {
+                stage.setWidth(prevWidth);
+                stage.setHeight(prevHeight);
+            }
+
             stage.show();
         } catch (IOException e) {
             throw new RuntimeException("Unable to load FXML: " + fxmlPath, e);

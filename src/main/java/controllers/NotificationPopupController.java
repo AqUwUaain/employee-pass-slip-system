@@ -25,17 +25,13 @@ public class NotificationPopupController {
     private VBox vboxNotifications;
 
     @FXML
-    private Button btnClosePopup;
-
-    @FXML
     private Button btnViewAllNotifications;
 
     @FXML
     private void initialize() {
-        btnClosePopup.setOnAction(e -> closePopup());
         btnViewAllNotifications.setOnAction(e -> {
+            e.consume();
             NavigationHelper.navigateTo(btnViewAllNotifications, "/fxml/ActivityLog.fxml");
-            closePopup();
         });
 
         loadLatestActivities();
@@ -81,13 +77,6 @@ public class NotificationPopupController {
 
             row.getChildren().addAll(dot, textBox, spacer);
             vboxNotifications.getChildren().add(row);
-        }
-    }
-
-    private void closePopup() {
-        if (notificationPopup != null && notificationPopup.getParent() instanceof StackPane) {
-            StackPane parent = (StackPane) notificationPopup.getParent();
-            parent.getChildren().remove(notificationPopup);
         }
     }
 }

@@ -55,6 +55,9 @@ public class PasswordResetRequestsController {
     private Button btnSidebarReports;
 
     @FXML
+    private Button btnSidebarLogReturn;
+
+    @FXML
     private Button btnSidebarUsers;
 
     @FXML
@@ -94,6 +97,9 @@ public class PasswordResetRequestsController {
             btnSidebarReports.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarReports, "/fxml/Reports.fxml"));
         if (btnSidebarUsers != null)
             btnSidebarUsers.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarUsers, "/fxml/User.fxml"));
+
+        if (btnSidebarLogReturn != null)
+            btnSidebarLogReturn.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarLogReturn, "/fxml/Return.fxml"));
         if (btnSidebarPasswordReset != null)
             btnSidebarPasswordReset.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarPasswordReset, "/fxml/PasswordResetRequests.fxml"));
         if (btnLogout != null)

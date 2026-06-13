@@ -11,14 +11,31 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
+import javafx.scene.layout.VBox;
 import utils.NavigationHelper;
 import utils.PhilTime;
 import utils.TimerService;
+import utils.ActivityLogger;
 
+import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
+import com.itextpdf.layout.borders.SolidBorder;
+import com.itextpdf.layout.properties.VerticalAlignment;
+
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class PassSlipController {
@@ -54,7 +71,10 @@ public class PassSlipController {
     private TextField txtSlipTimeOut;
 
     @FXML
-    private TextField txtSlipTimeIn;
+    private ComboBox<String> cmbTimeIn;
+
+    @FXML
+    private Label lblDuration;
 
     @FXML
     private TextField txtSlipAdminSignee;
@@ -64,6 +84,9 @@ public class PassSlipController {
 
     @FXML
     private ComboBox<String> cmbEmployeeSelect;
+
+    @FXML
+    private VBox passSlipModalRoot;
 
     private int selectedEmployeeId = 0;
 
@@ -85,6 +108,32 @@ public class PassSlipController {
         );
 
         loadEmployeeComboBox();
+        populateTimeInOptions(now);
+
+        cmbTimeIn.setOnAction(event -> {
+            String selected = cmbTimeIn.getValue();
+            if (selected != null) {
+                String timeStr = selected.split("  \\(")[0];
+                DateTimeFormatter parser = DateTimeFormatter.ofPattern("hh:mm a");
+                LocalTime timeInParsed = LocalTime.parse(timeStr, parser);
+                LocalDateTime timeIn = now.toLocalDate().atTime(timeInParsed);
+                if (timeIn.isBefore(now)) {
+                    timeIn = timeIn.plusDays(1);
+                }
+                long totalMinutes = java.time.Duration.between(now, timeIn).toMinutes();
+                long hours = totalMinutes / 60;
+                long mins = totalMinutes % 60;
+                String durationText;
+                if (hours > 0 && mins > 0) {
+                    durationText = "Estimated duration: " + hours + " hr" + (hours > 1 ? "s" : "") + " " + mins + " min" + (mins > 1 ? "s" : "");
+                } else if (hours > 0) {
+                    durationText = "Estimated duration: " + hours + " hr" + (hours > 1 ? "s" : "");
+                } else {
+                    durationText = "Estimated duration: " + mins + " min";
+                }
+                lblDuration.setText(durationText);
+            }
+        });
 
         cmbEmployeeSelect.setOnAction(event -> {
             String selected = cmbEmployeeSelect.getValue();
@@ -111,7 +160,7 @@ public class PassSlipController {
         );
 
         btnPrintSlipAction.setOnAction(
-                event -> lblSlipStatusMessage.setText("Print is not implemented yet.")
+                event -> printSlip()
         );
 
         btnSaveSlipAction.setOnAction(
@@ -150,6 +199,40 @@ public class PassSlipController {
 
         cmbEmployeeSelect.setItems(employeeOptions);
 
+    }
+
+    private void populateTimeInOptions(LocalDateTime timeOut) {
+        ObservableList<String> timeOptions = FXCollections.observableArrayList();
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
+
+        LocalDateTime startTime;
+        int minuteOfHour = timeOut.getMinute();
+        if (minuteOfHour <= 30) {
+            startTime = timeOut.withMinute(30).withSecond(0).withNano(0);
+        } else {
+            startTime = timeOut.plusHours(1).withMinute(0).withSecond(0).withNano(0);
+        }
+
+        for (int i = 0; i < 16; i++) {
+            LocalDateTime estimatedReturn = startTime.plusMinutes(i * 30L);
+            long totalMinutes = java.time.Duration.between(timeOut, estimatedReturn).toMinutes();
+            long hours = totalMinutes / 60;
+            long mins = totalMinutes % 60;
+
+            String duration;
+            if (hours > 0 && mins > 0) {
+                duration = hours + " hr" + (hours > 1 ? "s" : "") + " " + mins + " min";
+            } else if (hours > 0) {
+                duration = hours + " hr" + (hours > 1 ? "s" : "");
+            } else {
+                duration = mins + " min";
+            }
+
+            String timeStr = estimatedReturn.format(timeFormatter);
+            timeOptions.add(timeStr + "  (" + duration + ")");
+        }
+
+        cmbTimeIn.setItems(timeOptions);
     }
 
     private void loadEmployeeName(int employeeId) {
@@ -263,6 +346,157 @@ public class PassSlipController {
             e.printStackTrace();
         }
         return "Unknown";
+    }
+
+    private void printSlip() {
+        if (selectedEmployeeId == 0) {
+            lblSlipStatusMessage.setText("SELECT AN EMPLOYEE BEFORE EXPORTING");
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Pass Slip as PDF");
+        fileChooser.setInitialFileName("PassSlip_" + txtSlipClientId.getText() + ".pdf");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("PDF Files", "*.pdf")
+        );
+
+        File file = fileChooser.showSaveDialog(
+                passSlipModalRoot.getScene().getWindow()
+        );
+
+        if (file != null) {
+            try {
+                DeviceRgb white = new DeviceRgb(255, 255, 255);
+                DeviceRgb black = new DeviceRgb(0, 0, 0);
+                DeviceRgb gold = new DeviceRgb(212, 168, 83);
+                DeviceRgb maroon = new DeviceRgb(124, 10, 2);
+                DeviceRgb lightGray = new DeviceRgb(240, 240, 240);
+                DeviceRgb medGray = new DeviceRgb(100, 100, 100);
+                DeviceRgb darkText = new DeviceRgb(30, 30, 30);
+
+                PdfWriter writer = new PdfWriter(file);
+                PdfDocument pdfDoc = new PdfDocument(writer);
+                Document document = new Document(pdfDoc);
+                document.setMargins(20, 20, 20, 20);
+
+                document.setBackgroundColor(white);
+
+                Table headerTable = new Table(UnitValue.createPercentArray(new float[]{12, 88}))
+                        .useAllAvailableWidth()
+                        .setAutoLayout();
+
+                Cell sideCell = new Cell(1, 1);
+                sideCell.setBackgroundColor(maroon);
+                sideCell.setVerticalAlignment(VerticalAlignment.MIDDLE);
+                sideCell.setKeepTogether(false);
+                Paragraph sideText = new Paragraph()
+                        .add(new Paragraph("PASS")
+                                .setFontColor(white)
+                                .setFontSize(14)
+                                .setBold()
+                                .setTextAlignment(TextAlignment.CENTER))
+                        .add(new Paragraph("SLIP")
+                                .setFontColor(white)
+                                .setFontSize(14)
+                                .setBold()
+                                .setTextAlignment(TextAlignment.CENTER));
+                sideCell.add(sideText);
+                headerTable.addCell(sideCell);
+
+                Cell mainCell = new Cell(1, 1);
+                mainCell.setPadding(8);
+                mainCell.setBorder(new SolidBorder(medGray, 1));
+
+                Table infoRow = new Table(UnitValue.createPercentArray(new float[]{20, 30, 25, 25}))
+                        .useAllAvailableWidth()
+                        .setAutoLayout();
+                infoRow.addCell(createLabelCell("YEAR", medGray, white));
+                infoRow.addCell(createValueCell(txtSlipYear.getText(), darkText, lightGray));
+                infoRow.addCell(createLabelCell("EFFECTIVE SYSTEM LOG DATE", medGray, white));
+                infoRow.addCell(createValueCell(txtSlipFormattedDate.getText(), gold, lightGray));
+                mainCell.add(infoRow);
+
+                Table idRow = new Table(UnitValue.createPercentArray(new float[]{20, 80}))
+                        .useAllAvailableWidth()
+                        .setAutoLayout();
+                idRow.addCell(createLabelCell("CLIENT #:", medGray, white));
+                idRow.addCell(createValueCell(txtSlipClientId.getText(), darkText, lightGray));
+                mainCell.add(idRow);
+
+                Table nameRow = new Table(UnitValue.createPercentArray(new float[]{20, 80}))
+                        .useAllAvailableWidth()
+                        .setAutoLayout();
+                nameRow.addCell(createLabelCell("NAME:", medGray, white));
+                nameRow.addCell(createValueCell(txtSlipEmployeeName.getText(), darkText, lightGray));
+                mainCell.add(nameRow);
+
+                Table purposeRow = new Table(UnitValue.createPercentArray(new float[]{20, 80}))
+                        .useAllAvailableWidth()
+                        .setAutoLayout();
+                purposeRow.addCell(createLabelCell("PURPOSE:", medGray, white));
+                purposeRow.addCell(createValueCell(txtSlipPurpose.getText(), darkText, lightGray));
+                mainCell.add(purposeRow);
+
+                Table timeRow = new Table(UnitValue.createPercentArray(new float[]{20, 30, 25, 25}))
+                        .useAllAvailableWidth()
+                        .setAutoLayout();
+                timeRow.addCell(createLabelCell("TIME OUT:", medGray, white));
+                timeRow.addCell(createValueCell(txtSlipTimeOut.getText(), darkText, lightGray));
+                timeRow.addCell(createLabelCell("TIME IN:", medGray, white));
+                String timeInText = cmbTimeIn.getValue() != null ? cmbTimeIn.getValue().split("  \\(")[0] : "Pending";
+                timeRow.addCell(createValueCell(timeInText, darkText, lightGray));
+                mainCell.add(timeRow);
+
+                Table signeeRow = new Table(UnitValue.createPercentArray(new float[]{20, 80}))
+                        .useAllAvailableWidth()
+                        .setAutoLayout();
+                signeeRow.addCell(createLabelCell("ADMIN SIGNEE:", medGray, white));
+                signeeRow.addCell(createValueCell(txtSlipAdminSignee.getText(), gold, lightGray));
+                mainCell.add(signeeRow);
+
+                headerTable.addCell(mainCell);
+
+                document.add(headerTable);
+
+                document.close();
+
+                lblSlipStatusMessage.setText("PDF SAVED SUCCESSFULLY");
+
+                String empName = txtSlipEmployeeName.getText();
+                String purpose = txtSlipPurpose.getText();
+                ActivityLogger.log(
+                        "PRINT_SLIP",
+                        "Printed pass slip for " + empName + " — Purpose: " + purpose,
+                        selectedEmployeeId
+                );
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                lblSlipStatusMessage.setText("FAILED TO SAVE PDF");
+            }
+        }
+    }
+
+    private Cell createLabelCell(String text, DeviceRgb borderColor, DeviceRgb bgColor) {
+        return new Cell()
+                .add(new Paragraph(text)
+                        .setFontColor(new DeviceRgb(80, 80, 80))
+                        .setFontSize(8)
+                        .setBold())
+                .setBorder(new SolidBorder(borderColor, 0.5f))
+                .setPadding(5)
+                .setBackgroundColor(bgColor);
+    }
+
+    private Cell createValueCell(String text, DeviceRgb fontColor, DeviceRgb bgColor) {
+        return new Cell()
+                .add(new Paragraph(text != null ? text : "")
+                        .setFontColor(fontColor)
+                        .setFontSize(10))
+                .setBorder(new SolidBorder(new DeviceRgb(200, 200, 200), 0.5f))
+                .setPadding(5)
+                .setBackgroundColor(bgColor);
     }
 
 }

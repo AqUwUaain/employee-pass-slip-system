@@ -8,12 +8,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import models.ActivityLog;
 import utils.NavigationHelper;
@@ -51,6 +48,9 @@ public class DashboardController {
 
     @FXML
     private Button btnSidebarReports;
+
+    @FXML
+    private Button btnSidebarLogReturn;
 
     @FXML
     private Button btnSidebarUsers;
@@ -91,6 +91,12 @@ public class DashboardController {
     @FXML
     private GridPane gridCalendar;
 
+    @FXML
+    private StackPane dashboardRoot;
+
+    @FXML
+    private StackPane notificationOverlay;
+
     private YearMonth currentYearMonth;
     private LocalDate selectedDate;
     private Timeline autoRefreshTimeline;
@@ -129,6 +135,14 @@ public class DashboardController {
                         "/fxml/Reports.fxml"
                 )
         );
+
+        if (btnSidebarLogReturn != null)
+            btnSidebarLogReturn.setOnAction(
+                    event -> NavigationHelper.navigateTo(
+                            btnSidebarLogReturn,
+                            "/fxml/Return.fxml"
+                    )
+            );
 
         if (btnSidebarUsers != null)
             btnSidebarUsers.setOnAction(
@@ -177,6 +191,22 @@ public class DashboardController {
                         "/fxml/PassSlip.fxml"
                 )
         );
+
+        btnNotificationsAlert.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                newScene.windowProperty().addListener((wObs, oldWindow, newWindow) -> {
+                    if (newWindow instanceof javafx.stage.Stage) {
+                        javafx.stage.Stage stage = (javafx.stage.Stage) newWindow;
+                        stage.widthProperty().addListener((o, ov, nv) -> closeNotificationOverlay());
+                        stage.heightProperty().addListener((o, ov, nv) -> closeNotificationOverlay());
+                        stage.xProperty().addListener((o, ov, nv) -> closeNotificationOverlay());
+                        stage.yProperty().addListener((o, ov, nv) -> closeNotificationOverlay());
+                        stage.maximizedProperty().addListener((o, ov, nv) -> closeNotificationOverlay());
+                        stage.iconifiedProperty().addListener((o, ov, nv) -> closeNotificationOverlay());
+                    }
+                });
+            }
+        });
 
         btnPrevMonth.setOnMouseClicked(event -> {
             currentYearMonth = currentYearMonth.minusMonths(1);
@@ -495,31 +525,51 @@ public class DashboardController {
 
     }
 
+    private void closeNotificationOverlay() {
+        if (notificationOverlay.isVisible()) {
+            notificationOverlay.setVisible(false);
+            notificationOverlay.getChildren().clear();
+        }
+    }
+
     private void showNotificationPopup() {
+        if (notificationOverlay.isVisible()) {
+            notificationOverlay.setVisible(false);
+            notificationOverlay.getChildren().clear();
+            return;
+        }
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NotificationPopup.fxml"));
-            Parent popup = loader.load();
+            VBox popup = loader.load();
 
-            Stage popupStage = new Stage();
-            popupStage.initStyle(StageStyle.UNDECORATED);
-            popupStage.initOwner(btnNotificationsAlert.getScene().getWindow());
-            popupStage.setScene(new Scene(popup));
-            popupStage.setResizable(false);
+            popup.setPrefWidth(380);
+            popup.setMaxWidth(380);
+            popup.setStyle("-fx-background-color: #252220; -fx-background-radius: 16px; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 30, 0, 0, 8);");
 
-            popupStage.setOnHidden(e -> {
-                // Refresh activity list when popup closes
-                loadActivities(currentFilter);
-            });
-
-            popupStage.show();
-
-            // Position near the bell icon
             javafx.geometry.Bounds bounds = btnNotificationsAlert.localToScreen(
                     btnNotificationsAlert.getBoundsInLocal());
-            if (bounds != null) {
-                popupStage.setX(bounds.getMaxX() - 360);
-                popupStage.setY(bounds.getMaxY() + 10);
-            }
+            double screenRight = bounds.getMaxX();
+            double screenTop = bounds.getMaxY() + 5;
+
+            javafx.stage.Window window = btnNotificationsAlert.getScene().getWindow();
+            double popupLeft = screenRight - 380 - window.getX();
+            double popupTop = screenTop - window.getY();
+
+            StackPane.setAlignment(popup, javafx.geometry.Pos.TOP_LEFT);
+            StackPane.setMargin(popup, new javafx.geometry.Insets(popupTop, 0, 0, popupLeft));
+
+            notificationOverlay.getChildren().add(popup);
+            notificationOverlay.setVisible(true);
+
+            popup.setOnMouseClicked(e -> e.consume());
+
+            notificationOverlay.setOnMouseClicked(e -> {
+                if (e.getTarget() == notificationOverlay) {
+                    notificationOverlay.setVisible(false);
+                    notificationOverlay.getChildren().clear();
+                }
+            });
 
         } catch (Exception e) {
             e.printStackTrace();
