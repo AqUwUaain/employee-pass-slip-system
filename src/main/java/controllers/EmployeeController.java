@@ -54,6 +54,9 @@ public class EmployeeController {
     private VBox btnGatewayAddEmployee;
 
     @FXML
+    private VBox btnGatewayImportEmployees;
+
+    @FXML
     private void initialize() {
         NavigationHelper.setActiveButton(btnSidebarEmployees);
 
@@ -95,7 +98,7 @@ public class EmployeeController {
             btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
 
         if (btnNotificationsAlert != null)
-            btnNotificationsAlert.setOnAction(e -> NavigationHelper.navigateTo(btnNotificationsAlert, "/fxml/ActivityLog.fxml"));
+            btnNotificationsAlert.setOnAction(e -> utils.NotificationHelper.toggle(btnNotificationsAlert));
         if (btnHamburgerMenuToggle != null)
             btnHamburgerMenuToggle.setOnAction(e -> NavigationHelper.navigateTo(btnHamburgerMenuToggle, "/fxml/User.fxml"));
 
@@ -115,6 +118,14 @@ public class EmployeeController {
                     );
                 }
         );
+
+        if (btnGatewayImportEmployees != null)
+            btnGatewayImportEmployees.setOnMouseClicked(
+                    event -> NavigationHelper.navigateTo(
+                            btnGatewayImportEmployees,
+                            "/fxml/EmployeeImport.fxml"
+                    )
+            );
 
     }
 

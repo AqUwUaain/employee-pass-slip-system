@@ -83,6 +83,13 @@
                                         <Label alignment="CENTER" text="Register new personnel profiles." textAlignment="CENTER" wrapText="true" style="-fx-font-size: 12px; -fx-text-fill: #A8A29E;" />
                                     </children>
                                 </VBox>
+                                <VBox fx:id="btnGatewayImportEmployees" alignment="CENTER" prefHeight="220.0" prefWidth="260.0" spacing="16.0" styleClass="stat-dark" style="-fx-cursor: hand; -fx-padding: 28px;">
+                                    <children>
+                                        <Label text="&#x1F4E5;" style="-fx-font-size: 44px;" />
+                                        <Label text="Import Employees" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" />
+                                        <Label alignment="CENTER" text="Bulk import from Excel or CSV files." textAlignment="CENTER" wrapText="true" style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.55);" />
+                                    </children>
+                                </VBox>
                             </children>
                         </HBox>
                     </children>

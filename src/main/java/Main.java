@@ -25,6 +25,10 @@ public class  Main extends Application {
 
         stage.setScene(scene);
         stage.setTitle("Employee Pass Slip System");
+        stage.setMinWidth(900);
+        stage.setMinHeight(600);
+        stage.setWidth(1280);
+        stage.setHeight(800);
         stage.show();
     }
 

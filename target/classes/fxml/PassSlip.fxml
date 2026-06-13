@@ -30,8 +30,16 @@
         </HBox>
 
         <!-- CORE CONTAINER WRAPPER -->
-        <VBox spacing="20.0" style="-fx-padding: 25px;">
+        <VBox spacing="12.0" style="-fx-padding: 20px 25px;">
             <children>
+
+                <!-- INSTRUCTION BANNER -->
+                <HBox alignment="CENTER_LEFT" spacing="8.0" style="-fx-background-color: rgba(212,168,83,0.1); -fx-border-color: #D4A853; -fx-border-width: 1; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-padding: 10px 14px;">
+                    <children>
+                        <Label style="-fx-font-size: 13px; -fx-text-fill: #D4A853;" text="&#x2139;" />
+                        <Label style="-fx-font-size: 11px; -fx-text-fill: #D4A853; -fx-wrap-text: true;" text="Select an employee, enter the purpose, and choose an estimated return time. Fields marked with * are required." HBox.hgrow="ALWAYS" />
+                    </children>
+                </HBox>
 
                 <!-- THE STRUCTURAL SLIP DOCUMENT CONTAINER LAYER -->
                 <HBox style="-fx-border-color: #3D3229; -fx-border-width: 2px; -fx-background-color: #2D2520;">
@@ -89,8 +97,9 @@
                                         <!-- Personnel Full Name Field -->
                                         <VBox HBox.hgrow="ALWAYS" style="-fx-padding: 6px 10px;">
                                             <children>
-                                                <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2;" text="SELECT EMPLOYEE :" />
-                                                <ComboBox fx:id="cmbEmployeeSelect" promptText="Select Employee" prefWidth="280.0" style="-fx-background-color: transparent; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px;" />
+                                                <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2;" text="SELECT EMPLOYEE * :" />
+                                                <ComboBox fx:id="cmbEmployeeSelect" promptText="Choose from the list" prefWidth="280.0" style="-fx-background-color: transparent; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px;" />
+                                                <Label style="-fx-font-family: 'Arial'; -fx-font-size: 9px; -fx-text-fill: #78716C; -fx-padding: 2px 0 0 0;" text="Employee ID and name will auto-fill below" />
                                                 <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 6px 0 0 0; -fx-text-fill: #D6CCC2;" text="NAME :" />
                                                 <TextField fx:id="txtSlipEmployeeName" editable="false" promptText="Auto-filled on selection" style="-fx-background-color: transparent; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
                                             </children>
@@ -101,41 +110,51 @@
                                 <!-- ROW SECTION 3: PURPOSE STATEMENT FIELD BLOCK -->
                                 <VBox style="-fx-border-color: transparent transparent #3D3229 transparent; -fx-border-width: 0 0 2px 0; -fx-padding: 8px 10px;">
                                     <children>
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2;" text="PURPOSE :" />
-                                        <TextArea fx:id="txtSlipPurpose" prefHeight="55.0" promptText="Specify official destination reason or campus exit context declarations..." style="-fx-background-color: transparent; -fx-control-inner-background: #1C0A04; -fx-background-insets: 0; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-text-fill: #FFFFFF;" wrapText="true" />
+                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2;" text="PURPOSE * :" />
+                                        <TextArea fx:id="txtSlipPurpose" prefHeight="55.0" promptText="e.g., Medical appointment, personal errand, official business..." style="-fx-background-color: transparent; -fx-control-inner-background: #1C0A04; -fx-background-insets: 0; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-text-fill: #FFFFFF;" wrapText="true" />
+                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 9px; -fx-text-fill: #78716C; -fx-padding: 2px 0 0 0;" text="Minimum 5 characters required" />
                                     </children>
                                 </VBox>
 
                                 <!-- ROW SECTION 4: TEMPORAL TELEMETRY MARKS (TIME OUT / TIME IN) -->
-                                <HBox style="-fx-border-color: transparent transparent #3D3229 transparent; -fx-border-width: 0 0 2px 0;">
+                                <VBox style="-fx-border-color: transparent transparent #3D3229 transparent; -fx-border-width: 0 0 2px 0;">
                                     <children>
-                                        <!-- Time Out Input Slot -->
-                                        <VBox HBox.hgrow="ALWAYS" style="-fx-border-color: transparent #3D3229 transparent transparent; -fx-border-width: 0 2px 0 0; -fx-padding: 6px 10px;">
+                                        <HBox>
                                             <children>
-                                                <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2;" text="TIME OUT :" />
-                                                <TextField fx:id="txtSlipTimeOut" promptText="e.g., 01:00 PM" style="-fx-background-color: transparent; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-text-fill: #F5F5F4;" />
+                                                <!-- Time Out Input Slot -->
+                                                <VBox HBox.hgrow="ALWAYS" style="-fx-border-color: transparent #3D3229 transparent transparent; -fx-border-width: 0 2px 0 0; -fx-padding: 6px 10px;">
+                                                    <children>
+                                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2;" text="TIME OUT :" />
+                                                        <TextField fx:id="txtSlipTimeOut" editable="false" promptText="Auto-recorded" style="-fx-background-color: transparent; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-text-fill: #F5F5F4;" />
+                                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 9px; -fx-text-fill: #78716C; -fx-padding: 2px 0 0 0;" text="Automatically recorded" />
+                                                    </children>
+                                                </VBox>
+                                                <!-- Time In Input Slot -->
+                                                <VBox HBox.hgrow="ALWAYS" style="-fx-padding: 6px 10px;">
+                                                    <children>
+                                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2;" text="ESTIMATED TIME IN * :" />
+                                                        <ComboBox fx:id="cmbTimeIn" promptText="Select expected return time" prefWidth="200.0" style="-fx-background-color: transparent; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px;" />
+                                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 9px; -fx-text-fill: #78716C; -fx-padding: 2px 0 0 0;" text="Select when the employee will return" />
+                                                    </children>
+                                                </VBox>
                                             </children>
-                                        </VBox>
-                                        <!-- Time In Input Slot -->
-                                        <VBox HBox.hgrow="ALWAYS" style="-fx-padding: 6px 10px;">
-                                            <children>
-                                                <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2;" text="TIME IN :" />
-                                                <TextField fx:id="txtSlipTimeIn" promptText="Pending check-in log..." style="-fx-background-color: transparent; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-text-fill: #F5F5F4;" />
-                                            </children>
-                                        </VBox>
+                                        </HBox>
+                                        <!-- DURATION DISPLAY -->
+                                        <Label fx:id="lblDuration" style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D4A853; -fx-padding: 4px 10px 6px 10px;" text="" />
                                     </children>
-                                </HBox>
+                                </VBox>
 
                                 <!-- ROW SECTION 5: VALIDATION SIGNATURE BLOCK FOOTER -->
-                                <VBox alignment="BOTTOM_CENTER" prefHeight="65.0" style="-fx-padding: 0 0 6px 0;">
+                                <VBox alignment="BOTTOM_CENTER" style="-fx-padding: 6px 0;">
                                     <children>
-                                        <TextField fx:id="txtSlipAdminSignee" alignment="CENTER" prefWidth="250.0" promptText="[Type Officer Full Name Reference]" style="-fx-background-color: transparent; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #D4A853; -fx-padding: 0;" />
+                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2; -fx-padding: 0 0 4px 0;" text="ADMIN SIGNATURE :" />
+                                        <TextField fx:id="txtSlipAdminSignee" alignment="CENTER" prefWidth="250.0" promptText="Type your full name" style="-fx-background-color: transparent; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #D4A853; -fx-padding: 0;" />
                                         <VBox maxWidth="320.0" style="-fx-background-color: #3D3229; -fx-pref-height: 1px; -fx-min-height: 1px;">
                                             <VBox.margin>
                                                 <Insets bottom="3.0" top="2.0" />
                                             </VBox.margin>
                                         </VBox>
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #A8A29E;" text="SIGNATURE OF ADMINISTRATIVE OFFICER" />
+                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 9px; -fx-text-fill: #78716C;" text="Type your name as your digital signature" />
                                     </children>
                                 </VBox>
 

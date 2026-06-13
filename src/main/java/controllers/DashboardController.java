@@ -5,15 +5,14 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
 import models.ActivityLog;
 import utils.NavigationHelper;
+import utils.NotificationHelper;
 import utils.PhilTime;
 import utils.TimerService;
 
@@ -94,9 +93,6 @@ public class DashboardController {
     @FXML
     private StackPane dashboardRoot;
 
-    @FXML
-    private StackPane notificationOverlay;
-
     private YearMonth currentYearMonth;
     private LocalDate selectedDate;
     private Timeline autoRefreshTimeline;
@@ -166,7 +162,7 @@ public class DashboardController {
             );
 
         btnNotificationsAlert.setOnAction(
-                event -> showNotificationPopup()
+                event -> NotificationHelper.toggle(btnNotificationsAlert)
         );
 
         btnHamburgerMenuToggle.setOnAction(
@@ -191,22 +187,6 @@ public class DashboardController {
                         "/fxml/PassSlip.fxml"
                 )
         );
-
-        btnNotificationsAlert.sceneProperty().addListener((obs, oldScene, newScene) -> {
-            if (newScene != null) {
-                newScene.windowProperty().addListener((wObs, oldWindow, newWindow) -> {
-                    if (newWindow instanceof javafx.stage.Stage) {
-                        javafx.stage.Stage stage = (javafx.stage.Stage) newWindow;
-                        stage.widthProperty().addListener((o, ov, nv) -> closeNotificationOverlay());
-                        stage.heightProperty().addListener((o, ov, nv) -> closeNotificationOverlay());
-                        stage.xProperty().addListener((o, ov, nv) -> closeNotificationOverlay());
-                        stage.yProperty().addListener((o, ov, nv) -> closeNotificationOverlay());
-                        stage.maximizedProperty().addListener((o, ov, nv) -> closeNotificationOverlay());
-                        stage.iconifiedProperty().addListener((o, ov, nv) -> closeNotificationOverlay());
-                    }
-                });
-            }
-        });
 
         btnPrevMonth.setOnMouseClicked(event -> {
             currentYearMonth = currentYearMonth.minusMonths(1);
@@ -523,58 +503,6 @@ public class DashboardController {
         TimerService.setOnUpdateCallback(this::loadLiveTimer);
         TimerService.startAutoRefresh();
 
-    }
-
-    private void closeNotificationOverlay() {
-        if (notificationOverlay.isVisible()) {
-            notificationOverlay.setVisible(false);
-            notificationOverlay.getChildren().clear();
-        }
-    }
-
-    private void showNotificationPopup() {
-        if (notificationOverlay.isVisible()) {
-            notificationOverlay.setVisible(false);
-            notificationOverlay.getChildren().clear();
-            return;
-        }
-
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NotificationPopup.fxml"));
-            VBox popup = loader.load();
-
-            popup.setPrefWidth(380);
-            popup.setMaxWidth(380);
-            popup.setStyle("-fx-background-color: #252220; -fx-background-radius: 16px; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 30, 0, 0, 8);");
-
-            javafx.geometry.Bounds bounds = btnNotificationsAlert.localToScreen(
-                    btnNotificationsAlert.getBoundsInLocal());
-            double screenRight = bounds.getMaxX();
-            double screenTop = bounds.getMaxY() + 5;
-
-            javafx.stage.Window window = btnNotificationsAlert.getScene().getWindow();
-            double popupLeft = screenRight - 380 - window.getX();
-            double popupTop = screenTop - window.getY();
-
-            StackPane.setAlignment(popup, javafx.geometry.Pos.TOP_LEFT);
-            StackPane.setMargin(popup, new javafx.geometry.Insets(popupTop, 0, 0, popupLeft));
-
-            notificationOverlay.getChildren().add(popup);
-            notificationOverlay.setVisible(true);
-
-            popup.setOnMouseClicked(e -> e.consume());
-
-            notificationOverlay.setOnMouseClicked(e -> {
-                if (e.getTarget() == notificationOverlay) {
-                    notificationOverlay.setVisible(false);
-                    notificationOverlay.getChildren().clear();
-                }
-            });
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            NavigationHelper.navigateTo(btnNotificationsAlert, "/fxml/ActivityLog.fxml");
-        }
     }
 
 }

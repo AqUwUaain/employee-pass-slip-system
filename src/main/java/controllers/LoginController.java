@@ -12,6 +12,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
@@ -56,6 +57,12 @@ public class LoginController {
     @FXML
     private Hyperlink termsOfServiceLink;
 
+    @FXML
+    private StackPane leftHeroPanel;
+
+    @FXML
+    private ImageView campusImageView;
+
     private TextField visiblePasswordField;
     private boolean passwordVisible = false;
 
@@ -63,6 +70,10 @@ public class LoginController {
 
     @FXML
     private void initialize() {
+        // Scale campus image to fill left panel while preserving aspect ratio
+        campusImageView.fitWidthProperty().bind(leftHeroPanel.widthProperty());
+        campusImageView.fitHeightProperty().bind(leftHeroPanel.heightProperty());
+
         // Load saved credentials
         String savedEmail = prefs.get("saved_email", "");
         String savedPassword = prefs.get("saved_password", "");

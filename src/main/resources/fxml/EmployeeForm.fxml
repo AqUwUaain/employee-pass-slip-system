@@ -67,7 +67,9 @@
         </HBox>
     </top>
     <center>
-        <VBox spacing="22.0" style="-fx-padding: 28px 36px;" BorderPane.alignment="CENTER">
+        <ScrollPane fitToWidth="true" style="-fx-background: #1E1B18; -fx-background-color: #1E1B18; -fx-border-color: transparent;" BorderPane.alignment="CENTER">
+            <content>
+        <VBox spacing="22.0" style="-fx-padding: 28px 36px;">
             <children>
                 <HBox alignment="CENTER_LEFT" spacing="12.0">
                     <children>
@@ -133,5 +135,7 @@
                 </VBox>
             </children>
         </VBox>
+            </content>
+        </ScrollPane>
     </center>
 </BorderPane>

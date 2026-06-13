@@ -92,7 +92,7 @@ public class ActivityLogController {
             btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
 
         if (btnNotificationsAlert != null)
-            btnNotificationsAlert.setOnAction(e -> NavigationHelper.navigateTo(btnNotificationsAlert, "/fxml/ActivityLog.fxml"));
+            btnNotificationsAlert.setOnAction(e -> utils.NotificationHelper.toggle(btnNotificationsAlert));
         if (btnHamburgerMenuToggle != null)
             btnHamburgerMenuToggle.setOnAction(e -> NavigationHelper.navigateTo(btnHamburgerMenuToggle, "/fxml/User.fxml"));
 

@@ -199,6 +199,4 @@
         </VBox>
     </bottom>
 </BorderPane>
-    <!-- Notification Dropdown Overlay -->
-    <StackPane fx:id="notificationOverlay" visible="false" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS" />
 </StackPane>

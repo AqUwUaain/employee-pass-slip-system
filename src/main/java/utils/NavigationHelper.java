@@ -69,8 +69,12 @@ public final class NavigationHelper {
             if (wasFullScreen) {
                 stage.setFullScreen(true);
             } else {
-                stage.setWidth(prevWidth);
-                stage.setHeight(prevHeight);
+                double newPrefWidth = root.prefWidth(-1);
+                double newPrefHeight = root.prefHeight(-1);
+                double newWidth = Math.max(prevWidth, newPrefWidth > 0 ? newPrefWidth : 0);
+                double newHeight = Math.max(prevHeight, newPrefHeight > 0 ? newPrefHeight : 0);
+                stage.setWidth(newWidth);
+                stage.setHeight(newHeight);
             }
 
             stage.show();
@@ -99,16 +103,23 @@ public final class NavigationHelper {
             LogoutConfirmController controller = loader.getController();
             Stage dialogStage = new Stage();
             dialogStage.initModality(Modality.APPLICATION_MODAL);
-            // FIX: Use TRANSPARENT stage to remove white corners
             dialogStage.initStyle(StageStyle.TRANSPARENT);
             dialogStage.initOwner(source.getScene().getWindow());
             controller.setDialogStage(dialogStage);
 
             Scene scene = new Scene(root);
-            // FIX: Make scene background transparent
             scene.setFill(Color.TRANSPARENT);
             dialogStage.setScene(scene);
             dialogStage.setResizable(false);
+
+            Stage ownerStage = (Stage) source.getScene().getWindow();
+            double dialogWidth = root.prefWidth(-1);
+            double dialogHeight = root.prefHeight(-1);
+            if (dialogWidth <= 0) dialogWidth = 400;
+            if (dialogHeight <= 0) dialogHeight = 250;
+            dialogStage.setX(ownerStage.getX() + (ownerStage.getWidth() - dialogWidth) / 2);
+            dialogStage.setY(ownerStage.getY() + (ownerStage.getHeight() - dialogHeight) / 2);
+
             dialogStage.showAndWait();
 
             if (controller.isConfirmed()) {

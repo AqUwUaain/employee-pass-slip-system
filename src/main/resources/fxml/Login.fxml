@@ -13,12 +13,12 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox fx:id="mainRoot" prefHeight="700.0" prefWidth="1060.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
+<HBox fx:id="mainRoot" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
     <children>
         <!-- LEFT: Full campus photo with overlay -->
-        <StackPane fx:id="leftHeroPanel" HBox.hgrow="ALWAYS">
+        <StackPane fx:id="leftHeroPanel" HBox.hgrow="ALWAYS" minWidth="300.0">
             <children>
-                <ImageView fx:id="campusImageView" fitHeight="700.0" fitWidth="560.0" pickOnBounds="true" preserveRatio="false">
+                <ImageView fx:id="campusImageView" pickOnBounds="true" preserveRatio="true">
                     <image><Image url="@../images/pup_campus_bg.png" /></image>
                 </ImageView>
                 <!-- Dark overlay with gradient -->
@@ -39,7 +39,7 @@
             </children>
         </StackPane>
         <!-- RIGHT: Login form on dark background -->
-        <StackPane fx:id="rightFormPanel" prefWidth="480.0" style="-fx-background-color: #1C0A04;">
+        <StackPane fx:id="rightFormPanel" minWidth="380.0" prefWidth="480.0" maxWidth="520.0" HBox.hgrow="NEVER" style="-fx-background-color: #1C0A04;">
             <VBox alignment="CENTER" maxWidth="320.0" spacing="0.0">
                 <children>
                     <!-- Branding -->

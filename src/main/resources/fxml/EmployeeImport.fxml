@@ -4,6 +4,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -11,7 +13,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="employeeMasterStructure" prefHeight="720.0" prefWidth="1180.0" style="-fx-background-color: #1E1B18;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EmployeeController">
+<BorderPane fx:id="importRoot" prefHeight="720.0" prefWidth="1180.0" style="-fx-background-color: #1E1B18;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EmployeeImportController">
     <left>
         <VBox fx:id="sidebarNavigationContainer" prefWidth="240.0" styleClass="sidebar-dark" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
             <children>
@@ -48,8 +50,8 @@
             <children>
                 <VBox spacing="2.0">
                     <children>
-                        <Label text="Employee Management" styleClass="pg-title" />
-                        <Label text="Select a management task below" styleClass="pg-sub" />
+                        <Label text="Import Employees" styleClass="pg-title" />
+                        <Label text="Bulk import from Excel (.xlsx) or CSV (.csv) files" styleClass="pg-sub" />
                     </children>
                 </VBox>
                 <StackPane HBox.hgrow="ALWAYS" />
@@ -65,33 +67,40 @@
     <center>
         <ScrollPane fitToWidth="true" style="-fx-background: #1E1B18; -fx-background-color: #1E1B18; -fx-border-color: transparent;" BorderPane.alignment="CENTER">
             <content>
-                <VBox fx:id="dynamicContentContainer" spacing="24.0" style="-fx-padding: 28px 36px;">
+                <VBox spacing="20.0" style="-fx-padding: 28px 36px;">
                     <children>
-                        <HBox alignment="CENTER" spacing="22.0" style="-fx-padding: 8px 0;">
+                        <!-- Action buttons -->
+                        <HBox alignment="CENTER_LEFT" spacing="12.0">
                             <children>
-                                <VBox fx:id="btnGatewayViewList" alignment="CENTER" prefHeight="220.0" prefWidth="260.0" spacing="16.0" styleClass="stat-dark" style="-fx-cursor: hand; -fx-padding: 28px;">
-                                    <children>
-                                        <Label text="&#x1F4CB;" style="-fx-font-size: 44px;" />
-                                        <Label text="Employee Directory" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" />
-                                        <Label alignment="CENTER" text="Browse and manage personnel records." textAlignment="CENTER" wrapText="true" style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.55);" />
-                                    </children>
-                                </VBox>
-                                <VBox fx:id="btnGatewayAddEmployee" alignment="CENTER" prefHeight="220.0" prefWidth="260.0" spacing="16.0" styleClass="card" style="-fx-cursor: hand; -fx-padding: 28px;">
-                                    <children>
-                                        <Label text="&#x2795;" style="-fx-font-size: 44px;" />
-                                        <Label text="Add New Employee" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #FCA5A5;" />
-                                        <Label alignment="CENTER" text="Register new personnel profiles." textAlignment="CENTER" wrapText="true" style="-fx-font-size: 12px; -fx-text-fill: #A8A29E;" />
-                                    </children>
-                                </VBox>
-                                <VBox fx:id="btnGatewayImportEmployees" alignment="CENTER" prefHeight="220.0" prefWidth="260.0" spacing="16.0" styleClass="stat-dark" style="-fx-cursor: hand; -fx-padding: 28px;">
-                                    <children>
-                                        <Label text="&#x1F4E5;" style="-fx-font-size: 44px;" />
-                                        <Label text="Import Employees" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" />
-                                        <Label alignment="CENTER" text="Bulk import from Excel or CSV files." textAlignment="CENTER" wrapText="true" style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.55);" />
-                                    </children>
-                                </VBox>
+                                <Button fx:id="btnChooseFile" text="&#x1F4C1;  Choose File" style="-fx-background-color: linear-gradient(to right, #C9951A, #D4A853); -fx-text-fill: #1C1917; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 11px 24px; -fx-cursor: hand;" />
+                                <Button fx:id="btnImportAll" text="&#x2795;  Import All" disable="true" style="-fx-background-color: #34D399; -fx-text-fill: #1C1917; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 11px 24px; -fx-cursor: hand;" />
+                                <Button fx:id="btnBackToEmployees" text="&#x25C0;  Back" style="-fx-background-color: #3D3229; -fx-text-fill: #D6CCC2; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 11px 24px; -fx-border-color: #57534E; -fx-border-width: 1px; -fx-cursor: hand;" />
+                                <StackPane HBox.hgrow="ALWAYS" />
+                                <Label fx:id="lblImportSummary" text="" style="-fx-text-fill: #A8A29E; -fx-font-size: 13px;" />
                             </children>
                         </HBox>
+                        <!-- Message label -->
+                        <Label fx:id="lblMessage" text="" style="-fx-font-size: 13px; -fx-padding: 4px 0;" />
+                        <!-- Preview table -->
+                        <Label text="PREVIEW" style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 11px; -fx-font-weight: bold;" />
+                        <TableView fx:id="previewTable" prefHeight="350.0" VBox.vgrow="ALWAYS" style="-fx-background-color: #252220; -fx-border-color: #3D3229; -fx-border-radius: 8px; -fx-background-radius: 8px;">
+                            <columns>
+                                <TableColumn fx:id="colPreviewRowNum" text="#" prefWidth="35" />
+                                <TableColumn fx:id="colPreviewFirstName" text="First Name" prefWidth="85" />
+                                <TableColumn fx:id="colPreviewLastName" text="Last Name" prefWidth="85" />
+                                <TableColumn fx:id="colPreviewDepartment" text="Department" prefWidth="85" />
+                                <TableColumn fx:id="colPreviewPosition" text="Position" prefWidth="85" />
+                                <TableColumn fx:id="colPreviewContact" text="Contact" prefWidth="80" />
+                                <TableColumn fx:id="colPreviewJoinDate" text="Join Date" prefWidth="80" />
+                                <TableColumn fx:id="colPreviewManager" text="Manager" prefWidth="75" />
+                                <TableColumn fx:id="colPreviewEmail" text="Email" prefWidth="110" />
+                                <TableColumn fx:id="colPreviewAddress" text="Address" prefWidth="90" />
+                                <TableColumn fx:id="colPreviewEmergency" text="Emergency" prefWidth="85" />
+                            </columns>
+                            <placeholder>
+                                <Label text="Choose a file to see preview" style="-fx-text-fill: #78716C; -fx-font-size: 13px;" />
+                            </placeholder>
+                        </TableView>
                     </children>
                 </VBox>
             </content>

@@ -17,117 +17,103 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="returnMasterStructure" prefHeight="720.0" prefWidth="1150.0" style="-fx-background-color: #1E1B18;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReturnController">
-
-    <top>
-        <HBox alignment="CENTER_LEFT" prefHeight="75.0" style="-fx-background-color: #1E1B18; -fx-border-color: #7C0A02 transparent #3D3229 transparent; -fx-border-width: 4px 0 1px 0; -fx-padding: 0 25px 0 15px;" BorderPane.alignment="CENTER">
+<StackPane fx:id="returnRoot" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReturnController">
+<BorderPane fx:id="returnMasterStructure" prefHeight="720.0" prefWidth="1180.0" style="-fx-background-color: #1E1B18;" stylesheets="@../css/style.css">
+    <left>
+        <VBox fx:id="sidebarNavigationContainer" prefWidth="240.0" styleClass="sidebar-dark" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
             <children>
-                <ImageView fitHeight="55.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/pup_logo.png" />
-                    </image>
-                </ImageView>
-
-                <VBox alignment="CENTER_LEFT" spacing="2.0">
+                <VBox alignment="CENTER" spacing="8.0" style="-fx-padding: 0 0 36px 0;">
                     <children>
-                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 21px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" text="Polytechnic University of the Philippines" />
-                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 17px; -fx-font-style: italic; -fx-text-fill: #D6CCC2;" text="Santa Rosa Campus" />
+                        <ImageView fitHeight="56.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/pup_logo.png" /></image>
+                        </ImageView>
+                        <Label text="PUP SRC" style="-fx-text-fill: #D4A853; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 4px 16px; -fx-background-color: rgba(212,168,83,0.12); -fx-background-radius: 8px;" />
                     </children>
-                    <HBox.margin>
-                        <Insets left="15.0" />
-                    </HBox.margin>
                 </VBox>
-
-                <StackPane HBox.hgrow="ALWAYS" />
-
-                <HBox alignment="CENTER" spacing="15.0">
+                <VBox spacing="4.0" VBox.vgrow="ALWAYS" style="-fx-padding: 0 14px;">
                     <children>
-                        <Button fx:id="btnNotificationsAlert" mnemonicParsing="false" style="-fx-background-color: #7C0A02; -fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-background-radius: 4px; -fx-cursor: hand;" text="🔔" prefHeight="35.0" prefWidth="35.0" />
-                        <Button fx:id="btnHamburgerMenuToggle" mnemonicParsing="false" style="-fx-background-color: #7C0A02; -fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-background-radius: 4px; -fx-cursor: hand;" text="☰" prefHeight="35.0" prefWidth="35.0" />
+                        <Label text="MAIN MENU" style="-fx-text-fill: rgba(255,255,255,0.25); -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 0 8px 8px 8px;" />
+                        <Button fx:id="btnSidebarDashboard" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Dashboard" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarMonitoring" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Monitoring" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarEmployees" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Employees" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarReports" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Reports" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Log Return" styleClass="nav-item nav-active" />
+                        <Button fx:id="btnSidebarUsers" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Users" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarPasswordReset" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Reset Requests" styleClass="nav-item" />
+                        <Label text="ACCOUNT" style="-fx-text-fill: rgba(255,255,255,0.25); -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 16px 8px 8px 8px;" />
+                        <Button fx:id="btnLogout" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Logout" styleClass="nav-item" />
+                    </children>
+                </VBox>
+                <VBox alignment="CENTER" style="-fx-padding: 16px;">
+                    <Label text="2026 PUP — SRC" style="-fx-text-fill: rgba(255,255,255,0.2); -fx-font-size: 10px;" />
+                </VBox>
+            </children>
+        </VBox>
+    </left>
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="62.0" styleClass="header-clean" BorderPane.alignment="CENTER">
+            <children>
+                <VBox spacing="2.0">
+                    <children>
+                        <Label text="Log Return" styleClass="pg-title" />
+                    </children>
+                </VBox>
+                <StackPane HBox.hgrow="ALWAYS" />
+                <HBox spacing="12.0" alignment="CENTER">
+                    <children>
+                        <Button fx:id="btnNotificationsAlert" mnemonicParsing="false" text="&#x1F514;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
+                        <Button fx:id="btnHamburgerMenuToggle" mnemonicParsing="false" text="&#x2699;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
                     </children>
                 </HBox>
             </children>
         </HBox>
     </top>
-
-    <left>
-        <VBox fx:id="sidebarNavigationContainer" prefWidth="240.0" style="-fx-background-color: linear-gradient(to bottom, #1C0A04, #2D1208, #3D0C02); -fx-padding: 25px 0 15px 0;" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
-            <children>
-                <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/pup_logo.png" />
-                    </image>
-                    <VBox.margin>
-                        <Insets bottom="40.0" />
-                    </VBox.margin>
-                </ImageView>
-
-                <VBox spacing="10.0" VBox.vgrow="ALWAYS" style="-fx-padding: 0 12px;">
-                    <children>
-                        <Button fx:id="btnSidebarDashboard" alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-padding: 12px 15px; -fx-background-radius: 5px; -fx-cursor: hand;" text="Dashboard" />
-                        <Button fx:id="btnSidebarMonitoring" alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-padding: 12px 15px; -fx-background-radius: 5px; -fx-cursor: hand;" text="Monitoring and Logs" />
-                        <Button fx:id="btnSidebarEmployees" alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-padding: 12px 15px; -fx-background-radius: 5px; -fx-cursor: hand;" text="Employee Management" />
-                        <Button fx:id="btnSidebarReports" alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-padding: 12px 15px; -fx-background-radius: 5px; -fx-cursor: hand;" text="Report Generation &amp; History" />
-                    </children>
-                </VBox>
-
-                <Label style="-fx-text-fill: #ffffff; -fx-font-size: 12px; -fx-opacity: 0.85;" text="2026 PUP - SRC" />
-            </children>
-        </VBox>
-    </left>
-
     <center>
-        <ScrollPane fitToWidth="true" style="-fx-background: #1E1B18; -fx-background-color: #1E1B18; -fx-border-color: transparent;" BorderPane.alignment="CENTER">
+        <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background: #1E1B18; -fx-background-color: #1E1B18; -fx-border-color: transparent;" BorderPane.alignment="CENTER">
             <content>
-                <VBox spacing="25.0" style="-fx-padding: 30px 40px; -fx-background-color: #1E1B18;">
+                <VBox spacing="24.0" style="-fx-padding: 28px 36px;">
                     <children>
-
-                        <HBox alignment="CENTER" spacing="25.0">
+                        <HBox alignment="CENTER" spacing="18.0">
                             <children>
-                                <VBox alignment="CENTER" prefHeight="130.0" prefWidth="320.0" style="-fx-background-color: #7C0A02; -fx-background-radius: 14px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.25), 8, 0, 0, 3);">
+                                <VBox alignment="CENTER" prefHeight="160.0" HBox.hgrow="ALWAYS" styleClass="stat-dark">
                                     <children>
-                                        <HBox alignment="CENTER_LEFT" style="-fx-background-color: #D4A853; -fx-background-radius: 14px 14px 0 0; -fx-padding: 6px 15px;">
+                                        <VBox alignment="CENTER_LEFT" styleClass="stat-header" prefWidth="210.0">
+                                            <children><Label text="CURRENTLY OUTSIDE" style="-fx-text-fill: #1C0A04; -fx-font-size: 10px; -fx-font-weight: bold;" /></children>
+                                        </VBox>
+                                        <VBox alignment="CENTER" spacing="4.0" VBox.vgrow="ALWAYS">
                                             <children>
-                                                <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #1E1B18; -fx-font-size: 11px;" text="🏃‍♂️ CURRENTLY OUTSIDE" />
+                                                <Label fx:id="lblTotalCurrentlyOut" text="0" styleClass="stat-value" />
+                                                <Label text="awaiting re-entry" styleClass="stat-label" />
                                             </children>
-                                        </HBox>
-                                        <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
-                                            <children>
-                                                <Label fx:id="lblTotalCurrentlyOut" style="-fx-text-fill: #ffffff; -fx-font-family: 'Arial'; -fx-font-size: 36px; -fx-font-weight: bold;" text="14" />
-                                                <Label style="-fx-text-fill: #ffffff; -fx-font-size: 12px; -fx-opacity: 0.8;" text="Awaiting Campus Re-entry Logs" />
-                                            </children>
+                                            <padding><Insets bottom="10.0" /></padding>
                                         </VBox>
                                     </children>
                                 </VBox>
-
-                                <VBox alignment="CENTER" prefHeight="130.0" prefWidth="320.0" style="-fx-background-color: #252220; -fx-background-radius: 14px; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 3);">
+                                <VBox alignment="CENTER" prefHeight="160.0" HBox.hgrow="ALWAYS" styleClass="stat-light">
                                     <children>
-                                        <HBox alignment="CENTER_LEFT" style="-fx-background-color: #2D2520; -fx-background-radius: 13px 13px 0 0; -fx-padding: 6px 15px;">
+                                        <VBox alignment="CENTER_LEFT" styleClass="stat-header" prefWidth="210.0">
+                                            <children><Label text="RETURNED TODAY" style="-fx-text-fill: #1C0A04; -fx-font-size: 10px; -fx-font-weight: bold;" /></children>
+                                        </VBox>
+                                        <VBox alignment="CENTER" spacing="4.0" VBox.vgrow="ALWAYS">
                                             <children>
-                                                <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 11px;" text="✅ TOTAL RETURNED TODAY" />
+                                                <Label fx:id="lblTotalReturnedToday" text="0" styleClass="stat-value" />
+                                                <Label text="successfully settled" styleClass="stat-label" />
                                             </children>
-                                        </HBox>
-                                        <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
-                                            <children>
-                                                <Label fx:id="lblTotalReturnedToday" style="-fx-text-fill: #D4A853; -fx-font-family: 'Arial'; -fx-font-size: 36px; -fx-font-weight: bold;" text="32" />
-                                                <Label style="-fx-text-fill: #A8A29E; -fx-font-size: 12px;" text="Successfully Settled Slips" />
-                                            </children>
+                                            <padding><Insets bottom="10.0" /></padding>
                                         </VBox>
                                     </children>
                                 </VBox>
                             </children>
                         </HBox>
 
-                        <VBox spacing="15.0" style="-fx-background-color: #252220; -fx-padding: 25px 30px; -fx-background-radius: 12px; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 12px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 3);">
+                        <VBox spacing="15.0" styleClass="card" style="-fx-padding: 25px 30px;">
                             <children>
-
                                 <HBox alignment="CENTER_LEFT" spacing="8.0" style="-fx-padding: 0 0 10px 0; -fx-border-color: transparent transparent #3D3229 transparent; -fx-border-width: 0 0 1px 0;">
                                     <children>
                                         <VBox style="-fx-background-color: #D4A853; -fx-pref-width: 4px; -fx-pref-height: 16px;" />
                                         <Label style="-fx-font-family: 'Arial'; -fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #D4A853;" text="LOG PERSONNEL RE-ENTRY" />
                                     </children>
                                 </HBox>
-
                                 <GridPane hgap="20.0" vgap="18.0">
                                     <columnConstraints>
                                         <ColumnConstraints percentWidth="25.0" />
@@ -142,28 +128,25 @@
                                     <children>
                                         <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Scan or Enter Client ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                                         <TextField fx:id="txtReturnSearchId" promptText="Enter PUP-SR-XXXX ID reference..." style="-fx-font-size: 13px; -fx-padding: 8px 12px; -fx-background-color: #2D2520; -fx-border-color: #3D3229; -fx-border-radius: 4px; -fx-text-fill: #F5F5F4;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                                        <Button fx:id="btnFetchActiveSlip" mnemonicParsing="false" maxWidth="Infinity" style="-fx-background-color: #7C0A02; -fx-text-fill: #ffffff; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 8px 15px; -fx-background-radius: 4px; -fx-cursor: hand;" text="🔍 Find Slip" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-
+                                        <Button fx:id="btnFetchActiveSlip" mnemonicParsing="false" maxWidth="Infinity" style="-fx-background-color: #7C0A02; -fx-text-fill: #ffffff; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 8px 15px; -fx-background-radius: 4px; -fx-cursor: hand;" text="&#x1F50D; Find Slip" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                                         <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Identified Personnel Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                                         <TextField fx:id="txtReturnEmployeeName" editable="false" promptText="Personnel match display name" style="-fx-font-size: 13px; -fx-padding: 8px 12px; -fx-background-color: #2D2520; -fx-border-color: #3D3229; -fx-border-radius: 4px; -fx-text-fill: #A8A29E;" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.columnSpan="2" />
-
                                         <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Verify Return Time In:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                                         <TextField fx:id="txtReturnTimeInStamp" promptText="e.g., 04:30 PM" style="-fx-font-size: 13px; -fx-padding: 8px 12px; -fx-background-color: #2D2520; -fx-border-color: #3D3229; -fx-border-radius: 4px; -fx-text-fill: #F5F5F4;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                        <Button fx:id="btnConfirmReturnLog" mnemonicParsing="false" maxWidth="Infinity" style="-fx-background-color: #38a169; -fx-text-fill: #ffffff; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 8px 15px; -fx-background-radius: 4px; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(56,161,105,0.25), 5, 0, 0, 2);" text="📥 Process Re-entry" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                        <Button fx:id="btnConfirmReturnLog" mnemonicParsing="false" maxWidth="Infinity" style="-fx-background-color: #38a169; -fx-text-fill: #ffffff; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 8px 15px; -fx-background-radius: 4px; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(56,161,105,0.25), 5, 0, 0, 2);" text="&#x1F4E5; Process Re-entry" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                     </children>
                                 </GridPane>
                                 <Label fx:id="lblReturnStatusMessage" style="-fx-text-fill: #D4A853; -fx-font-size: 12px; -fx-font-weight: bold;" text="" />
                             </children>
                         </VBox>
 
-                        <VBox spacing="12.0" VBox.vgrow="ALWAYS">
+                        <VBox spacing="12.0" VBox.vgrow="ALWAYS" styleClass="card" style="-fx-padding: 22px;">
                             <children>
                                 <HBox alignment="CENTER_LEFT" spacing="8.0">
                                     <children>
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #D4A853;" text="🕒 OUTSTANDING PASS SLIPS REQUIRING RETURN LOGS" />
+                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #D4A853;" text="&#x23F3; OUTSTANDING PASS SLIPS REQUIRING RETURN LOGS" />
                                     </children>
                                 </HBox>
-
                                 <TableView fx:id="tblOutstandingOutboundView" prefHeight="260.0" style="-fx-background-color: #252220; -fx-border-color: #3D3229; -fx-border-width: 1px;" VBox.vgrow="ALWAYS">
                                     <columns>
                                         <TableColumn fx:id="colReturnSlipId" prefWidth="120.0" style="-fx-alignment: CENTER;" text="Slip ID" />
@@ -179,10 +162,10 @@
                                 </TableView>
                             </children>
                         </VBox>
-
                     </children>
                 </VBox>
             </content>
         </ScrollPane>
     </center>
 </BorderPane>
+</StackPane>
