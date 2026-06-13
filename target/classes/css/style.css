@@ -580,3 +580,98 @@ Button.nav-active:pressed {
 .date-picker-popup .arrow-button .text {
     -fx-fill: #ffe600 !important;
 }
+
+/* ==========================================================================
+   SEMANTIC THEME CLASSES
+   ========================================================================== */
+
+.page-background {
+    -fx-background-color: #1E1B18;
+}
+
+.sidebar-section-label {
+    -fx-text-fill: rgba(255,255,255,0.25);
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 8px 8px 8px;
+}
+
+.sidebar-footer-label {
+    -fx-text-fill: rgba(255,255,255,0.2);
+    -fx-font-size: 10px;
+}
+
+.sidebar-badge {
+    -fx-text-fill: #D4A853;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 4px 16px;
+    -fx-background-color: rgba(212,168,83,0.12);
+    -fx-background-radius: 8px;
+}
+
+.content-scroll-pane {
+    -fx-background: #1E1B18;
+    -fx-background-color: #1E1B18;
+    -fx-border-color: transparent;
+}
+
+.content-padding {
+    -fx-padding: 28px 36px;
+}
+
+.card-padding {
+    -fx-padding: 22px;
+}
+
+.activity-list {
+    -fx-background-color: #1E1B18;
+    -fx-background-radius: 12px;
+    -fx-padding: 6px;
+}
+
+.link-button {
+    -fx-text-fill: #D4A853;
+    -fx-font-size: 12px;
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+    -fx-padding: 4px 8px;
+}
+
+.stat-header-label {
+    -fx-text-fill: #1C0A04;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}
+
+.calendar-nav {
+    -fx-text-fill: #1C0A04;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 10px;
+    -fx-cursor: hand;
+}
+
+.calendar-day-label {
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #F7E7CE;
+}
+
+.timer-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #D4A853;
+}
+
+.timer-value {
+    -fx-font-size: 13px;
+    -fx-text-fill: rgba(255,255,255,0.8);
+}
+
+.table-header-bar {
+    -fx-background-color: #1E1B18;
+    -fx-border-color: #7C0A02 transparent #3D3229 transparent;
+    -fx-border-width: 4px 0 1px 0;
+    -fx-padding: 0 25px 0 15px;
+}

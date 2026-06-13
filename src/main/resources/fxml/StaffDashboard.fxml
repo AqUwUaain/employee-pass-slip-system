@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="TOP_CENTER" prefHeight="720.0" prefWidth="1050.0" spacing="28.0" style="-fx-background-color: #1E1B18; -fx-padding: 36px 44px;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.StaffDashboardController">
+<VBox alignment="TOP_CENTER" prefHeight="720.0" prefWidth="1050.0" spacing="28.0" styleClass="page-background" style="-fx-padding: 36px 44px;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.StaffDashboardController">
     <children>
         <!-- Top header -->
         <HBox alignment="CENTER_LEFT" spacing="16.0" styleClass="card" style="-fx-padding: 22px 28px;">

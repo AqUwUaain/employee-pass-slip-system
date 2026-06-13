@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <StackPane fx:id="returnRoot" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReturnController">
-<BorderPane fx:id="returnMasterStructure" prefHeight="720.0" prefWidth="1180.0" style="-fx-background-color: #1E1B18;" stylesheets="@../css/style.css">
+<BorderPane fx:id="returnMasterStructure" prefHeight="720.0" prefWidth="1180.0" styleClass="page-background">
     <left>
         <VBox fx:id="sidebarNavigationContainer" prefWidth="240.0" styleClass="sidebar-dark" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
             <children>
@@ -27,7 +27,7 @@
                         <ImageView fitHeight="56.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
                             <image><Image url="@../images/pup_logo.png" /></image>
                         </ImageView>
-                        <Label text="PUP SRC" style="-fx-text-fill: #D4A853; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 4px 16px; -fx-background-color: rgba(212,168,83,0.12); -fx-background-radius: 8px;" />
+                        <Label text="PUP SRC" styleClass="sidebar-badge" />
                     </children>
                 </VBox>
                 <VBox spacing="4.0" VBox.vgrow="ALWAYS" style="-fx-padding: 0 14px;">
@@ -62,6 +62,7 @@
                 <HBox spacing="12.0" alignment="CENTER">
                     <children>
                         <Button fx:id="btnNotificationsAlert" mnemonicParsing="false" text="&#x1F514;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
+                        <Button fx:id="btnThemeToggle" mnemonicParsing="false" text="&#x2600;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
                         <Button fx:id="btnHamburgerMenuToggle" mnemonicParsing="false" text="&#x2699;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
                     </children>
                 </HBox>
@@ -69,7 +70,7 @@
         </HBox>
     </top>
     <center>
-        <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background: #1E1B18; -fx-background-color: #1E1B18; -fx-border-color: transparent;" BorderPane.alignment="CENTER">
+        <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="content-scroll-pane" BorderPane.alignment="CENTER">
             <content>
                 <VBox spacing="24.0" style="-fx-padding: 28px 36px;">
                     <children>
@@ -78,7 +79,7 @@
                                 <VBox alignment="CENTER" prefHeight="160.0" HBox.hgrow="ALWAYS" styleClass="stat-dark">
                                     <children>
                                         <VBox alignment="CENTER_LEFT" styleClass="stat-header" prefWidth="210.0">
-                                            <children><Label text="CURRENTLY OUTSIDE" style="-fx-text-fill: #1C0A04; -fx-font-size: 10px; -fx-font-weight: bold;" /></children>
+                                            <children><Label text="CURRENTLY OUTSIDE" styleClass="stat-header-label" /></children>
                                         </VBox>
                                         <VBox alignment="CENTER" spacing="4.0" VBox.vgrow="ALWAYS">
                                             <children>
@@ -92,7 +93,7 @@
                                 <VBox alignment="CENTER" prefHeight="160.0" HBox.hgrow="ALWAYS" styleClass="stat-light">
                                     <children>
                                         <VBox alignment="CENTER_LEFT" styleClass="stat-header" prefWidth="210.0">
-                                            <children><Label text="RETURNED TODAY" style="-fx-text-fill: #1C0A04; -fx-font-size: 10px; -fx-font-weight: bold;" /></children>
+                                            <children><Label text="RETURNED TODAY" styleClass="stat-header-label" /></children>
                                         </VBox>
                                         <VBox alignment="CENTER" spacing="4.0" VBox.vgrow="ALWAYS">
                                             <children>

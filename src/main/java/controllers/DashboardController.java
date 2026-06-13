@@ -34,6 +34,9 @@ public class DashboardController {
     private Button btnNotificationsAlert;
 
     @FXML
+    private Button btnThemeToggle;
+
+    @FXML
     private Button btnHamburgerMenuToggle;
 
     @FXML
@@ -164,6 +167,15 @@ public class DashboardController {
         btnNotificationsAlert.setOnAction(
                 event -> NotificationHelper.toggle(btnNotificationsAlert)
         );
+
+        if (btnThemeToggle != null) {
+            utils.ThemeManager.setThemeToggleLabel(btnThemeToggle);
+            btnThemeToggle.setOnAction(e -> {
+                utils.ThemeManager.toggleTheme();
+                utils.ThemeManager.applyToScene(btnThemeToggle.getScene());
+                utils.ThemeManager.setThemeToggleLabel(btnThemeToggle);
+            });
+        }
 
         btnHamburgerMenuToggle.setOnAction(
                 event -> NavigationHelper.navigateTo(

@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="reportsMasterStructure" prefHeight="720.0" prefWidth="1180.0" style="-fx-background-color: #1E1B18;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReportsController">
+<BorderPane fx:id="reportsMasterStructure" prefHeight="720.0" prefWidth="1180.0" styleClass="page-background" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReportsController">
     <left>
         <VBox fx:id="sidebarNavigationContainer" prefWidth="240.0" styleClass="sidebar-dark" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
             <children>
@@ -20,7 +20,7 @@
                         <ImageView fitHeight="56.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
                             <image><Image url="@../images/pup_logo.png" /></image>
                         </ImageView>
-                        <Label text="PUP SRC" style="-fx-text-fill: #D4A853; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 4px 16px; -fx-background-color: rgba(212,168,83,0.12); -fx-background-radius: 8px;" />
+                        <Label text="PUP SRC" styleClass="sidebar-badge" />
                     </children>
                 </VBox>
                 <VBox spacing="4.0" VBox.vgrow="ALWAYS" style="-fx-padding: 0 14px;">
@@ -64,7 +64,7 @@
         </HBox>
     </top>
     <center>
-        <ScrollPane fitToWidth="true" style="-fx-background: #1E1B18; -fx-background-color: #1E1B18; -fx-border-color: transparent;" BorderPane.alignment="CENTER">
+        <ScrollPane fitToWidth="true" styleClass="content-scroll-pane" BorderPane.alignment="CENTER">
             <content>
                 <VBox spacing="24.0" style="-fx-padding: 28px 36px;">
                     <children>
@@ -75,7 +75,7 @@
                                 <VBox alignment="CENTER" prefHeight="140.0" prefWidth="250.0" styleClass="stat-dark">
                                     <children>
                                         <VBox alignment="CENTER_LEFT" styleClass="stat-header" prefWidth="250.0">
-                                            <children><Label text="TOTAL EMPLOYEES" style="-fx-text-fill: #1C0A04; -fx-font-size: 10px; -fx-font-weight: bold;" /></children>
+                                            <children><Label text="TOTAL EMPLOYEES" styleClass="stat-header-label" /></children>
                                         </VBox>
                                         <VBox alignment="CENTER" spacing="4.0" VBox.vgrow="ALWAYS">
                                             <children>
@@ -89,7 +89,7 @@
                                 <VBox alignment="CENTER" prefHeight="140.0" prefWidth="250.0" styleClass="stat-dark">
                                     <children>
                                         <VBox alignment="CENTER_LEFT" styleClass="stat-header" prefWidth="250.0">
-                                            <children><Label text="TOTAL PASS SLIPS" style="-fx-text-fill: #1C0A04; -fx-font-size: 10px; -fx-font-weight: bold;" /></children>
+                                            <children><Label text="TOTAL PASS SLIPS" styleClass="stat-header-label" /></children>
                                         </VBox>
                                         <VBox alignment="CENTER" spacing="4.0" VBox.vgrow="ALWAYS">
                                             <children>
@@ -103,7 +103,7 @@
                                 <VBox alignment="CENTER" prefHeight="140.0" prefWidth="250.0" styleClass="stat-light">
                                     <children>
                                         <VBox alignment="CENTER_LEFT" styleClass="stat-header" prefWidth="250.0">
-                                            <children><Label text="THIS MONTH" style="-fx-text-fill: #1C0A04; -fx-font-size: 10px; -fx-font-weight: bold;" /></children>
+                                            <children><Label text="THIS MONTH" styleClass="stat-header-label" /></children>
                                         </VBox>
                                         <VBox alignment="CENTER" spacing="4.0" VBox.vgrow="ALWAYS">
                                             <children>

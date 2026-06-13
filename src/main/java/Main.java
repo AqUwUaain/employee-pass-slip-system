@@ -6,6 +6,7 @@ import javafx.stage.Stage;
 
 import database.DatabaseConnection;
 import database.DatabaseMigration;
+import utils.ThemeManager;
 
 public class  Main extends Application {
 
@@ -19,9 +20,7 @@ public class  Main extends Application {
 
         Scene scene = new Scene(root);
 
-        scene.getStylesheets().add(
-                getClass().getResource("/css/style.css").toExternalForm()
-        );
+        scene.getStylesheets().add(ThemeManager.getCssPath());
 
         stage.setScene(scene);
         stage.setTitle("Employee Pass Slip System");
