@@ -47,9 +47,6 @@ public class ReturnController {
     private Button btnNotificationsAlert;
 
     @FXML
-    private Button btnThemeToggle;
-
-    @FXML
     private Button btnHamburgerMenuToggle;
 
     @FXML
@@ -143,14 +140,6 @@ public class ReturnController {
             btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
         if (btnNotificationsAlert != null)
             btnNotificationsAlert.setOnAction(e -> utils.NotificationHelper.toggle(btnNotificationsAlert));
-        if (btnThemeToggle != null) {
-            utils.ThemeManager.setThemeToggleLabel(btnThemeToggle);
-            btnThemeToggle.setOnAction(e -> {
-                utils.ThemeManager.toggleTheme();
-                utils.ThemeManager.applyToScene(btnThemeToggle.getScene());
-                utils.ThemeManager.setThemeToggleLabel(btnThemeToggle);
-            });
-        }
         if (btnHamburgerMenuToggle != null)
             btnHamburgerMenuToggle.setOnAction(e -> NavigationHelper.navigateTo(btnHamburgerMenuToggle, "/fxml/User.fxml"));
 

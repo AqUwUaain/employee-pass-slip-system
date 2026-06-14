@@ -40,7 +40,6 @@
                 <HBox alignment="CENTER" spacing="15.0">
                     <children>
                         <Button fx:id="btnNotificationsAlert" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" style="-fx-background-color: #7C0A02; -fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-background-radius: 4px; -fx-cursor: hand;" text="🔔" />
-                        <Button fx:id="btnThemeToggle" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" style="-fx-background-color: #7C0A02; -fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-background-radius: 4px; -fx-cursor: hand;" text="☀" />
                         <Button fx:id="btnHamburgerMenuToggle" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" style="-fx-background-color: #7C0A02; -fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-background-radius: 4px; -fx-cursor: hand;" text="☰" />
                     </children>
                 </HBox>

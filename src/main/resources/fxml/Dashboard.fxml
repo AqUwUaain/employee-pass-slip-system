@@ -64,7 +64,6 @@
                 <HBox spacing="12.0" alignment="CENTER">
                     <children>
                         <Button fx:id="btnNotificationsAlert" mnemonicParsing="false" text="&#x1F514;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
-                        <Button fx:id="btnThemeToggle" mnemonicParsing="false" text="&#x2600;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
                         <Button fx:id="btnHamburgerMenuToggle" mnemonicParsing="false" text="&#x2699;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
                     </children>
                 </HBox>
@@ -130,9 +129,10 @@
                         <HBox spacing="18.0" VBox.vgrow="ALWAYS">
                             <children>
                                 <!-- Activity Tracker -->
-                                <VBox spacing="12.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" styleClass="card card-padding">
+                                <VBox spacing="12.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" styleClass="card card-padding" style="-fx-background-color: #241F1C; -fx-border-color: rgba(212,175,55,0.35); -fx-border-width: 1px; -fx-border-radius: 16px; -fx-background-radius: 16px;">
                                     <children>
                                         <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                            <padding><Insets left="6.0" /></padding>
                                             <children>
                                                 <Label text="Activity Tracker" styleClass="sec-title" />
                                                 <StackPane HBox.hgrow="ALWAYS" />

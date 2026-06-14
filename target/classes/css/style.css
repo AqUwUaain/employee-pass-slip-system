@@ -614,6 +614,8 @@ Button.nav-active:pressed {
     -fx-background: #1E1B18;
     -fx-background-color: #1E1B18;
     -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
 }
 
 .content-padding {
