@@ -1,7 +1,6 @@
 package controllers;
 
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,14 +10,21 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import models.ActivityLog;
 import utils.NavigationHelper;
+import utils.Session;
 
 import utils.PhilTime;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class NotificationPopupController {
+
+    private static final Set<String> STAFF_EXCLUDED_ACTIONS = Set.of(
+            "User Logged In",
+            "User Logged Out"
+    );
 
     @FXML
     private VBox notificationPopup;
@@ -30,11 +36,23 @@ public class NotificationPopupController {
     private Button btnViewAllNotifications;
 
     @FXML
+    private Label lblNotificationTitle;
+
+    @FXML
     private void initialize() {
-        btnViewAllNotifications.setOnAction(e -> {
-            e.consume();
-            NavigationHelper.navigateTo(btnViewAllNotifications, "/fxml/ActivityLog.fxml");
-        });
+
+        boolean isStaff = !Session.isAdmin();
+
+        if (isStaff) {
+            lblNotificationTitle.setText("My Notifications");
+            btnViewAllNotifications.setVisible(false);
+            btnViewAllNotifications.setManaged(false);
+        } else {
+            btnViewAllNotifications.setOnAction(e -> {
+                e.consume();
+                NavigationHelper.navigateTo(btnViewAllNotifications, "/fxml/ActivityLog.fxml");
+            });
+        }
 
         loadLatestActivities();
     }
@@ -42,13 +60,32 @@ public class NotificationPopupController {
     private void loadLatestActivities() {
         vboxNotifications.getChildren().clear();
 
-        List<ActivityLog> logs = ReportsController.getLogs(5);
+        boolean isStaff = !Session.isAdmin();
+        List<ActivityLog> logs;
+
+        if (isStaff) {
+            logs = ReportsController.getLogsForUser(Session.currentUserId, 50);
+            logs = logs.stream()
+                    .filter(log -> {
+                        String action = log.getAction();
+                        if (action == null) return false;
+                        if (STAFF_EXCLUDED_ACTIONS.contains(action)) return false;
+                        if (action.toLowerCase().contains("password")) return false;
+                        return true;
+                    })
+                    .collect(Collectors.toList());
+            if (logs.size() > 10) {
+                logs = logs.subList(0, 10);
+            }
+        } else {
+            logs = ReportsController.getLogs(5);
+        }
 
         if (logs.isEmpty()) {
             VBox emptyBox = new VBox();
             emptyBox.setAlignment(Pos.CENTER);
             emptyBox.setStyle("-fx-padding: 30 0;");
-            Label noAct = new Label("No recent activities");
+            Label noAct = new Label(isStaff ? "No personal notifications yet." : "No recent activities");
             noAct.setStyle("-fx-text-fill: #78716C; -fx-font-size: 13px;");
             emptyBox.getChildren().add(noAct);
             vboxNotifications.getChildren().add(emptyBox);

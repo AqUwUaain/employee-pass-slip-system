@@ -335,6 +335,43 @@ public class ReportsController {
         return logs;
     }
 
+    public static ObservableList<ActivityLog> getLogsForUser(int userId, int limit) {
+
+        ObservableList<ActivityLog> logs =
+                FXCollections.observableArrayList();
+
+        try (Connection connection = DatabaseConnection.connect()) {
+            if (connection == null) return logs;
+
+            String query = "SELECT * FROM activity_logs WHERE user_id = ? ORDER BY timestamp DESC";
+            if (limit > 0) {
+                query += " LIMIT " + limit;
+            }
+
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, userId);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        ActivityLog log = new ActivityLog(
+                                resultSet.getInt("id"),
+                                resultSet.getString("action"),
+                                resultSet.getString("description"),
+                                resultSet.getInt("user_id"),
+                                resultSet.getString("username"),
+                                resultSet.getTimestamp("timestamp").toLocalDateTime(),
+                                resultSet.getInt("employee_id")
+                        );
+                        logs.add(log);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return logs;
+    }
+
     public static ObservableList<String[]> getEmployeePassSlipFrequency() {
 
         ObservableList<String[]> frequencyList =

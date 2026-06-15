@@ -12,6 +12,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -148,13 +149,12 @@
                                 <VBox alignment="BOTTOM_CENTER" style="-fx-padding: 6px 0;">
                                     <children>
                                         <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2; -fx-padding: 0 0 4px 0;" text="ADMIN SIGNATURE :" />
-                                        <TextField fx:id="txtSlipAdminSignee" alignment="CENTER" prefWidth="250.0" promptText="Type your full name" style="-fx-background-color: transparent; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #D4A853; -fx-padding: 0;" />
-                                        <VBox maxWidth="320.0" style="-fx-background-color: #3D3229; -fx-pref-height: 1px; -fx-min-height: 1px;">
-                                            <VBox.margin>
-                                                <Insets bottom="3.0" top="2.0" />
-                                            </VBox.margin>
+                                        <VBox maxWidth="320.0" alignment="CENTER" style="-fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 4px; -fx-background-color: #FFFFFF; -fx-background-radius: 4px; -fx-padding: 4px;">
+                                            <children>
+                                                <ImageView fx:id="imgAdminSignature" fitHeight="60.0" fitWidth="280.0" preserveRatio="true" />
+                                            </children>
                                         </VBox>
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 9px; -fx-text-fill: #78716C;" text="Type your name as your digital signature" />
+                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 9px; -fx-text-fill: #78716C;" text="Auto-signed with your registered signature" />
                                     </children>
                                 </VBox>
 

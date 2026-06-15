@@ -161,30 +161,30 @@ Button.nav-item:pressed {
     -fx-background-color: rgba(255,255,255,0.04);
 }
 Button.nav-active {
-    -fx-background-color: #3D2A2A !important;
-    -fx-text-fill: #D4A853 !important;
-    -fx-font-weight: bold !important;
-    -fx-border-color: #D4A853 !important;
-    -fx-border-width: 0 0 0 3 !important;
-    -fx-border-radius: 12px !important;
-    -fx-background-radius: 12px !important;
-    -fx-background-insets: 0 !important;
-    -fx-focus-color: transparent !important;
-    -fx-faint-focus-color: transparent !important;
+    -fx-background-color: #3D2A2A;
+    -fx-text-fill: #D4A853;
+    -fx-font-weight: bold;
+    -fx-border-color: #D4A853;
+    -fx-border-width: 0 0 0 3;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-background-insets: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 Button.nav-active:hover {
-    -fx-background-color: #4A3535 !important;
-    -fx-text-fill: #D4A853 !important;
-    -fx-focus-color: transparent !important;
-    -fx-faint-focus-color: transparent !important;
+    -fx-background-color: #4A3535;
+    -fx-text-fill: #D4A853;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 Button.nav-active:focused {
-    -fx-background-color: #3D2A2A !important;
-    -fx-focus-color: transparent !important;
-    -fx-faint-focus-color: transparent !important;
+    -fx-background-color: #3D2A2A;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 Button.nav-active:pressed {
-    -fx-background-color: #352525 !important;
+    -fx-background-color: #352525;
 }
 
 /* ==========================================================================

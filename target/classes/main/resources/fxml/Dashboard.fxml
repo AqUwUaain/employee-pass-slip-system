@@ -39,6 +39,7 @@
                         <Button fx:id="btnSidebarReports" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Reports" styleClass="nav-item" />
                         <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Log Return" styleClass="nav-item" />
                         <Button fx:id="btnSidebarUsers" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Users" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarSignatures" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Signatures" styleClass="nav-item" />
                         <Button fx:id="btnSidebarPasswordReset" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Reset Requests" styleClass="nav-item" />
                         <Label text="ACCOUNT" styleClass="sidebar-section-label" />
                         <Button fx:id="btnLogout" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Logout" styleClass="nav-item" />

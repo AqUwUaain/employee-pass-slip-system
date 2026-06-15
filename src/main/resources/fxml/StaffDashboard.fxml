@@ -109,11 +109,32 @@
                                 </VBox>
                             </children>
                         </HBox>
-                        <!-- Status bar -->
-                        <VBox alignment="CENTER_LEFT" spacing="4.0" styleClass="card" style="-fx-padding: 18px 24px;">
+                        <!-- Today's Activity -->
+                        <VBox alignment="CENTER_LEFT" spacing="8.0" styleClass="card" style="-fx-padding: 18px 24px;">
                             <children>
-                                <Label text="System Status" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #FCA5A5;" />
-                                <Label text="FXML-driven — no legacy UI classes." style="-fx-font-size: 12px; -fx-text-fill: #A8A29E;" />
+                                <Label text="Today's Activity" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #D4A853;" />
+                                <HBox spacing="24.0" style="-fx-padding: 6px 0 0 0;">
+                                    <children>
+                                        <VBox spacing="2.0">
+                                            <children>
+                                                <Label fx:id="lblPassSlipsToday" text="0" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
+                                                <Label text="Pass Slips Issued Today" style="-fx-font-size: 11px; -fx-text-fill: #A8A29E;" />
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="2.0">
+                                            <children>
+                                                <Label fx:id="lblReturnsToday" text="0" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
+                                                <Label text="Returns Processed Today" style="-fx-font-size: 11px; -fx-text-fill: #A8A29E;" />
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="2.0">
+                                            <children>
+                                                <Label fx:id="lblCurrentlyOut" text="0" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
+                                                <Label text="Employees Currently Out" style="-fx-font-size: 11px; -fx-text-fill: #A8A29E;" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </HBox>
                             </children>
                         </VBox>
                     </children>

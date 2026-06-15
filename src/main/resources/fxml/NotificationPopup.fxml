@@ -16,7 +16,7 @@
         <HBox alignment="CENTER_LEFT" spacing="8.0" style="-fx-padding: 0 0 12 0;">
             <children>
                 <Label text="&#x1F514;" style="-fx-font-size: 16px;" />
-                <Label text="Notifications" style="-fx-text-fill: #F5F5F4; -fx-font-size: 15px; -fx-font-weight: bold;" />
+                <Label fx:id="lblNotificationTitle" text="Notifications" style="-fx-text-fill: #F5F5F4; -fx-font-size: 15px; -fx-font-weight: bold;" />
             </children>
         </HBox>
         <ScrollPane fitToWidth="true" maxHeight="400.0" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
