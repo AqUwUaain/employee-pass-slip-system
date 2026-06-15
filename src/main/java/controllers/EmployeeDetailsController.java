@@ -27,6 +27,27 @@ public class EmployeeDetailsController {
     private Button btnSidebarReports;
 
     @FXML
+    private Button btnSidebarLogReturn;
+
+    @FXML
+    private Button btnSidebarUsers;
+
+    @FXML
+    private Button btnSidebarSignatures;
+
+    @FXML
+    private Button btnSidebarPasswordReset;
+
+    @FXML
+    private Button btnLogout;
+
+    @FXML
+    private Button btnNotificationsAlert;
+
+    @FXML
+    private Button btnHamburgerMenuToggle;
+
+    @FXML
     private Button btnBackToDirectory;
 
     @FXML
@@ -95,6 +116,29 @@ public class EmployeeDetailsController {
                         "/fxml/Reports.fxml"
                 )
         );
+
+        if (btnSidebarLogReturn != null)
+            btnSidebarLogReturn.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarLogReturn, "/fxml/Return.fxml"));
+        if (btnSidebarUsers != null)
+            btnSidebarUsers.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarUsers, "/fxml/User.fxml"));
+        if (btnSidebarSignatures != null)
+            btnSidebarSignatures.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarSignatures, "/fxml/SignatureManager.fxml"));
+        if (btnSidebarPasswordReset != null)
+            btnSidebarPasswordReset.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarPasswordReset, "/fxml/PasswordResetRequests.fxml"));
+
+        NavigationHelper.hideAdminSidebarItems(
+            btnSidebarEmployees,
+            btnSidebarReports,
+            btnSidebarUsers,
+            btnSidebarPasswordReset
+        );
+
+        if (btnLogout != null)
+            btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
+        if (btnNotificationsAlert != null)
+            btnNotificationsAlert.setOnAction(e -> utils.NotificationHelper.toggle(btnNotificationsAlert));
+        if (btnHamburgerMenuToggle != null)
+            btnHamburgerMenuToggle.setOnAction(e -> NavigationHelper.navigateTo(btnHamburgerMenuToggle, "/fxml/User.fxml"));
 
         btnBackToDirectory.setOnAction(
                 event -> NavigationHelper.navigateTo(

@@ -15,15 +15,6 @@ public final class ThemeManager {
     }
 
     public static String getActiveStyle() {
-        return "-fx-background-color: #3D2A2A;" +
-               "-fx-text-fill: #D4A853;" +
-               "-fx-font-weight: bold;" +
-               "-fx-border-color: #D4A853;" +
-               "-fx-border-width: 0 0 0 3;" +
-               "-fx-border-radius: 12;" +
-               "-fx-background-radius: 12;" +
-               "-fx-background-insets: 0;" +
-               "-fx-focus-color: transparent;" +
-               "-fx-faint-focus-color: transparent;";
+        return "";
     }
 }

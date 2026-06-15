@@ -41,6 +41,9 @@ public class ReturnController {
     private Button btnSidebarUsers;
 
     @FXML
+    private Button btnSidebarSignatures;
+
+    @FXML
     private Button btnSidebarPasswordReset;
 
     @FXML
@@ -129,10 +132,19 @@ public class ReturnController {
                     event -> NavigationHelper.navigateTo(btnSidebarUsers, "/fxml/User.fxml")
             );
 
+        if (btnSidebarSignatures != null) btnSidebarSignatures.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarSignatures, "/fxml/SignatureManager.fxml"));
+
         if (btnSidebarPasswordReset != null)
             btnSidebarPasswordReset.setOnAction(
                     event -> NavigationHelper.navigateTo(btnSidebarPasswordReset, "/fxml/PasswordResetRequests.fxml")
             );
+
+        NavigationHelper.hideAdminSidebarItems(
+            btnSidebarEmployees,
+            btnSidebarReports,
+            btnSidebarUsers,
+            btnSidebarPasswordReset
+        );
 
         NavigationHelper.setActiveButton(btnSidebarLogReturn);
 

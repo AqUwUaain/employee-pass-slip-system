@@ -12,3 +12,16 @@ ALTER TABLE activity_logs ADD COLUMN IF NOT EXISTS employee_id INT DEFAULT 0;
 
 -- Add duration_minutes to pass_slips for numeric aggregation
 ALTER TABLE pass_slips ADD COLUMN IF NOT EXISTS duration_minutes BIGINT DEFAULT 0;
+
+-- Signatures table (1 signature per admin)
+CREATE TABLE IF NOT EXISTS signatures (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    signature_name VARCHAR(255) NOT NULL,
+    image_data BYTEA NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_signatures_user_id ON signatures (user_id);
+
+-- Estimated return time for pass slips
+ALTER TABLE pass_slips ADD COLUMN IF NOT EXISTS estimated_return TIMESTAMP DEFAULT NULL;

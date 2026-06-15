@@ -29,7 +29,10 @@ public class DatabaseMigration {
                     "ALTER TABLE pass_slips ADD COLUMN IF NOT EXISTS duration_minutes BIGINT DEFAULT 0",
                     "CREATE TABLE IF NOT EXISTS password_reset_requests (id SERIAL PRIMARY KEY, email VARCHAR(255) NOT NULL, requested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, status VARCHAR(20) DEFAULT 'PENDING')",
                     "ALTER TABLE password_reset_requests ADD COLUMN IF NOT EXISTS approved_at TIMESTAMP DEFAULT NULL",
-                    "ALTER TABLE password_reset_requests ADD COLUMN IF NOT EXISTS used BOOLEAN DEFAULT FALSE"
+                    "ALTER TABLE password_reset_requests ADD COLUMN IF NOT EXISTS used BOOLEAN DEFAULT FALSE",
+                    "CREATE TABLE IF NOT EXISTS signatures (id SERIAL PRIMARY KEY, user_id INT NOT NULL, signature_name VARCHAR(255) NOT NULL, image_data BYTEA NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
+                    "CREATE UNIQUE INDEX IF NOT EXISTS idx_signatures_user_id ON signatures (user_id)",
+                    "ALTER TABLE pass_slips ADD COLUMN IF NOT EXISTS estimated_return TIMESTAMP DEFAULT NULL"
             };
 
             for (String sql : migrations) {

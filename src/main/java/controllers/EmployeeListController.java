@@ -9,7 +9,9 @@ import javafx.collections.transformation.FilteredList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -43,6 +45,9 @@ public class EmployeeListController {
 
     @FXML
     private Button btnSidebarUsers;
+
+    @FXML
+    private Button btnSidebarSignatures;
 
     @FXML
     private Button btnSidebarPasswordReset;
@@ -101,7 +106,17 @@ public class EmployeeListController {
     @FXML
     private TableColumn<Employee, String> colAction;
 
+    @FXML
+    private CheckBox chkSelectAll;
+
+    @FXML
+    private Button btnBatchDelete;
+
+    @FXML
+    private TableColumn<Employee, Boolean> colSelect;
+
     private FilteredList<Employee> filteredEmployees;
+    private ObservableList<Employee> selectedEmployees = FXCollections.observableArrayList();
 
     @FXML
     private void initialize() {
@@ -137,10 +152,20 @@ public class EmployeeListController {
         if (btnSidebarUsers != null)
             btnSidebarUsers.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarUsers, "/fxml/User.fxml"));
 
+        if (btnSidebarSignatures != null) btnSidebarSignatures.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarSignatures, "/fxml/SignatureManager.fxml"));
+
         if (btnSidebarLogReturn != null)
             btnSidebarLogReturn.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarLogReturn, "/fxml/Return.fxml"));
         if (btnSidebarPasswordReset != null)
             btnSidebarPasswordReset.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarPasswordReset, "/fxml/PasswordResetRequests.fxml"));
+
+        NavigationHelper.hideAdminSidebarItems(
+            btnSidebarEmployees,
+            btnSidebarReports,
+            btnSidebarUsers,
+            btnSidebarPasswordReset
+        );
+
         if (btnLogout != null)
             btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
         if (btnNotificationsAlert != null)
@@ -181,6 +206,50 @@ public class EmployeeListController {
         colAction.setCellValueFactory(
                 cellData -> new ReadOnlyStringWrapper("View Profile")
         );
+
+        colSelect.setCellValueFactory(
+                cellData -> new javafx.beans.property.SimpleBooleanProperty(false)
+        );
+
+        colSelect.setCellFactory(column -> new TableCell<>() {
+            private final CheckBox checkBox = new CheckBox();
+
+            {
+                checkBox.setOnAction(event -> {
+                    Employee employee = getTableView().getItems().get(getIndex());
+                    if (checkBox.isSelected()) {
+                        selectedEmployees.add(employee);
+                    } else {
+                        selectedEmployees.remove(employee);
+                    }
+                    updateDeleteButton();
+                });
+            }
+
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getIndex() >= getTableView().getItems().size()) {
+                    setGraphic(null);
+                } else {
+                    Employee employee = getTableView().getItems().get(getIndex());
+                    checkBox.setSelected(selectedEmployees.contains(employee));
+                    setGraphic(checkBox);
+                }
+            }
+        });
+
+        chkSelectAll.setOnAction(event -> {
+            if (chkSelectAll.isSelected()) {
+                selectedEmployees.addAll(filteredEmployees);
+            } else {
+                selectedEmployees.clear();
+            }
+            employeeTableView.refresh();
+            updateDeleteButton();
+        });
+
+        btnBatchDelete.setOnAction(event -> batchDeleteEmployees());
 
         employeeTableView.setOnMouseClicked(
                 event -> {
@@ -339,6 +408,64 @@ public class EmployeeListController {
 
         });
 
+    }
+
+    private void updateDeleteButton() {
+        if (selectedEmployees.isEmpty()) {
+            btnBatchDelete.setVisible(false);
+            btnBatchDelete.setManaged(false);
+        } else {
+            btnBatchDelete.setVisible(true);
+            btnBatchDelete.setManaged(true);
+            btnBatchDelete.setText("\uD83D\uDDD1 Delete Selected (" + selectedEmployees.size() + ")");
+        }
+    }
+
+    private void batchDeleteEmployees() {
+        if (selectedEmployees.isEmpty()) return;
+
+        int count = selectedEmployees.size();
+
+        try {
+            Connection connection = DatabaseConnection.connect();
+
+            for (Employee employee : selectedEmployees) {
+                int employeeId = employee.getId();
+
+                PreparedStatement logsStmt = connection.prepareStatement(
+                        "DELETE FROM activity_logs WHERE employee_id = ?"
+                );
+                logsStmt.setInt(1, employeeId);
+                logsStmt.executeUpdate();
+                logsStmt.close();
+
+                PreparedStatement slipsStmt = connection.prepareStatement(
+                        "DELETE FROM pass_slips WHERE employee_id = ?"
+                );
+                slipsStmt.setInt(1, employeeId);
+                slipsStmt.executeUpdate();
+                slipsStmt.close();
+
+                PreparedStatement empStmt = connection.prepareStatement(
+                        "DELETE FROM employees WHERE id = ?"
+                );
+                empStmt.setInt(1, employeeId);
+                empStmt.executeUpdate();
+                empStmt.close();
+            }
+
+            ActivityLogController.logActivity(
+                    "Batch deleted " + count + " employee(s)", 0
+            );
+
+            selectedEmployees.clear();
+            chkSelectAll.setSelected(false);
+            updateDeleteButton();
+            loadEmployeesAsync();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

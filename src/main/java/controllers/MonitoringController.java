@@ -46,6 +46,9 @@ public class MonitoringController {
     private Button btnSidebarUsers;
 
     @FXML
+    private Button btnSidebarSignatures;
+
+    @FXML
     private Button btnSidebarPasswordReset;
 
     @FXML
@@ -118,10 +121,20 @@ public class MonitoringController {
         if (btnSidebarUsers != null)
             btnSidebarUsers.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarUsers, "/fxml/User.fxml"));
 
+        if (btnSidebarSignatures != null) btnSidebarSignatures.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarSignatures, "/fxml/SignatureManager.fxml"));
+
         if (btnSidebarLogReturn != null)
             btnSidebarLogReturn.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarLogReturn, "/fxml/Return.fxml"));
         if (btnSidebarPasswordReset != null)
             btnSidebarPasswordReset.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarPasswordReset, "/fxml/PasswordResetRequests.fxml"));
+
+        NavigationHelper.hideAdminSidebarItems(
+            btnSidebarEmployees,
+            btnSidebarReports,
+            btnSidebarUsers,
+            btnSidebarPasswordReset
+        );
+
         if (btnLogout != null)
             btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
 
@@ -363,7 +376,7 @@ public class MonitoringController {
                     DatabaseConnection.connect();
 
             String query = """
-                    SELECT id, time_out
+                    SELECT id, time_out, estimated_return
                     FROM pass_slips
                     WHERE status = 'OUT'
                     """;
@@ -386,10 +399,21 @@ public class MonitoringController {
 
                 LocalDateTime now = LocalDateTime.now(PhilTime.ZONE);
 
-                long hours =
-                        Duration.between(timeOut, now).toHours();
+                Timestamp estimatedReturnTimestamp =
+                        resultSet.getTimestamp("estimated_return");
 
-                if (hours >= 1) {
+                boolean shouldExpire;
+                if (estimatedReturnTimestamp != null) {
+                    LocalDateTime estimatedReturn =
+                            estimatedReturnTimestamp.toLocalDateTime();
+                    shouldExpire = now.isAfter(estimatedReturn);
+                } else {
+                    long hours =
+                            Duration.between(timeOut, now).toHours();
+                    shouldExpire = hours >= 1;
+                }
+
+                if (shouldExpire) {
 
                     String updateQuery = """
                             UPDATE pass_slips

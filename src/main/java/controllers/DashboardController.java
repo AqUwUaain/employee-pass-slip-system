@@ -55,6 +55,9 @@ public class DashboardController {
     private Button btnSidebarUsers;
 
     @FXML
+    private Button btnSidebarSignatures;
+
+    @FXML
     private Button btnSidebarPasswordReset;
 
     @FXML
@@ -148,6 +151,8 @@ public class DashboardController {
                     )
             );
 
+        if (btnSidebarSignatures != null) btnSidebarSignatures.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarSignatures, "/fxml/SignatureManager.fxml"));
+
         if (btnSidebarPasswordReset != null)
             btnSidebarPasswordReset.setOnAction(
                     event -> NavigationHelper.navigateTo(
@@ -155,6 +160,13 @@ public class DashboardController {
                             "/fxml/PasswordResetRequests.fxml"
                     )
             );
+
+        NavigationHelper.hideAdminSidebarItems(
+            btnSidebarEmployees,
+            btnSidebarReports,
+            btnSidebarUsers,
+            btnSidebarPasswordReset
+        );
 
         if (btnLogout != null)
             btnLogout.setOnAction(

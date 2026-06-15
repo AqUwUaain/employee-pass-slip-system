@@ -29,9 +29,6 @@ public final class NavigationHelper {
 
     public static void setActiveButton(Button button) {
         if (button == null) return;
-        button.setStyle(ThemeManager.getActiveStyle());
-        button.getStyleClass().remove("nav-item");
-        button.getStyleClass().add("nav-item");
         if (!button.getStyleClass().contains("nav-active")) {
             button.getStyleClass().add("nav-active");
         }
@@ -80,6 +77,20 @@ public final class NavigationHelper {
             return "/fxml/StaffDashboard.fxml";
         }
         return "/fxml/Dashboard.fxml";
+    }
+
+    public static void hideAdminSidebarItems(
+            Button employees,
+            Button reports,
+            Button users,
+            Button passwordReset
+    ) {
+        if (!"STAFF".equalsIgnoreCase(Session.currentRole)) return;
+
+        if (employees != null) { employees.setVisible(false); employees.setManaged(false); }
+        if (reports != null) { reports.setVisible(false); reports.setManaged(false); }
+        if (users != null) { users.setVisible(false); users.setManaged(false); }
+        if (passwordReset != null) { passwordReset.setVisible(false); passwordReset.setManaged(false); }
     }
 
     // ==================== FIXED LOGOUT METHOD ====================

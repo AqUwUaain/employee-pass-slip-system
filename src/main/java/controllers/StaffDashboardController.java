@@ -7,6 +7,18 @@ import utils.NavigationHelper;
 public class StaffDashboardController {
 
     @FXML
+    private Button btnSidebarDashboard;
+
+    @FXML
+    private Button btnSidebarMonitoring;
+
+    @FXML
+    private Button btnSidebarLogReturn;
+
+    @FXML
+    private Button btnSidebarSignatures;
+
+    @FXML
     private Button btnOpenPassSlip;
 
     @FXML
@@ -20,6 +32,43 @@ public class StaffDashboardController {
 
     @FXML
     private void initialize() {
+
+        NavigationHelper.setActiveButton(btnSidebarDashboard);
+
+        btnSidebarDashboard.setOnAction(
+                event -> NavigationHelper.navigateTo(
+                        btnSidebarDashboard,
+                        "/fxml/StaffDashboard.fxml"
+                )
+        );
+
+        btnSidebarMonitoring.setOnAction(
+                event -> NavigationHelper.navigateTo(
+                        btnSidebarMonitoring,
+                        "/fxml/Monitoring.fxml"
+                )
+        );
+
+        if (btnSidebarLogReturn != null)
+            btnSidebarLogReturn.setOnAction(
+                    event -> NavigationHelper.navigateTo(
+                            btnSidebarLogReturn,
+                            "/fxml/Return.fxml"
+                    )
+            );
+
+        if (btnSidebarSignatures != null)
+            btnSidebarSignatures.setOnAction(
+                    event -> NavigationHelper.navigateTo(
+                            btnSidebarSignatures,
+                            "/fxml/SignatureManager.fxml"
+                    )
+            );
+
+        if (btnLogout != null)
+            btnLogout.setOnAction(
+                    event -> NavigationHelper.logout(btnLogout)
+            );
 
         btnOpenPassSlip.setOnAction(
                 event -> NavigationHelper.navigateTo(
@@ -40,10 +89,6 @@ public class StaffDashboardController {
                         btnOpenMonitoring,
                         "/fxml/Monitoring.fxml"
                 )
-        );
-
-        btnLogout.setOnAction(
-                event -> NavigationHelper.logout(btnLogout)
         );
 
     }

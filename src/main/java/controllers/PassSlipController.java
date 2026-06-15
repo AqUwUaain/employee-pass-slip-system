@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import utils.Session;
 import javafx.scene.layout.VBox;
 import utils.NavigationHelper;
 import utils.PhilTime;
@@ -29,7 +30,9 @@ import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.properties.VerticalAlignment;
+import com.itextpdf.io.image.ImageDataFactory;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -77,7 +80,7 @@ public class PassSlipController {
     private Label lblDuration;
 
     @FXML
-    private TextField txtSlipAdminSignee;
+    private ImageView imgAdminSignature;
 
     @FXML
     private Label lblSlipStatusMessage;
@@ -89,6 +92,8 @@ public class PassSlipController {
     private VBox passSlipModalRoot;
 
     private int selectedEmployeeId = 0;
+
+    private LocalDateTime selectedEstimatedReturn = null;
 
     @FXML
     private void initialize() {
@@ -109,6 +114,7 @@ public class PassSlipController {
 
         loadEmployeeComboBox();
         populateTimeInOptions(now);
+        loadAdminSignature();
 
         cmbTimeIn.setOnAction(event -> {
             String selected = cmbTimeIn.getValue();
@@ -120,6 +126,7 @@ public class PassSlipController {
                 if (timeIn.isBefore(now)) {
                     timeIn = timeIn.plusDays(1);
                 }
+                selectedEstimatedReturn = timeIn;
                 long totalMinutes = java.time.Duration.between(now, timeIn).toMinutes();
                 long hours = totalMinutes / 60;
                 long mins = totalMinutes % 60;
@@ -167,7 +174,8 @@ public class PassSlipController {
                 event -> issuePassSlip(
                         txtSlipClientId.getText(),
                         txtSlipPurpose.getText(),
-                        lblSlipStatusMessage
+                        lblSlipStatusMessage,
+                        selectedEstimatedReturn
                 )
         );
 
@@ -261,11 +269,21 @@ public class PassSlipController {
 
     }
 
+    private void loadAdminSignature() {
+        byte[] imageData = SignatureController.getSignatureByUserId(Session.currentUserId);
+        if (imageData != null) {
+            ByteArrayInputStream bis = new ByteArrayInputStream(imageData);
+            Image fxImage = new Image(bis);
+            imgAdminSignature.setImage(fxImage);
+        }
+    }
+
     public static void issuePassSlip(
 
             String employeeId,
             String reason,
-            Label messageLabel
+            Label messageLabel,
+            LocalDateTime estimatedReturn
 
     ) {
 
@@ -291,8 +309,8 @@ public class PassSlipController {
 
             String query = """
                     INSERT INTO pass_slips
-                    (employee_id, reason, time_out, status)
-                    VALUES (?, ?, ?, ?)
+                    (employee_id, reason, time_out, estimated_return, status)
+                    VALUES (?, ?, ?, ?, ?)
                     """;
 
             PreparedStatement statement =
@@ -301,7 +319,12 @@ public class PassSlipController {
             statement.setInt(1, Integer.parseInt(employeeId));
             statement.setString(2, reason.trim());
             statement.setTimestamp(3, java.sql.Timestamp.valueOf(LocalDateTime.now(PhilTime.ZONE)));
-            statement.setString(4, "OUT");
+            if (estimatedReturn != null) {
+                statement.setTimestamp(4, java.sql.Timestamp.valueOf(estimatedReturn));
+            } else {
+                statement.setNull(4, java.sql.Types.TIMESTAMP);
+            }
+            statement.setString(5, "OUT");
 
             int inserted = statement.executeUpdate();
 
@@ -451,8 +474,25 @@ public class PassSlipController {
                 Table signeeRow = new Table(UnitValue.createPercentArray(new float[]{20, 80}))
                         .useAllAvailableWidth()
                         .setAutoLayout();
-                signeeRow.addCell(createLabelCell("ADMIN SIGNEE:", medGray, white));
-                signeeRow.addCell(createValueCell(txtSlipAdminSignee.getText(), gold, lightGray));
+                signeeRow.addCell(createLabelCell("ADMIN SIGNATURE:", medGray, white));
+                Cell signeeValueCell = new Cell();
+                signeeValueCell.setBorder(new SolidBorder(new DeviceRgb(200, 200, 200), 0.5f));
+                signeeValueCell.setPadding(5);
+                signeeValueCell.setBackgroundColor(lightGray);
+                byte[] sigData = SignatureController.getSignatureByUserId(Session.currentUserId);
+                if (sigData != null) {
+                    com.itextpdf.layout.element.Image sigImage = new com.itextpdf.layout.element.Image(
+                            ImageDataFactory.create(sigData)
+                    );
+                    sigImage.setWidth(150);
+                    sigImage.setHeight(50);
+                    signeeValueCell.add(sigImage);
+                } else {
+                    signeeValueCell.add(new Paragraph(Session.currentUsername != null ? Session.currentUsername : "")
+                            .setFontColor(gold)
+                            .setFontSize(10));
+                }
+                signeeRow.addCell(signeeValueCell);
                 mainCell.add(signeeRow);
 
                 headerTable.addCell(mainCell);

@@ -42,6 +42,9 @@ public class ActivityLogController {
     private Button btnSidebarUsers;
 
     @FXML
+    private Button btnSidebarSignatures;
+
+    @FXML
     private Button btnSidebarPasswordReset;
 
     @FXML
@@ -84,10 +87,20 @@ public class ActivityLogController {
         if (btnSidebarUsers != null)
             btnSidebarUsers.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarUsers, "/fxml/User.fxml"));
 
+        if (btnSidebarSignatures != null) btnSidebarSignatures.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarSignatures, "/fxml/SignatureManager.fxml"));
+
         if (btnSidebarLogReturn != null)
             btnSidebarLogReturn.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarLogReturn, "/fxml/Return.fxml"));
         if (btnSidebarPasswordReset != null)
             btnSidebarPasswordReset.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarPasswordReset, "/fxml/PasswordResetRequests.fxml"));
+
+        NavigationHelper.hideAdminSidebarItems(
+            btnSidebarEmployees,
+            btnSidebarReports,
+            btnSidebarUsers,
+            btnSidebarPasswordReset
+        );
+
         if (btnLogout != null)
             btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
 

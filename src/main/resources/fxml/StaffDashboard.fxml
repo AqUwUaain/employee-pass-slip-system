@@ -3,75 +3,136 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Priority?>
-<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="TOP_CENTER" prefHeight="720.0" prefWidth="1050.0" spacing="28.0" styleClass="page-background" style="-fx-padding: 36px 44px;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.StaffDashboardController">
-    <children>
-        <!-- Top header -->
-        <HBox alignment="CENTER_LEFT" spacing="16.0" styleClass="card" style="-fx-padding: 22px 28px;">
+<StackPane fx:id="staffDashboardRoot" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.StaffDashboardController">
+<BorderPane fx:id="mainStructure" prefHeight="720.0" prefWidth="1180.0" styleClass="page-background">
+    <!-- LEFT: Sidebar -->
+    <left>
+        <VBox fx:id="sidebarNavigationContainer" prefWidth="240.0" styleClass="sidebar-dark" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
             <children>
-                <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
-                    <image><Image url="@../images/pup_logo.png" /></image>
-                </ImageView>
-                <VBox spacing="3.0">
+                <!-- Logo -->
+                <VBox alignment="CENTER" spacing="8.0" style="-fx-padding: 0 0 36px 0;">
                     <children>
-                        <Label text="Staff Dashboard" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
-                        <Label text="Manage pass slips, returns, and monitoring." style="-fx-font-size: 13px; -fx-text-fill: #A8A29E;" />
+                        <ImageView fitHeight="56.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../images/pup_logo.png" /></image>
+                        </ImageView>
+                        <Label text="PUP SRC" styleClass="sidebar-badge" />
                     </children>
                 </VBox>
-                <Region HBox.hgrow="ALWAYS" />
-                <Button fx:id="btnLogout" mnemonicParsing="false" prefHeight="38.0" prefWidth="100.0" text="Logout" styleClass="btn-maroon" />
-            </children>
-        </HBox>
-        <!-- Three portal cards -->
-        <HBox alignment="CENTER" spacing="22.0">
-            <children>
-                <!-- Issue Pass Slip -->
-                <VBox alignment="CENTER" prefHeight="260.0" prefWidth="280.0" spacing="16.0" styleClass="stat-dark" style="-fx-padding: 32px;">
+                <!-- Navigation -->
+                <VBox spacing="4.0" VBox.vgrow="ALWAYS" style="-fx-padding: 0 14px;">
                     <children>
-                        <Label text="&#x1F3AB;" style="-fx-font-size: 48px;" />
-                        <Label text="Issue Pass Slip" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
-                        <Label text="Create outbound pass slips for employees." wrapText="true" textAlignment="CENTER" maxWidth="220.0" style="-fx-text-fill: rgba(255,255,255,0.55); -fx-font-size: 12px; -fx-line-spacing: 3px;" />
-                        <Button fx:id="btnOpenPassSlip" mnemonicParsing="false" prefHeight="38.0" prefWidth="170.0" text="Open Pass Slip" styleClass="btn-gold">
-                            <VBox.margin><Insets top="4.0" /></VBox.margin>
-                        </Button>
+                        <Label text="MAIN MENU" styleClass="sidebar-section-label" />
+                        <Button fx:id="btnSidebarDashboard" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Dashboard" styleClass="nav-item nav-active" />
+                        <Button fx:id="btnSidebarMonitoring" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Monitoring" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Log Return" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarSignatures" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Signatures" styleClass="nav-item" />
+                        <Label text="ACCOUNT" styleClass="sidebar-section-label" />
+                        <Button fx:id="btnLogout" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Logout" styleClass="nav-item" />
                     </children>
                 </VBox>
-                <!-- Log Return -->
-                <VBox alignment="CENTER" prefHeight="260.0" prefWidth="280.0" spacing="16.0" styleClass="card" style="-fx-padding: 32px;">
-                    <children>
-                        <Label text="&#x21A9;" style="-fx-font-size: 48px; -fx-text-fill: #FCA5A5;" />
-                        <Label text="Log Return" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
-                        <Label text="Record employee re-entry after pass slip." wrapText="true" textAlignment="CENTER" maxWidth="220.0" style="-fx-font-size: 12px; -fx-text-fill: #A8A29E; -fx-line-spacing: 3px;" />
-                        <Button fx:id="btnOpenReturn" mnemonicParsing="false" prefHeight="38.0" prefWidth="170.0" text="Open Return" styleClass="btn-maroon">
-                            <VBox.margin><Insets top="4.0" /></VBox.margin>
-                        </Button>
-                    </children>
+                <!-- Footer -->
+                <VBox alignment="CENTER" style="-fx-padding: 16px;">
+                    <Label text="2026 PUP — SRC" styleClass="sidebar-footer-label" />
                 </VBox>
-                <!-- Monitoring -->
-                <VBox alignment="CENTER" prefHeight="260.0" prefWidth="280.0" spacing="16.0" styleClass="card" style="-fx-padding: 32px;">
-                    <children>
-                        <Label text="&#x1F4CA;" style="-fx-font-size: 48px; -fx-text-fill: #FCA5A5;" />
-                        <Label text="Monitoring" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
-                        <Label text="Review pass slip status and monitoring summaries." wrapText="true" textAlignment="CENTER" maxWidth="220.0" style="-fx-font-size: 12px; -fx-text-fill: #A8A29E; -fx-line-spacing: 3px;" />
-                        <Button fx:id="btnOpenMonitoring" mnemonicParsing="false" prefHeight="38.0" prefWidth="170.0" text="Open Monitoring" styleClass="btn-maroon">
-                            <VBox.margin><Insets top="4.0" /></VBox.margin>
-                        </Button>
-                    </children>
-                </VBox>
-            </children>
-        </HBox>
-        <!-- Status bar -->
-        <VBox alignment="CENTER_LEFT" spacing="4.0" styleClass="card" style="-fx-padding: 18px 24px;">
-            <children>
-                <Label text="System Status" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #FCA5A5;" />
-                <Label text="FXML-driven — no legacy UI classes." style="-fx-font-size: 12px; -fx-text-fill: #A8A29E;" />
             </children>
         </VBox>
-    </children>
-</VBox>
+    </left>
+    <!-- TOP: Header bar -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="62.0" styleClass="header-clean" BorderPane.alignment="CENTER">
+            <children>
+                <VBox spacing="2.0">
+                    <children>
+                        <Label text="Staff Dashboard" styleClass="pg-title" />
+                        <Label text="Manage pass slips, returns, and monitoring." styleClass="pg-sub" />
+                    </children>
+                </VBox>
+                <StackPane HBox.hgrow="ALWAYS" />
+                <HBox spacing="12.0" alignment="CENTER">
+                    <children>
+                        <Button fx:id="btnNotificationsAlert" mnemonicParsing="false" text="&#x1F514;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
+                        <Button fx:id="btnHamburgerMenuToggle" mnemonicParsing="false" text="&#x2699;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
+                    </children>
+                </HBox>
+            </children>
+        </HBox>
+    </top>
+    <!-- CENTER: Main content -->
+    <center>
+        <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="content-scroll-pane" BorderPane.alignment="CENTER">
+            <content>
+                <VBox spacing="24.0" styleClass="content-padding">
+                    <children>
+                        <!-- Three portal cards -->
+                        <HBox alignment="CENTER" spacing="18.0">
+                            <children>
+                                <!-- Issue Pass Slip -->
+                                <VBox alignment="CENTER" prefHeight="260.0" prefWidth="280.0" spacing="16.0" styleClass="stat-dark" style="-fx-padding: 32px;">
+                                    <children>
+                                        <Label text="&#x1F3AB;" style="-fx-font-size: 48px;" />
+                                        <Label text="Issue Pass Slip" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
+                                        <Label text="Create outbound pass slips for employees." wrapText="true" textAlignment="CENTER" maxWidth="220.0" style="-fx-text-fill: rgba(255,255,255,0.55); -fx-font-size: 12px; -fx-line-spacing: 3px;" />
+                                        <Button fx:id="btnOpenPassSlip" mnemonicParsing="false" prefHeight="38.0" prefWidth="170.0" text="Open Pass Slip" styleClass="btn-gold">
+                                            <VBox.margin><Insets top="4.0" /></VBox.margin>
+                                        </Button>
+                                    </children>
+                                </VBox>
+                                <!-- Log Return -->
+                                <VBox alignment="CENTER" prefHeight="260.0" prefWidth="280.0" spacing="16.0" styleClass="card" style="-fx-padding: 32px;">
+                                    <children>
+                                        <Label text="&#x21A9;" style="-fx-font-size: 48px; -fx-text-fill: #FCA5A5;" />
+                                        <Label text="Log Return" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
+                                        <Label text="Record employee re-entry after pass slip." wrapText="true" textAlignment="CENTER" maxWidth="220.0" style="-fx-font-size: 12px; -fx-text-fill: #A8A29E; -fx-line-spacing: 3px;" />
+                                        <Button fx:id="btnOpenReturn" mnemonicParsing="false" prefHeight="38.0" prefWidth="170.0" text="Open Return" styleClass="btn-maroon">
+                                            <VBox.margin><Insets top="4.0" /></VBox.margin>
+                                        </Button>
+                                    </children>
+                                </VBox>
+                                <!-- Monitoring -->
+                                <VBox alignment="CENTER" prefHeight="260.0" prefWidth="280.0" spacing="16.0" styleClass="card" style="-fx-padding: 32px;">
+                                    <children>
+                                        <Label text="&#x1F4CA;" style="-fx-font-size: 48px; -fx-text-fill: #FCA5A5;" />
+                                        <Label text="Monitoring" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
+                                        <Label text="Review pass slip status and monitoring summaries." wrapText="true" textAlignment="CENTER" maxWidth="220.0" style="-fx-font-size: 12px; -fx-text-fill: #A8A29E; -fx-line-spacing: 3px;" />
+                                        <Button fx:id="btnOpenMonitoring" mnemonicParsing="false" prefHeight="38.0" prefWidth="170.0" text="Open Monitoring" styleClass="btn-maroon">
+                                            <VBox.margin><Insets top="4.0" /></VBox.margin>
+                                        </Button>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                        <!-- Status bar -->
+                        <VBox alignment="CENTER_LEFT" spacing="4.0" styleClass="card" style="-fx-padding: 18px 24px;">
+                            <children>
+                                <Label text="System Status" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #FCA5A5;" />
+                                <Label text="FXML-driven — no legacy UI classes." style="-fx-font-size: 12px; -fx-text-fill: #A8A29E;" />
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+    <!-- BOTTOM: Timer bar -->
+    <bottom>
+        <VBox styleClass="timer-bar">
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                    <children>
+                        <Label text="&#x23F1;  LIVE TIMER" styleClass="timer-label" />
+                        <Label fx:id="lblLiveTimer" text="No employees currently out" styleClass="timer-value" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </bottom>
+</BorderPane>
+</StackPane>
