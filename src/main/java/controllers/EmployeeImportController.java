@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -67,6 +68,9 @@ public class EmployeeImportController {
     @FXML private TableColumn<ImportRow, String> colPreviewAddress;
     @FXML private TableColumn<ImportRow, String> colPreviewEmergency;
 
+    @FXML private Button btnManageEmployees;
+    @FXML private VBox manageEmployeesSubMenu;
+
     private List<ImportRow> importData = new ArrayList<>();
 
     @FXML
@@ -77,6 +81,20 @@ public class EmployeeImportController {
             btnSidebarDashboard.setOnAction(e -> NavigationHelper.navigateToDashboard(btnSidebarDashboard));
         if (btnSidebarMonitoring != null)
             btnSidebarMonitoring.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarMonitoring, "/fxml/Monitoring.fxml"));
+
+        if (btnManageEmployees != null) {
+            btnManageEmployees.setOnAction(event -> {
+                boolean isVisible = manageEmployeesSubMenu.isVisible();
+                manageEmployeesSubMenu.setVisible(!isVisible);
+                manageEmployeesSubMenu.setManaged(!isVisible);
+            });
+        }
+
+        if (manageEmployeesSubMenu != null) {
+            manageEmployeesSubMenu.setVisible(true);
+            manageEmployeesSubMenu.setManaged(true);
+        }
+
         if (btnSidebarEmployees != null)
             btnSidebarEmployees.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarEmployees, "/fxml/EmployeeController.fxml"));
         if (btnSidebarReports != null)

@@ -69,6 +69,12 @@ public class StaffDashboardController {
     @FXML
     private StackPane staffDashboardRoot;
 
+    @FXML
+    private Button btnManageEmployees;
+
+    @FXML
+    private VBox manageEmployeesSubMenu;
+
     private Timeline autoRefreshTimeline;
 
     @FXML
@@ -89,6 +95,14 @@ public class StaffDashboardController {
                         "/fxml/Monitoring.fxml"
                 )
         );
+
+        if (btnManageEmployees != null) {
+            btnManageEmployees.setOnAction(event -> {
+                boolean isVisible = manageEmployeesSubMenu.isVisible();
+                manageEmployeesSubMenu.setVisible(!isVisible);
+                manageEmployeesSubMenu.setManaged(!isVisible);
+            });
+        }
 
         if (btnSidebarLogReturn != null)
             btnSidebarLogReturn.setOnAction(

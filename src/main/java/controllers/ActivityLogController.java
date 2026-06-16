@@ -69,6 +69,12 @@ public class ActivityLogController {
     private VBox logsFeedContentContainer;
 
     @FXML
+    private Button btnManageEmployees;
+
+    @FXML
+    private VBox manageEmployeesSubMenu;
+
+    @FXML
     private void initialize() {
 
         if (!Session.isAdmin()) {
@@ -83,6 +89,14 @@ public class ActivityLogController {
         btnSidebarMonitoring.setOnAction(
                 event -> NavigationHelper.navigateTo(btnSidebarMonitoring, "/fxml/Monitoring.fxml")
         );
+
+        if (btnManageEmployees != null) {
+            btnManageEmployees.setOnAction(event -> {
+                boolean isVisible = manageEmployeesSubMenu.isVisible();
+                manageEmployeesSubMenu.setVisible(!isVisible);
+                manageEmployeesSubMenu.setManaged(!isVisible);
+            });
+        }
 
         btnSidebarEmployees.setOnAction(
                 event -> NavigationHelper.navigateTo(btnSidebarEmployees, "/fxml/EmployeeController.fxml")

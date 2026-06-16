@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import utils.NavigationHelper;
 import utils.Session;
@@ -68,6 +69,12 @@ public class SignatureController {
     private Button btnRemoveSignature;
 
     @FXML
+    private Button btnManageEmployees;
+
+    @FXML
+    private VBox manageEmployeesSubMenu;
+
+    @FXML
     private void initialize() {
         NavigationHelper.setActiveButton(btnSidebarSignatures);
 
@@ -77,6 +84,20 @@ public class SignatureController {
         btnSidebarMonitoring.setOnAction(
                 event -> NavigationHelper.navigateTo(btnSidebarMonitoring, "/fxml/Monitoring.fxml")
         );
+
+        if (btnManageEmployees != null) {
+            btnManageEmployees.setOnAction(event -> {
+                boolean isVisible = manageEmployeesSubMenu.isVisible();
+                manageEmployeesSubMenu.setVisible(!isVisible);
+                manageEmployeesSubMenu.setManaged(!isVisible);
+            });
+        }
+
+        if (manageEmployeesSubMenu != null) {
+            manageEmployeesSubMenu.setVisible(true);
+            manageEmployeesSubMenu.setManaged(true);
+        }
+
         btnSidebarEmployees.setOnAction(
                 event -> NavigationHelper.navigateTo(btnSidebarEmployees, "/fxml/EmployeeController.fxml")
         );

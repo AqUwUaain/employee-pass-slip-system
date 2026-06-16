@@ -10,6 +10,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import utils.NavigationHelper;
 import utils.PasswordUtils;
 
@@ -95,6 +96,12 @@ public class UserController {
     private TableColumn<models.User, String> colUserRoleTier;
 
     @FXML
+    private Button btnManageEmployees;
+
+    @FXML
+    private VBox manageEmployeesSubMenu;
+
+    @FXML
     private void initialize() {
         NavigationHelper.setActiveButton(btnSidebarUsers);
 
@@ -105,6 +112,19 @@ public class UserController {
         btnSidebarMonitoring.setOnAction(
                 event -> NavigationHelper.navigateTo(btnSidebarMonitoring, "/fxml/Monitoring.fxml")
         );
+
+        if (btnManageEmployees != null) {
+            btnManageEmployees.setOnAction(event -> {
+                boolean isVisible = manageEmployeesSubMenu.isVisible();
+                manageEmployeesSubMenu.setVisible(!isVisible);
+                manageEmployeesSubMenu.setManaged(!isVisible);
+            });
+        }
+
+        if (manageEmployeesSubMenu != null) {
+            manageEmployeesSubMenu.setVisible(true);
+            manageEmployeesSubMenu.setManaged(true);
+        }
 
         btnSidebarEmployees.setOnAction(
                 event -> NavigationHelper.navigateTo(btnSidebarEmployees, "/fxml/EmployeeController.fxml")

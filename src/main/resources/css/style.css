@@ -187,6 +187,51 @@ Button.nav-active:pressed {
     -fx-background-color: #352525;
 }
 
+Button.nav-sub-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255,255,255,0.35);
+    -fx-font-size: 12px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 9px 20px 9px 40px;
+    -fx-background-radius: 10px;
+    -fx-graphic-text-gap: 10px;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-border-radius: 10px;
+    -fx-background-insets: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-cursor: hand;
+}
+Button.nav-sub-item:hover {
+    -fx-background-color: rgba(255,255,255,0.04);
+    -fx-text-fill: rgba(255,255,255,0.6);
+}
+Button.nav-sub-item:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-color: transparent;
+}
+Button.nav-sub-item:pressed {
+    -fx-background-color: rgba(255,255,255,0.03);
+}
+Button.nav-sub-active {
+    -fx-background-color: #3D2A2A;
+    -fx-text-fill: #D4A853;
+    -fx-font-weight: bold;
+    -fx-border-color: #D4A853;
+    -fx-border-width: 0 0 0 3;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-background-insets: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+Button.nav-sub-active:hover {
+    -fx-background-color: #4A3535;
+    -fx-text-fill: #D4A853;
+}
+
 /* ==========================================================================
    INPUTS
    ========================================================================== */

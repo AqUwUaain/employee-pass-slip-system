@@ -96,6 +96,12 @@ public class DashboardController {
     @FXML
     private StackPane dashboardRoot;
 
+    @FXML
+    private Button btnManageEmployees;
+
+    @FXML
+    private VBox manageEmployeesSubMenu;
+
     private YearMonth currentYearMonth;
     private LocalDate selectedDate;
     private Timeline autoRefreshTimeline;
@@ -120,6 +126,14 @@ public class DashboardController {
                         "/fxml/Monitoring.fxml"
                 )
         );
+
+        if (btnManageEmployees != null) {
+            btnManageEmployees.setOnAction(event -> {
+                boolean isVisible = manageEmployeesSubMenu.isVisible();
+                manageEmployeesSubMenu.setVisible(!isVisible);
+                manageEmployeesSubMenu.setManaged(!isVisible);
+            });
+        }
 
         btnSidebarEmployees.setOnAction(
                 event -> NavigationHelper.navigateTo(

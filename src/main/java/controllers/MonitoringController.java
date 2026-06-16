@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import models.PassSlip;
 import utils.NavigationHelper;
 import utils.PhilTime;
@@ -93,6 +94,12 @@ public class MonitoringController {
     @FXML
     private TableColumn<PassSlip, String> colAccessType;
 
+    @FXML
+    private Button btnManageEmployees;
+
+    @FXML
+    private VBox manageEmployeesSubMenu;
+
     private ObservableList<PassSlip> monitoringData;
 
     private final DateTimeFormatter formatter =
@@ -109,6 +116,14 @@ public class MonitoringController {
         btnSidebarMonitoring.setOnAction(
                 event -> NavigationHelper.navigateTo(btnSidebarMonitoring, "/fxml/Monitoring.fxml")
         );
+
+        if (btnManageEmployees != null) {
+            btnManageEmployees.setOnAction(event -> {
+                boolean isVisible = manageEmployeesSubMenu.isVisible();
+                manageEmployeesSubMenu.setVisible(!isVisible);
+                manageEmployeesSubMenu.setManaged(!isVisible);
+            });
+        }
 
         btnSidebarEmployees.setOnAction(
                 event -> NavigationHelper.navigateTo(btnSidebarEmployees, "/fxml/EmployeeController.fxml")

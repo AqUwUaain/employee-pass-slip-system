@@ -60,6 +60,12 @@ public class EmployeeController {
     private VBox btnGatewayImportEmployees;
 
     @FXML
+    private Button btnManageEmployees;
+
+    @FXML
+    private VBox manageEmployeesSubMenu;
+
+    @FXML
     private void initialize() {
         NavigationHelper.setActiveButton(btnSidebarEmployees);
 
@@ -75,6 +81,19 @@ public class EmployeeController {
                         "/fxml/Monitoring.fxml"
                 )
         );
+
+        if (btnManageEmployees != null) {
+            btnManageEmployees.setOnAction(event -> {
+                boolean isVisible = manageEmployeesSubMenu.isVisible();
+                manageEmployeesSubMenu.setVisible(!isVisible);
+                manageEmployeesSubMenu.setManaged(!isVisible);
+            });
+        }
+
+        if (manageEmployeesSubMenu != null) {
+            manageEmployeesSubMenu.setVisible(true);
+            manageEmployeesSubMenu.setManaged(true);
+        }
 
         btnSidebarEmployees.setOnAction(
                 event -> NavigationHelper.navigateTo(

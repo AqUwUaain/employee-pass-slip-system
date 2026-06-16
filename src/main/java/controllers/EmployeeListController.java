@@ -115,6 +115,12 @@ public class EmployeeListController {
     @FXML
     private TableColumn<Employee, Boolean> colSelect;
 
+    @FXML
+    private Button btnManageEmployees;
+
+    @FXML
+    private VBox manageEmployeesSubMenu;
+
     private FilteredList<Employee> filteredEmployees;
     private ObservableList<Employee> selectedEmployees = FXCollections.observableArrayList();
 
@@ -134,6 +140,19 @@ public class EmployeeListController {
                         "/fxml/Monitoring.fxml"
                 )
         );
+
+        if (btnManageEmployees != null) {
+            btnManageEmployees.setOnAction(event -> {
+                boolean isVisible = manageEmployeesSubMenu.isVisible();
+                manageEmployeesSubMenu.setVisible(!isVisible);
+                manageEmployeesSubMenu.setManaged(!isVisible);
+            });
+        }
+
+        if (manageEmployeesSubMenu != null) {
+            manageEmployeesSubMenu.setVisible(true);
+            manageEmployeesSubMenu.setManaged(true);
+        }
 
         btnSidebarEmployees.setOnAction(
                 event -> NavigationHelper.navigateTo(
