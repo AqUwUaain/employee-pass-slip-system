@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.Instant;
 import java.util.prefs.Preferences;
 
 public class LoginController {
@@ -174,11 +175,12 @@ public class LoginController {
             ForgotPasswordController controller = loader.getController();
             Stage dialogStage = new Stage();
             dialogStage.initModality(Modality.APPLICATION_MODAL);
-            dialogStage.initStyle(StageStyle.UNDECORATED);
+            dialogStage.initStyle(StageStyle.TRANSPARENT);
             dialogStage.initOwner(emailField.getScene().getWindow());
             controller.setDialogStage(dialogStage);
 
             Scene scene = new Scene(root);
+            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
             dialogStage.setScene(scene);
             dialogStage.setResizable(false);
             dialogStage.showAndWait();
@@ -241,12 +243,13 @@ public class LoginController {
             ResetPasswordController controller = loader.getController();
             Stage dialogStage = new Stage();
             dialogStage.initModality(Modality.APPLICATION_MODAL);
-            dialogStage.initStyle(StageStyle.UNDECORATED);
+            dialogStage.initStyle(StageStyle.TRANSPARENT);
             dialogStage.initOwner(emailField.getScene().getWindow());
             controller.setDialogStage(dialogStage);
             controller.setRequestInfo(email, requestId);
 
             Scene scene = new Scene(root);
+            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
             dialogStage.setScene(scene);
             dialogStage.setResizable(false);
             dialogStage.showAndWait();
@@ -272,6 +275,9 @@ public class LoginController {
         }
     }
 
+    private static final int MAX_ATTEMPTS = 5;
+    private static final long LOCKOUT_DURATION_MS = 15 * 60 * 1000;
+
     @FXML
     private void handleLogin(ActionEvent event) {
         String email = emailField.getText().trim();
@@ -292,6 +298,23 @@ public class LoginController {
             return;
         }
 
+        int attempts = prefs.getInt("fail_attempts_" + email, 0);
+        long lockoutTime = prefs.getLong("lockout_time_" + email, 0);
+
+        if (attempts >= MAX_ATTEMPTS) {
+            long elapsed = System.currentTimeMillis() - lockoutTime;
+            if (elapsed < LOCKOUT_DURATION_MS) {
+                long remaining = (LOCKOUT_DURATION_MS - elapsed) / 60000;
+                long seconds = ((LOCKOUT_DURATION_MS - elapsed) % 60000) / 1000;
+                messageLabel.setText("Too many failed attempts. Try again in " + remaining + "m " + seconds + "s.");
+                return;
+            } else {
+                prefs.putInt("fail_attempts_" + email, 0);
+                prefs.remove("lockout_time_" + email);
+                attempts = 0;
+            }
+        }
+
         try {
             Connection connection = DatabaseConnection.connect();
             String query = "SELECT * FROM users WHERE username = ?";
@@ -308,9 +331,19 @@ public class LoginController {
                 }
 
                 if (!passwordMatch) {
-                    messageLabel.setText("Invalid username or password.");
+                    attempts++;
+                    prefs.putInt("fail_attempts_" + email, attempts);
+                    if (attempts >= MAX_ATTEMPTS) {
+                        prefs.putLong("lockout_time_" + email, System.currentTimeMillis());
+                        messageLabel.setText("Too many failed attempts. Account locked for 15 minutes.");
+                    } else {
+                        messageLabel.setText("Invalid username or password. (" + attempts + "/" + MAX_ATTEMPTS + " attempts)");
+                    }
                     return;
                 }
+
+                prefs.putInt("fail_attempts_" + email, 0);
+                prefs.remove("lockout_time_" + email);
 
                 if (!storedPassword.equals(PasswordUtils.hashPassword(password))) {
                     try {
@@ -352,7 +385,14 @@ public class LoginController {
                     messageLabel.setText("Unknown user role.");
                 }
             } else {
-                messageLabel.setText("Invalid username or password.");
+                attempts++;
+                prefs.putInt("fail_attempts_" + email, attempts);
+                if (attempts >= MAX_ATTEMPTS) {
+                    prefs.putLong("lockout_time_" + email, System.currentTimeMillis());
+                    messageLabel.setText("Too many failed attempts. Account locked for 15 minutes.");
+                } else {
+                    messageLabel.setText("Invalid username or password. (" + attempts + "/" + MAX_ATTEMPTS + " attempts)");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

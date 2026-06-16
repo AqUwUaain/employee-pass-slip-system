@@ -92,7 +92,7 @@
                                         <VBox prefWidth="140.0" style="-fx-border-color: transparent #3D3229 transparent transparent; -fx-border-width: 0 2px 0 0; -fx-padding: 6px 10px;">
                                             <children>
                                                 <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2;" text="CLIENT #:" />
-                                                <TextField fx:id="txtSlipClientId" promptText="PUP-SR-XXXX" style="-fx-background-color: transparent; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
+                                                <TextField fx:id="txtSlipClientId" promptText="XXXX" style="-fx-background-color: transparent; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
                                             </children>
                                         </VBox>
                                         <!-- Personnel Full Name Field -->

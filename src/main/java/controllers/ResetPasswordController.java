@@ -10,6 +10,7 @@ import utils.PasswordUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class ResetPasswordController {
 
@@ -58,8 +59,22 @@ public class ResetPasswordController {
             return;
         }
 
-        if (newPassword.length() < 4) {
-            resetMessageLabel.setText("Password must be at least 4 characters.");
+        if (newPassword.length() < 8) {
+            resetMessageLabel.setText("Password must be at least 8 characters.");
+            resetMessageLabel.setStyle("-fx-text-fill: #FCA5A5;");
+            return;
+        }
+
+        String specialChars = "!@#$%^&*()_+-=[]{}|;:'\",.<>?/`~";
+        boolean hasSpecial = false;
+        for (char c : newPassword.toCharArray()) {
+            if (specialChars.indexOf(c) >= 0) {
+                hasSpecial = true;
+                break;
+            }
+        }
+        if (!hasSpecial) {
+            resetMessageLabel.setText("Password must contain at least 1 special character.");
             resetMessageLabel.setStyle("-fx-text-fill: #FCA5A5;");
             return;
         }
@@ -73,6 +88,21 @@ public class ResetPasswordController {
         try (Connection connection = DatabaseConnection.connect()) {
 
             String hashedPassword = PasswordUtils.hashPassword(newPassword);
+
+            try (PreparedStatement checkOld = connection.prepareStatement(
+                    "SELECT password FROM users WHERE username = ?"
+                 )) {
+                checkOld.setString(1, userEmail);
+                ResultSet rs = checkOld.executeQuery();
+                if (rs.next()) {
+                    String oldHashed = rs.getString("password");
+                    if (PasswordUtils.verifyPassword(newPassword, oldHashed)) {
+                        resetMessageLabel.setText("New password cannot be the same as your old password.");
+                        resetMessageLabel.setStyle("-fx-text-fill: #FCA5A5;");
+                        return;
+                    }
+                }
+            }
 
             try (PreparedStatement updatePassword = connection.prepareStatement(
                     "UPDATE users SET password = ? WHERE username = ?"

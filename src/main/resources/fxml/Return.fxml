@@ -128,7 +128,7 @@
                                     </rowConstraints>
                                     <children>
                                         <Label style="-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 12px;" text="Scan or Enter Client ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                                        <TextField fx:id="txtReturnSearchId" promptText="Enter PUP-SR-XXXX ID reference..." styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                        <TextField fx:id="txtReturnSearchId" promptText="Enter XXXX ID reference..." styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                                         <Button fx:id="btnFetchActiveSlip" mnemonicParsing="false" maxWidth="Infinity" styleClass="btn-maroon" text="&#x1F50D; Find Slip" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                                         <Label style="-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 12px;" text="Identified Personnel Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                                         <TextField fx:id="txtReturnEmployeeName" editable="false" promptText="Personnel match display name" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.columnSpan="2" />
