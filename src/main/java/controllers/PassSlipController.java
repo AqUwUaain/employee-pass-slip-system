@@ -412,18 +412,15 @@ public class PassSlipController {
                 Cell sideCell = new Cell(1, 1);
                 sideCell.setBackgroundColor(maroon);
                 sideCell.setVerticalAlignment(VerticalAlignment.MIDDLE);
+                sideCell.setHorizontalAlignment(com.itextpdf.layout.properties.HorizontalAlignment.CENTER);
                 sideCell.setKeepTogether(false);
-                Paragraph sideText = new Paragraph()
-                        .add(new Paragraph("PASS")
-                                .setFontColor(white)
-                                .setFontSize(14)
-                                .setBold()
-                                .setTextAlignment(TextAlignment.CENTER))
-                        .add(new Paragraph("SLIP")
-                                .setFontColor(white)
-                                .setFontSize(14)
-                                .setBold()
-                                .setTextAlignment(TextAlignment.CENTER));
+                sideCell.setWidth(UnitValue.createPercentValue(12));
+                Paragraph sideText = new Paragraph("PASS SLIP")
+                        .setFontColor(white)
+                        .setFontSize(16)
+                        .setBold()
+                        .setTextAlignment(TextAlignment.CENTER)
+                        .setRotationAngle(Math.toRadians(90));
                 sideCell.add(sideText);
                 headerTable.addCell(sideCell);
 
