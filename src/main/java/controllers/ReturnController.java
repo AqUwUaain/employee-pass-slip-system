@@ -196,6 +196,8 @@ public class ReturnController {
             btnSidebarPasswordReset
         );
 
+        NavigationHelper.hideMonitoringForStaff(btnSidebarMonitoring);
+
         NavigationHelper.setActiveButton(btnSidebarLogReturn);
 
         if (btnLogout != null)
@@ -475,7 +477,7 @@ public class ReturnController {
         );
 
         colReturnExpectedIn.setCellValueFactory(
-                cellData -> new ReadOnlyStringWrapper("N/A")
+                cellData -> new ReadOnlyStringWrapper(cellData.getValue().getEstimatedReturnText())
         );
 
         tblOutstandingOutboundView.setRowFactory(tv -> {
@@ -524,6 +526,7 @@ public class ReturnController {
                         ps.reason,
                         ps.time_out,
                         ps.time_in,
+                        ps.estimated_return,
                         ps.duration,
                         ps.duration_minutes,
                         ps.status
@@ -543,6 +546,9 @@ public class ReturnController {
                 LocalDateTime timeIn = resultSet.getTimestamp("time_in") != null
                         ? resultSet.getTimestamp("time_in").toLocalDateTime() : null;
 
+                LocalDateTime estimatedReturn = resultSet.getTimestamp("estimated_return") != null
+                        ? resultSet.getTimestamp("estimated_return").toLocalDateTime() : null;
+
                 PassSlip passSlip = new PassSlip(
                         resultSet.getInt("id"),
                         resultSet.getInt("employee_id"),
@@ -551,6 +557,7 @@ public class ReturnController {
                         resultSet.getString("reason"),
                         timeOut,
                         timeIn,
+                        estimatedReturn,
                         resultSet.getLong("duration_minutes"),
                         resultSet.getString("status")
                 );
@@ -655,6 +662,7 @@ public class ReturnController {
                         ps.reason,
                         ps.time_out,
                         ps.time_in,
+                        ps.estimated_return,
                         ps.duration,
                         ps.duration_minutes,
                         ps.status
@@ -673,6 +681,9 @@ public class ReturnController {
                 LocalDateTime timeIn = resultSet.getTimestamp("time_in") != null
                         ? resultSet.getTimestamp("time_in").toLocalDateTime() : null;
 
+                LocalDateTime estimatedReturn = resultSet.getTimestamp("estimated_return") != null
+                        ? resultSet.getTimestamp("estimated_return").toLocalDateTime() : null;
+
                 PassSlip passSlip = new PassSlip(
                         resultSet.getInt("id"),
                         resultSet.getInt("employee_id"),
@@ -681,6 +692,7 @@ public class ReturnController {
                         resultSet.getString("reason"),
                         timeOut,
                         timeIn,
+                        estimatedReturn,
                         resultSet.getLong("duration_minutes"),
                         resultSet.getString("status")
                 );

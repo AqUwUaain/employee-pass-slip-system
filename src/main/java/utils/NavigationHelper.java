@@ -93,6 +93,14 @@ public final class NavigationHelper {
         if (passwordReset != null) { passwordReset.setVisible(false); passwordReset.setManaged(false); }
     }
 
+    public static void hideMonitoringForStaff(Button btnSidebarMonitoring) {
+        if (!"STAFF".equalsIgnoreCase(Session.currentRole)) return;
+        if (btnSidebarMonitoring != null) {
+            btnSidebarMonitoring.setVisible(false);
+            btnSidebarMonitoring.setManaged(false);
+        }
+    }
+
     // ==================== FIXED LOGOUT METHOD ====================
     public static void logout(Node source) {
         try {

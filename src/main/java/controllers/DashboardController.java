@@ -179,6 +179,8 @@ public class DashboardController {
             btnSidebarPasswordReset
         );
 
+        NavigationHelper.hideMonitoringForStaff(btnSidebarMonitoring);
+
         if (btnLogout != null)
             btnLogout.setOnAction(
                     event -> NavigationHelper.logout(btnLogout)
@@ -192,7 +194,7 @@ public class DashboardController {
             btnViewAllActivity.setOnAction(
                     event -> NavigationHelper.navigateTo(
                             btnViewAllActivity,
-                            "/fxml/ActivityLog.fxml"
+                            "/fxml/Monitoring.fxml"
                     )
             );
         }

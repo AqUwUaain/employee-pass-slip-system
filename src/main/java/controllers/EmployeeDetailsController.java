@@ -150,6 +150,8 @@ public class EmployeeDetailsController {
             btnSidebarPasswordReset
         );
 
+        NavigationHelper.hideMonitoringForStaff(btnSidebarMonitoring);
+
         if (btnLogout != null)
             btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
         if (btnNotificationsAlert != null)

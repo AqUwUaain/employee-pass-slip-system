@@ -1,6 +1,7 @@
 package models;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class PassSlip {
 
@@ -11,6 +12,7 @@ public class PassSlip {
     private String reason;
     private LocalDateTime timeOut;
     private LocalDateTime timeIn;
+    private LocalDateTime estimatedReturn;
     private long durationMinutes;
     private String status;
 
@@ -22,6 +24,7 @@ public class PassSlip {
             String reason,
             LocalDateTime timeOut,
             LocalDateTime timeIn,
+            LocalDateTime estimatedReturn,
             long durationMinutes,
             String status
     ) {
@@ -32,6 +35,7 @@ public class PassSlip {
         this.reason = reason;
         this.timeOut = timeOut;
         this.timeIn = timeIn;
+        this.estimatedReturn = estimatedReturn;
         this.durationMinutes = durationMinutes;
         this.status = status;
     }
@@ -43,6 +47,7 @@ public class PassSlip {
     public String getReason() { return reason; }
     public LocalDateTime getTimeOut() { return timeOut; }
     public LocalDateTime getTimeIn() { return timeIn; }
+    public LocalDateTime getEstimatedReturn() { return estimatedReturn; }
     public long getDurationMinutes() { return durationMinutes; }
     public String getStatus() { return status; }
 
@@ -51,5 +56,10 @@ public class PassSlip {
         long hours = durationMinutes / 60;
         long mins = durationMinutes % 60;
         return hours + " hrs " + mins + " mins";
+    }
+
+    public String getEstimatedReturnText() {
+        if (estimatedReturn == null) return "N/A";
+        return estimatedReturn.format(DateTimeFormatter.ofPattern("hh:mm a"));
     }
 }

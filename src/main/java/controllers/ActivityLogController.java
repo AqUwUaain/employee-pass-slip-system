@@ -147,6 +147,8 @@ public class ActivityLogController {
             btnSidebarPasswordReset
         );
 
+        NavigationHelper.hideMonitoringForStaff(btnSidebarMonitoring);
+
         NavigationHelper.setActiveButton(btnSidebarMonitoring);
 
         if (btnLogout != null)
@@ -250,6 +252,7 @@ public class ActivityLogController {
                         ps.reason,
                         ps.time_out,
                         ps.time_in,
+                        ps.estimated_return,
                         ps.duration,
                         ps.duration_minutes,
                         ps.status
@@ -268,6 +271,9 @@ public class ActivityLogController {
                 LocalDateTime timeIn = resultSet.getTimestamp("time_in") != null
                         ? resultSet.getTimestamp("time_in").toLocalDateTime() : null;
 
+                LocalDateTime estimatedReturn = resultSet.getTimestamp("estimated_return") != null
+                        ? resultSet.getTimestamp("estimated_return").toLocalDateTime() : null;
+
                 PassSlip passSlip = new PassSlip(
                         resultSet.getInt("id"),
                         resultSet.getInt("employee_id"),
@@ -276,6 +282,7 @@ public class ActivityLogController {
                         resultSet.getString("reason"),
                         timeOut,
                         timeIn,
+                        estimatedReturn,
                         resultSet.getLong("duration_minutes"),
                         resultSet.getString("status")
                 );

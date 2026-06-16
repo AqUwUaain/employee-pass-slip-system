@@ -1,8 +1,10 @@
 package controllers;
 
 import database.DatabaseConnection;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -10,7 +12,10 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import utils.NavigationHelper;
 import utils.PasswordUtils;
 
@@ -81,6 +86,9 @@ public class UserController {
     private Button btnRevokeAccess;
 
     @FXML
+    private Button btnChangePassword;
+
+    @FXML
     private TableView<models.User> tblSystemUsersView;
 
     @FXML
@@ -148,6 +156,8 @@ public class UserController {
             btnSidebarPasswordReset
         );
 
+        NavigationHelper.hideMonitoringForStaff(btnSidebarMonitoring);
+
         if (btnLogout != null)
             btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
 
@@ -189,6 +199,8 @@ public class UserController {
         });
 
         btnRevokeAccess.setOnAction(event -> revokeSelectedUser());
+
+        btnChangePassword.setOnAction(event -> showChangePasswordDialog());
 
         refreshUsers();
 
@@ -363,6 +375,197 @@ public class UserController {
             lblUserMessage.setText("Failed to remove user.");
         }
 
+    }
+
+    private void showChangePasswordDialog() {
+
+        models.User selectedUser =
+                tblSystemUsersView.getSelectionModel().getSelectedItem();
+
+        if (selectedUser == null) {
+            lblUserMessage.setText("Select a user to change password.");
+            lblUserMessage.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
+            return;
+        }
+
+        javafx.scene.layout.BorderPane root = (javafx.scene.layout.BorderPane) tblSystemUsersView.getScene().getRoot();
+        javafx.scene.Node originalCenter = root.getCenter();
+
+        StackPane overlay = new StackPane();
+        overlay.setStyle("-fx-background-color: rgba(0,0,0,0.6);");
+        overlay.setAlignment(Pos.CENTER);
+
+        VBox dialog = new VBox(12);
+        dialog.setAlignment(Pos.CENTER);
+        dialog.setPrefWidth(420);
+        dialog.setMaxWidth(420);
+        dialog.setPrefHeight(450);
+        dialog.setMaxHeight(450);
+        dialog.setStyle(
+                "-fx-background-color: #1F1B1B; " +
+                "-fx-background-radius: 12px; " +
+                "-fx-border-color: #D4A853; " +
+                "-fx-border-width: 1px; " +
+                "-fx-border-radius: 12px; " +
+                "-fx-padding: 28px; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 25, 0.25, 0, 6);"
+        );
+
+        Label icon = new Label("\u1F512");
+        icon.setStyle("-fx-font-size: 32px;");
+
+        Label title = new Label("Change Password");
+        title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;");
+
+        Label subtitle = new Label("for " + selectedUser.getUsername());
+        subtitle.setStyle("-fx-font-size: 12px; -fx-text-fill: #A8A29E;");
+
+        Label oldPwLabel = new Label("CURRENT PASSWORD");
+        oldPwLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 11px;");
+
+        PasswordField oldPwField = new PasswordField();
+        oldPwField.setPromptText("Enter current password...");
+        oldPwField.setStyle("-fx-background-color: #2D2520; -fx-text-fill: #F5F5F4; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-padding: 8px 12px; -fx-font-size: 13px;");
+        oldPwField.setMaxWidth(Double.MAX_VALUE);
+
+        Label newPwLabel = new Label("NEW PASSWORD");
+        newPwLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 11px;");
+
+        PasswordField newPwField = new PasswordField();
+        newPwField.setPromptText("Enter new password...");
+        newPwField.setStyle("-fx-background-color: #2D2520; -fx-text-fill: #F5F5F4; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-padding: 8px 12px; -fx-font-size: 13px;");
+        newPwField.setMaxWidth(Double.MAX_VALUE);
+
+        Label confirmPwLabel = new Label("CONFIRM NEW PASSWORD");
+        confirmPwLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 11px;");
+
+        PasswordField confirmPwField = new PasswordField();
+        confirmPwField.setPromptText("Re-enter new password...");
+        confirmPwField.setStyle("-fx-background-color: #2D2520; -fx-text-fill: #F5F5F4; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-padding: 8px 12px; -fx-font-size: 13px;");
+        confirmPwField.setMaxWidth(Double.MAX_VALUE);
+
+        Label rulesLabel = new Label("Min 5 chars, 1 uppercase, 1 number, 1 special (!@#%*)");
+        rulesLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #78716C; -fx-wrap-text: true;");
+        rulesLabel.setMaxWidth(360);
+
+        Label msgLabel = new Label();
+        msgLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #FCA5A5; -fx-text-alignment: center; -fx-wrap-text: true;");
+        msgLabel.setMaxWidth(360);
+        msgLabel.setTextAlignment(TextAlignment.CENTER);
+
+        HBox buttons = new HBox(12);
+        buttons.setAlignment(Pos.CENTER);
+
+        Button btnCancel = new Button("Cancel");
+        btnCancel.setStyle(
+                "-fx-background-color: #3D3229; -fx-text-fill: #A8A29E; " +
+                "-fx-font-size: 13px; -fx-font-weight: bold; " +
+                "-fx-background-radius: 8px; -fx-padding: 8px 24px; -fx-cursor: hand;"
+        );
+
+        Button btnConfirm = new Button("Update Password");
+        btnConfirm.setStyle(
+                "-fx-background-color: #D4A853; -fx-text-fill: #1C0A04; " +
+                "-fx-font-size: 13px; -fx-font-weight: bold; " +
+                "-fx-background-radius: 8px; -fx-padding: 8px 24px; -fx-cursor: hand;"
+        );
+
+        buttons.getChildren().addAll(btnCancel, btnConfirm);
+
+        dialog.getChildren().addAll(icon, title, subtitle, oldPwLabel, oldPwField, newPwLabel, newPwField, confirmPwLabel, confirmPwField, rulesLabel, msgLabel, buttons);
+        overlay.getChildren().add(dialog);
+        root.setCenter(overlay);
+
+        btnCancel.setOnAction(e -> root.setCenter(originalCenter));
+
+        btnConfirm.setOnAction(e -> {
+            String oldPw = oldPwField.getText().trim();
+            String newPw = newPwField.getText().trim();
+            String confirmPw = confirmPwField.getText().trim();
+
+            if (oldPw.isEmpty()) {
+                msgLabel.setText("Current password is required.");
+                return;
+            }
+
+            if (newPw.isEmpty()) {
+                msgLabel.setText("New password is required.");
+                return;
+            }
+
+            if (newPw.length() < 5) {
+                msgLabel.setText("Password must be at least 5 characters.");
+                return;
+            }
+
+            if (!newPw.matches(".*[A-Z].*")) {
+                msgLabel.setText("Password must contain at least 1 uppercase letter.");
+                return;
+            }
+
+            if (!newPw.matches(".*[0-9].*")) {
+                msgLabel.setText("Password must contain at least 1 number.");
+                return;
+            }
+
+            if (!newPw.matches(".*[!@#%*].*")) {
+                msgLabel.setText("Password must contain at least 1 special character (!@#%*).");
+                return;
+            }
+
+            if (!newPw.equals(confirmPw)) {
+                msgLabel.setText("New passwords do not match.");
+                return;
+            }
+
+            try {
+                java.sql.Connection connection = DatabaseConnection.connect();
+
+                java.sql.PreparedStatement verifyStmt = connection.prepareStatement(
+                        "SELECT password FROM users WHERE id = ?"
+                );
+                verifyStmt.setInt(1, selectedUser.getId());
+                java.sql.ResultSet rs = verifyStmt.executeQuery();
+
+                if (rs.next()) {
+                    String storedHash = rs.getString("password");
+                    if (!PasswordUtils.verifyPassword(oldPw, storedHash)) {
+                        msgLabel.setText("Current password is incorrect.");
+                        rs.close();
+                        verifyStmt.close();
+                        connection.close();
+                        return;
+                    }
+                }
+                rs.close();
+                verifyStmt.close();
+
+                String hashed = PasswordUtils.hashPassword(newPw);
+                java.sql.PreparedStatement updateStmt = connection.prepareStatement(
+                        "UPDATE users SET password = ? WHERE id = ?"
+                );
+                updateStmt.setString(1, hashed);
+                updateStmt.setInt(2, selectedUser.getId());
+                int updated = updateStmt.executeUpdate();
+                updateStmt.close();
+                connection.close();
+
+                if (updated > 0) {
+                    root.setCenter(originalCenter);
+                    lblUserMessage.setText("Password updated for " + selectedUser.getUsername());
+                    lblUserMessage.setStyle("-fx-text-fill: #34D399; -fx-font-weight: bold;");
+                    ActivityLogController.logActivity(
+                            "Changed password for user: " + selectedUser.getUsername(), 0);
+                } else {
+                    msgLabel.setText("Failed to update password.");
+                }
+            } catch (Exception ex) {
+                msgLabel.setText("Database error.");
+                ex.printStackTrace();
+            }
+        });
+
+        Platform.runLater(oldPwField::requestFocus);
     }
 
 }

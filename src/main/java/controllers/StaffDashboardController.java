@@ -117,6 +117,8 @@ public class StaffDashboardController {
                     )
             );
 
+        NavigationHelper.hideMonitoringForStaff(btnSidebarMonitoring);
+
         if (btnLogout != null)
             btnLogout.setOnAction(
                     event -> NavigationHelper.logout(btnLogout)

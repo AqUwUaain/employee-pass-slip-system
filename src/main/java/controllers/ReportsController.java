@@ -75,6 +75,9 @@ public class ReportsController {
     private TableColumn<PassSlip, String> colReason;
 
     @FXML
+    private TableColumn<PassSlip, String> colExpectedReturn;
+
+    @FXML
     private TableColumn<PassSlip, String> colStatus;
 
     @FXML
@@ -168,6 +171,8 @@ public class ReportsController {
             btnSidebarPasswordReset
         );
 
+        NavigationHelper.hideMonitoringForStaff(btnSidebarMonitoring);
+
         if (btnLogout != null)
             btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
 
@@ -233,6 +238,10 @@ public class ReportsController {
                 )
         );
 
+        colExpectedReturn.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(cellData.getValue().getEstimatedReturnText())
+        );
+
         colStatus.setCellValueFactory(
                 cellData -> new ReadOnlyStringWrapper(cellData.getValue().getStatus())
         );
@@ -285,6 +294,7 @@ public class ReportsController {
                         ps.reason,
                         ps.time_out,
                         ps.time_in,
+                        ps.estimated_return,
                         ps.duration,
                         ps.duration_minutes,
                         ps.status
@@ -303,6 +313,9 @@ public class ReportsController {
                 LocalDateTime timeIn = resultSet.getTimestamp("time_in") != null
                         ? resultSet.getTimestamp("time_in").toLocalDateTime() : null;
 
+                LocalDateTime estimatedReturn = resultSet.getTimestamp("estimated_return") != null
+                        ? resultSet.getTimestamp("estimated_return").toLocalDateTime() : null;
+
                 PassSlip passSlip = new PassSlip(
                         resultSet.getInt("id"),
                         resultSet.getInt("employee_id"),
@@ -311,6 +324,7 @@ public class ReportsController {
                         resultSet.getString("reason"),
                         timeOut,
                         timeIn,
+                        estimatedReturn,
                         resultSet.getLong("duration_minutes"),
                         resultSet.getString("status")
                 );
@@ -489,6 +503,7 @@ public class ReportsController {
                         ps.reason,
                         ps.time_out,
                         ps.time_in,
+                        ps.estimated_return,
                         ps.duration,
                         ps.duration_minutes,
                         ps.status
@@ -507,6 +522,9 @@ public class ReportsController {
                 LocalDateTime timeIn = resultSet.getTimestamp("time_in") != null
                         ? resultSet.getTimestamp("time_in").toLocalDateTime() : null;
 
+                LocalDateTime estimatedReturn = resultSet.getTimestamp("estimated_return") != null
+                        ? resultSet.getTimestamp("estimated_return").toLocalDateTime() : null;
+
                 PassSlip passSlip = new PassSlip(
                         resultSet.getInt("id"),
                         resultSet.getInt("employee_id"),
@@ -515,6 +533,7 @@ public class ReportsController {
                         resultSet.getString("reason"),
                         timeOut,
                         timeIn,
+                        estimatedReturn,
                         resultSet.getLong("duration_minutes"),
                         resultSet.getString("status")
                 );

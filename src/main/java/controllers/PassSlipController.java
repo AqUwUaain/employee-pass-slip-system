@@ -117,28 +117,12 @@ public class PassSlipController {
         loadAdminSignature();
 
         cmbTimeIn.setOnAction(event -> {
-            String selected = cmbTimeIn.getValue();
-            if (selected != null) {
-                String timeStr = selected.split("  \\(")[0];
-                DateTimeFormatter parser = DateTimeFormatter.ofPattern("hh:mm a");
-                LocalTime timeInParsed = LocalTime.parse(timeStr, parser);
-                LocalDateTime timeIn = now.toLocalDate().atTime(timeInParsed);
-                if (timeIn.isBefore(now)) {
-                    timeIn = timeIn.plusDays(1);
-                }
-                selectedEstimatedReturn = timeIn;
-                long totalMinutes = java.time.Duration.between(now, timeIn).toMinutes();
-                long hours = totalMinutes / 60;
-                long mins = totalMinutes % 60;
-                String durationText;
-                if (hours > 0 && mins > 0) {
-                    durationText = "Estimated duration: " + hours + " hr" + (hours > 1 ? "s" : "") + " " + mins + " min" + (mins > 1 ? "s" : "");
-                } else if (hours > 0) {
-                    durationText = "Estimated duration: " + hours + " hr" + (hours > 1 ? "s" : "");
-                } else {
-                    durationText = "Estimated duration: " + mins + " min";
-                }
-                lblDuration.setText(durationText);
+            handleTimeInSelection(now);
+        });
+
+        cmbTimeIn.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && !newValue.isBlank()) {
+                handleTimeInManualInput(newValue.trim(), now);
             }
         });
 
@@ -243,6 +227,67 @@ public class PassSlipController {
         cmbTimeIn.setItems(timeOptions);
     }
 
+    private void handleTimeInSelection(LocalDateTime now) {
+        String selected = cmbTimeIn.getValue();
+        if (selected != null) {
+            String timeStr = selected.split("  \\(")[0];
+            try {
+                DateTimeFormatter parser = DateTimeFormatter.ofPattern("hh:mm a");
+                LocalTime timeInParsed = LocalTime.parse(timeStr, parser);
+                LocalDateTime timeIn = now.toLocalDate().atTime(timeInParsed);
+                if (timeIn.isBefore(now)) {
+                    timeIn = timeIn.plusDays(1);
+                }
+                selectedEstimatedReturn = timeIn;
+                updateDurationLabel(now, timeIn);
+                lblSlipStatusMessage.setText("");
+            } catch (Exception e) {
+                selectedEstimatedReturn = null;
+                lblDuration.setText("");
+            }
+        }
+    }
+
+    private void handleTimeInManualInput(String input, LocalDateTime now) {
+        if (input.isBlank()) {
+            selectedEstimatedReturn = null;
+            lblDuration.setText("");
+            return;
+        }
+
+        try {
+            DateTimeFormatter parser = DateTimeFormatter.ofPattern("hh:mm a");
+            LocalTime timeInParsed = LocalTime.parse(input.toUpperCase(), parser);
+            LocalDateTime timeIn = now.toLocalDate().atTime(timeInParsed);
+            if (timeIn.isBefore(now)) {
+                timeIn = timeIn.plusDays(1);
+            }
+            selectedEstimatedReturn = timeIn;
+            updateDurationLabel(now, timeIn);
+            lblSlipStatusMessage.setText("");
+        } catch (Exception e) {
+            selectedEstimatedReturn = null;
+            lblDuration.setText("");
+            lblSlipStatusMessage.setText("Invalid time format. Use HH:MM AM/PM (e.g., 09:30 AM)");
+            lblSlipStatusMessage.setStyle("-fx-text-fill: #FCA5A5; -fx-font-size: 12px;");
+        }
+    }
+
+    private void updateDurationLabel(LocalDateTime now, LocalDateTime timeIn) {
+        long totalMinutes = java.time.Duration.between(now, timeIn).toMinutes();
+        long hours = totalMinutes / 60;
+        long mins = totalMinutes % 60;
+        String durationText;
+        if (hours > 0 && mins > 0) {
+            durationText = "Estimated duration: " + hours + " hr" + (hours > 1 ? "s" : "") + " " + mins + " min" + (mins > 1 ? "s" : "");
+        } else if (hours > 0) {
+            durationText = "Estimated duration: " + hours + " hr" + (hours > 1 ? "s" : "");
+        } else {
+            durationText = "Estimated duration: " + mins + " min";
+        }
+        lblDuration.setText(durationText);
+    }
+
     private void loadEmployeeName(int employeeId) {
 
         try {
@@ -299,6 +344,11 @@ public class PassSlipController {
 
         if (reason.trim().length() < 5) {
             messageLabel.setText("REASON TOO SHORT");
+            return;
+        }
+
+        if (estimatedReturn == null) {
+            messageLabel.setText("SELECT OR ENTER ESTIMATED RETURN TIME");
             return;
         }
 
@@ -464,7 +514,10 @@ public class PassSlipController {
                 timeRow.addCell(createLabelCell("TIME OUT:", medGray, white));
                 timeRow.addCell(createValueCell(txtSlipTimeOut.getText(), darkText, lightGray));
                 timeRow.addCell(createLabelCell("TIME IN:", medGray, white));
-                String timeInText = cmbTimeIn.getValue() != null ? cmbTimeIn.getValue().split("  \\(")[0] : "Pending";
+                String timeInText = cmbTimeIn.getValue() != null
+                        ? cmbTimeIn.getValue().split("  \\(")[0]
+                        : (cmbTimeIn.getEditor().getText() != null && !cmbTimeIn.getEditor().getText().isBlank()
+                                ? cmbTimeIn.getEditor().getText() : "Pending");
                 timeRow.addCell(createValueCell(timeInText, darkText, lightGray));
                 mainCell.add(timeRow);
 

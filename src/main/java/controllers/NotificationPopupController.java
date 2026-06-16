@@ -50,7 +50,7 @@ public class NotificationPopupController {
         } else {
             btnViewAllNotifications.setOnAction(e -> {
                 e.consume();
-                NavigationHelper.navigateTo(btnViewAllNotifications, "/fxml/ActivityLog.fxml");
+                NavigationHelper.navigateTo(btnViewAllNotifications, "/fxml/Monitoring.fxml");
             });
         }
 

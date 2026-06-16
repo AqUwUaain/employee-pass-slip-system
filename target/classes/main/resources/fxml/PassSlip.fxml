@@ -134,8 +134,8 @@
                                                 <VBox HBox.hgrow="ALWAYS" style="-fx-padding: 6px 10px;">
                                                     <children>
                                                         <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2;" text="ESTIMATED TIME IN * :" />
-                                                        <ComboBox fx:id="cmbTimeIn" promptText="Select expected return time" prefWidth="200.0" style="-fx-background-color: transparent; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px;" />
-                                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 9px; -fx-text-fill: #78716C; -fx-padding: 2px 0 0 0;" text="Select when the employee will return" />
+                                                        <ComboBox fx:id="cmbTimeIn" editable="true" promptText="Select or type time" prefWidth="200.0" style="-fx-background-color: transparent; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px;" />
+                                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 9px; -fx-text-fill: #78716C; -fx-padding: 2px 0 0 0;" text="Format: HH:MM AM/PM (Example: 09:30 AM)" />
                                                     </children>
                                                 </VBox>
                                             </children>
