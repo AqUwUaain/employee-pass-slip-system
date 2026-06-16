@@ -48,9 +48,6 @@ public class EmployeeController {
     private Button btnNotificationsAlert;
 
     @FXML
-    private Button btnHamburgerMenuToggle;
-
-    @FXML
     private VBox btnGatewayViewList;
 
     @FXML
@@ -131,9 +128,6 @@ public class EmployeeController {
 
         if (btnNotificationsAlert != null)
             btnNotificationsAlert.setOnAction(e -> utils.NotificationHelper.toggle(btnNotificationsAlert));
-        if (btnHamburgerMenuToggle != null)
-            btnHamburgerMenuToggle.setOnAction(e -> NavigationHelper.navigateTo(btnHamburgerMenuToggle, "/fxml/User.fxml"));
-
         btnGatewayViewList.setOnMouseClicked(
                 event -> NavigationHelper.navigateTo(
                         btnGatewayViewList,

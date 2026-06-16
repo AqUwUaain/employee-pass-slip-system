@@ -1,28 +1,28 @@
 package controllers;
 
 import database.DatabaseConnection;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
+import models.PassSlip;
 import utils.NavigationHelper;
 import utils.PhilTime;
 import utils.Session;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.Timestamp;
+import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 public class ActivityLogController {
 
@@ -57,22 +57,46 @@ public class ActivityLogController {
     private Button btnNotificationsAlert;
 
     @FXML
-    private Button btnHamburgerMenuToggle;
+    private Button btnManageEmployees;
+
+    @FXML
+    private VBox manageEmployeesSubMenu;
+
+    @FXML
+    private TextField txtSearchMonitoringLogs;
 
     @FXML
     private Button btnClearLogsFilter;
 
     @FXML
-    private TextField txtSearchLogs;
+    private TableView<PassSlip> monitoringTableView;
 
     @FXML
-    private VBox logsFeedContentContainer;
+    private TableColumn<PassSlip, String> colTimestamp;
 
     @FXML
-    private Button btnManageEmployees;
+    private TableColumn<PassSlip, String> colEmployeeID;
 
     @FXML
-    private VBox manageEmployeesSubMenu;
+    private TableColumn<PassSlip, String> colFullName;
+
+    @FXML
+    private TableColumn<PassSlip, String> colDepartment;
+
+    @FXML
+    private TableColumn<PassSlip, String> colReason;
+
+    @FXML
+    private TableColumn<PassSlip, String> colStatus;
+
+    @FXML
+    private TableColumn<PassSlip, String> colDuration;
+
+    @FXML
+    private TableColumn<PassSlip, String> colTimeIn;
+
+    private ObservableList<PassSlip> monitoringData;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @FXML
     private void initialize() {
@@ -123,41 +147,168 @@ public class ActivityLogController {
             btnSidebarPasswordReset
         );
 
+        NavigationHelper.setActiveButton(btnSidebarMonitoring);
+
         if (btnLogout != null)
             btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
 
         if (btnNotificationsAlert != null)
             btnNotificationsAlert.setOnAction(e -> utils.NotificationHelper.toggle(btnNotificationsAlert));
-        if (btnHamburgerMenuToggle != null)
-            btnHamburgerMenuToggle.setOnAction(e -> NavigationHelper.navigateTo(btnHamburgerMenuToggle, "/fxml/User.fxml"));
 
-        btnClearLogsFilter.setOnAction(
-                event -> {
-                    txtSearchLogs.clear();
-                    renderLogs(
-                            ReportsController.getLogs()
-                    );
+        setupMonitoringTable();
+
+        btnClearLogsFilter.setOnAction(event -> {
+            txtSearchMonitoringLogs.clear();
+            monitoringTableView.setItems(monitoringData);
+        });
+
+        txtSearchMonitoringLogs.textProperty().addListener(
+                (observable, oldValue, newValue) -> filterMonitoringData(newValue)
+        );
+
+        loadMonitoringDataAsync();
+    }
+
+    private void setupMonitoringTable() {
+        colTimestamp.setCellValueFactory(
+                cellData -> {
+                    PassSlip ps = cellData.getValue();
+                    String timeOut = ps.getTimeOut() != null ? ps.getTimeOut().format(formatter) : "";
+                    return new ReadOnlyStringWrapper(timeOut);
                 }
         );
 
-        txtSearchLogs.textProperty().addListener(
-                (observable, oldValue, newValue) -> renderLogs(
-                        ReportsController.getLogs()
-                                .stream()
-                                .filter(log ->
-                                        newValue == null
-                                                || newValue.isBlank()
-                                                || log.getUsername().toLowerCase().contains(newValue.toLowerCase())
-                                                || log.getAction().toLowerCase().contains(newValue.toLowerCase())
-                                )
-                                .toList()
+        colEmployeeID.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(String.valueOf(cellData.getValue().getEmployeeId()))
+        );
+
+        colFullName.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(cellData.getValue().getEmployeeName())
+        );
+
+        colDepartment.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(
+                        cellData.getValue().getDepartment() != null ? cellData.getValue().getDepartment() : ""
                 )
         );
 
-        renderLogs(
-                ReportsController.getLogs()
+        colReason.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(
+                        cellData.getValue().getReason() != null ? cellData.getValue().getReason() : ""
+                )
         );
 
+        colStatus.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(cellData.getValue().getStatus())
+        );
+
+        colDuration.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(cellData.getValue().getDurationText())
+        );
+
+        colTimeIn.setCellValueFactory(
+                cellData -> {
+                    PassSlip ps = cellData.getValue();
+                    String timeIn = ps.getTimeIn() != null ? ps.getTimeIn().format(formatter) : "";
+                    return new ReadOnlyStringWrapper(timeIn);
+                }
+        );
+    }
+
+    private void loadMonitoringDataAsync() {
+        Task<ObservableList<PassSlip>> task = new Task<>() {
+            @Override
+            protected ObservableList<PassSlip> call() {
+                MonitoringController.updateExpiredPassSlips();
+                return fetchMonitoringData();
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            monitoringData = task.getValue();
+            monitoringTableView.setItems(monitoringData);
+        });
+
+        Thread thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private ObservableList<PassSlip> fetchMonitoringData() {
+        ObservableList<PassSlip> data = FXCollections.observableArrayList();
+
+        try {
+            Connection connection = DatabaseConnection.connect();
+
+            String query = """
+                    SELECT
+                        ps.id,
+                        ps.employee_id,
+                        e.first_name,
+                        e.last_name,
+                        e.department,
+                        ps.reason,
+                        ps.time_out,
+                        ps.time_in,
+                        ps.duration,
+                        ps.duration_minutes,
+                        ps.status
+                    FROM pass_slips ps
+                    JOIN employees e ON ps.employee_id = e.id
+                    ORDER BY ps.id DESC
+                    """;
+
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                LocalDateTime timeOut = resultSet.getTimestamp("time_out") != null
+                        ? resultSet.getTimestamp("time_out").toLocalDateTime() : null;
+
+                LocalDateTime timeIn = resultSet.getTimestamp("time_in") != null
+                        ? resultSet.getTimestamp("time_in").toLocalDateTime() : null;
+
+                PassSlip passSlip = new PassSlip(
+                        resultSet.getInt("id"),
+                        resultSet.getInt("employee_id"),
+                        resultSet.getString("first_name") + " " + resultSet.getString("last_name"),
+                        resultSet.getString("department"),
+                        resultSet.getString("reason"),
+                        timeOut,
+                        timeIn,
+                        resultSet.getLong("duration_minutes"),
+                        resultSet.getString("status")
+                );
+
+                data.add(passSlip);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return data;
+    }
+
+    private void filterMonitoringData(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            monitoringTableView.setItems(monitoringData);
+            return;
+        }
+
+        ObservableList<PassSlip> filtered = FXCollections.observableArrayList();
+
+        for (PassSlip ps : monitoringData) {
+            if (ps.getEmployeeName().toLowerCase().contains(keyword.toLowerCase())
+                    || ps.getStatus().toLowerCase().contains(keyword.toLowerCase())
+                    || String.valueOf(ps.getEmployeeId()).contains(keyword)
+                    || (ps.getReason() != null && ps.getReason().toLowerCase().contains(keyword.toLowerCase()))
+                    || (ps.getDepartment() != null && ps.getDepartment().toLowerCase().contains(keyword.toLowerCase()))) {
+                filtered.add(ps);
+            }
+        }
+
+        monitoringTableView.setItems(filtered);
     }
 
     public static void logActivity(String action, int employeeId) {
@@ -184,7 +335,7 @@ public class ActivityLogController {
             statement.setString(3, description);
             statement.setInt(4, employeeId);
             statement.setInt(5, Session.currentUserId);
-            statement.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now(PhilTime.ZONE)));
+            statement.setTimestamp(6, java.sql.Timestamp.valueOf(LocalDateTime.now(PhilTime.ZONE)));
 
             statement.executeUpdate();
 
@@ -196,62 +347,14 @@ public class ActivityLogController {
 
     }
 
-    private void renderLogs(List<models.ActivityLog> logs) {
-
-        logsFeedContentContainer.getChildren().clear();
-
-        DateTimeFormatter formatter =
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
-        for (models.ActivityLog log : logs) {
-
-            HBox row = new HBox();
-
-            row.setAlignment(Pos.CENTER_LEFT);
-            row.setStyle(
-                    "-fx-padding: 12px 16px; -fx-background-radius: 8px;"
-            );
-            row.setOnMouseEntered(ev -> row.setStyle("-fx-padding: 12px 16px; -fx-background-radius: 8px; -fx-background-color: #3D3229;"));
-            row.setOnMouseExited(ev -> row.setStyle("-fx-padding: 12px 16px; -fx-background-radius: 8px;"));
-
-            VBox accent = new VBox();
-            accent.setStyle(
-                    "-fx-background-color: #D4A853; -fx-pref-width: 4px; -fx-pref-height: 22px; -fx-background-radius: 2px;"
-            );
-
-            Label message = new Label(
-                    log.getUsername() + " - " + log.getAction()
-            );
-            message.setStyle(
-                    "-fx-font-size: 13px; -fx-text-fill: #E7E5E4; -fx-padding: 0 0 0 12px;"
-            );
-
-            Region spacer = new Region();
-            HBox.setHgrow(spacer, Priority.ALWAYS);
-
-            Label timestamp = new Label(
-                    log.getTimestamp().format(formatter)
-            );
-            timestamp.setStyle(
-                    "-fx-font-size: 12px; -fx-text-fill: #78716C;"
-            );
-
-            row.getChildren().addAll(accent, message, spacer, timestamp);
-
-            logsFeedContentContainer.getChildren().add(row);
-
-        }
-
-    }
-
     private void showAccessRestrictedDialog() {
-        StackPane root = (StackPane) logsFeedContentContainer.getScene().getRoot();
+        StackPane root = (StackPane) monitoringTableView.getScene().getRoot();
 
         StackPane overlay = new StackPane();
         overlay.setStyle("-fx-background-color: rgba(0,0,0,0.6);");
 
         VBox dialog = new VBox(16);
-        dialog.setAlignment(Pos.CENTER);
+        dialog.setAlignment(javafx.geometry.Pos.CENTER);
         dialog.setPrefWidth(420);
         dialog.setMaxWidth(420);
         dialog.setPrefHeight(250);
@@ -275,7 +378,7 @@ public class ActivityLogController {
         Label message = new Label("Only Administrator accounts can access the Activity History module.");
         message.setStyle("-fx-font-size: 13px; -fx-text-fill: #A8A29E; -fx-text-alignment: center; -fx-wrap-text: true;");
         message.setMaxWidth(320);
-        message.setTextAlignment(TextAlignment.CENTER);
+        message.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
 
         Button okButton = new Button("OK");
         okButton.setStyle(
@@ -285,11 +388,11 @@ public class ActivityLogController {
         );
         okButton.setOnAction(e -> {
             root.getChildren().remove(overlay);
-            NavigationHelper.navigateToDashboard(logsFeedContentContainer);
+            NavigationHelper.navigateToDashboard(monitoringTableView);
         });
 
         dialog.getChildren().addAll(icon, title, message, okButton);
-        StackPane.setAlignment(dialog, Pos.CENTER);
+        StackPane.setAlignment(dialog, javafx.geometry.Pos.CENTER);
         overlay.getChildren().add(dialog);
         root.getChildren().add(overlay);
     }

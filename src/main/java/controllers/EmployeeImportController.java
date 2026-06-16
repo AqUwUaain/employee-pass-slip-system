@@ -19,9 +19,7 @@ import utils.NavigationHelper;
 import utils.PhilTime;
 import utils.Session;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -47,8 +45,6 @@ public class EmployeeImportController {
     @FXML private Button btnSidebarPasswordReset;
     @FXML private Button btnLogout;
     @FXML private Button btnNotificationsAlert;
-    @FXML private Button btnHamburgerMenuToggle;
-
     @FXML private Button btnChooseFile;
     @FXML private Button btnImportAll;
     @FXML private Button btnBackToEmployees;
@@ -118,9 +114,6 @@ public class EmployeeImportController {
             btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
         if (btnNotificationsAlert != null)
             btnNotificationsAlert.setOnAction(e -> utils.NotificationHelper.toggle(btnNotificationsAlert));
-        if (btnHamburgerMenuToggle != null)
-            btnHamburgerMenuToggle.setOnAction(e -> NavigationHelper.navigateTo(btnHamburgerMenuToggle, "/fxml/User.fxml"));
-
         btnBackToEmployees.setOnAction(e -> NavigationHelper.navigateTo(btnBackToEmployees, "/fxml/EmployeeController.fxml"));
         btnChooseFile.setOnAction(e -> chooseFile());
         btnImportAll.setOnAction(e -> importAll());
@@ -147,9 +140,7 @@ public class EmployeeImportController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose Employee Import File");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"),
-                new FileChooser.ExtensionFilter("CSV Files", "*.csv"),
-                new FileChooser.ExtensionFilter("All Supported", "*.xlsx", "*.csv")
+                new FileChooser.ExtensionFilter("Excel Files", "*.xlsx")
         );
 
         File file = fileChooser.showOpenDialog(btnChooseFile.getScene().getWindow());
@@ -164,10 +155,8 @@ public class EmployeeImportController {
                 String name = file.getName().toLowerCase();
                 if (name.endsWith(".xlsx")) {
                     return parseExcel(file);
-                } else if (name.endsWith(".csv")) {
-                    return parseCsv(file);
                 } else {
-                    throw new IllegalArgumentException("Unsupported file format");
+                    throw new IllegalArgumentException("Unsupported file format. Only .xlsx files are supported.");
                 }
             }
         };
@@ -214,55 +203,6 @@ public class EmployeeImportController {
             }
         }
         return rows;
-    }
-
-    private List<ImportRow> parseCsv(File file) throws Exception {
-        List<ImportRow> rows = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            boolean headerSkipped = false;
-            while ((line = br.readLine()) != null) {
-                if (!headerSkipped && line.toLowerCase().startsWith("first")) {
-                    headerSkipped = true;
-                    continue;
-                }
-                headerSkipped = true;
-                String[] parts = parseCsvLine(line);
-                if (parts.length < 5) continue;
-
-                ImportRow importRow = new ImportRow();
-                importRow.firstName = parts.length > 0 ? parts[0].trim() : "";
-                importRow.lastName = parts.length > 1 ? parts[1].trim() : "";
-                importRow.department = parts.length > 2 ? parts[2].trim() : "";
-                importRow.position = parts.length > 3 ? parts[3].trim() : "";
-                importRow.contact = parts.length > 4 ? parts[4].trim() : "";
-                importRow.joinDate = parts.length > 5 ? parts[5].trim() : "";
-                importRow.manager = parts.length > 6 ? parts[6].trim() : "";
-                importRow.email = parts.length > 7 ? parts[7].trim() : "";
-                importRow.address = parts.length > 8 ? parts[8].trim() : "";
-                importRow.emergencyContact = parts.length > 9 ? parts[9].trim() : "";
-                rows.add(importRow);
-            }
-        }
-        return rows;
-    }
-
-    private String[] parseCsvLine(String line) {
-        List<String> result = new ArrayList<>();
-        StringBuilder current = new StringBuilder();
-        boolean inQuotes = false;
-        for (char c : line.toCharArray()) {
-            if (c == '"') {
-                inQuotes = !inQuotes;
-            } else if (c == ',' && !inQuotes) {
-                result.add(current.toString());
-                current = new StringBuilder();
-            } else {
-                current.append(c);
-            }
-        }
-        result.add(current.toString());
-        return result.toArray(new String[0]);
     }
 
     private String getCellStringValue(Cell cell) {

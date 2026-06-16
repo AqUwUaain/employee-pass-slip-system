@@ -49,9 +49,6 @@ public class StaffDashboardController {
     private Button btnNotificationsAlert;
 
     @FXML
-    private Button btnHamburgerMenuToggle;
-
-    @FXML
     private Button btnLogout;
 
     @FXML
@@ -151,60 +148,10 @@ public class StaffDashboardController {
                     event -> NotificationHelper.toggle(btnNotificationsAlert)
             );
 
-        if (btnHamburgerMenuToggle != null)
-            btnHamburgerMenuToggle.setOnAction(
-                    event -> showAccessRestrictedDialog()
-            );
-
         loadTodayActivity();
         loadLiveTimer();
         startAutoRefresh();
         startLiveTimerRefresh();
-    }
-
-    private void showAccessRestrictedDialog() {
-        StackPane overlay = new StackPane();
-        overlay.setStyle("-fx-background-color: rgba(0,0,0,0.6);");
-
-        VBox dialog = new VBox(16);
-        dialog.setAlignment(Pos.CENTER);
-        dialog.setPrefWidth(420);
-        dialog.setMaxWidth(420);
-        dialog.setPrefHeight(250);
-        dialog.setMaxHeight(250);
-        dialog.setStyle(
-                "-fx-background-color: #1F1B1B; " +
-                "-fx-background-radius: 12px; " +
-                "-fx-border-color: #FFD700; " +
-                "-fx-border-width: 1px; " +
-                "-fx-border-radius: 12px; " +
-                "-fx-padding: 30px; " +
-                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 25, 0.25, 0, 6);"
-        );
-
-        Label icon = new Label("\u26D4");
-        icon.setStyle("-fx-font-size: 40px;");
-
-        Label title = new Label("Access Restricted");
-        title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;");
-
-        Label message = new Label("Only Administrator accounts can access this feature.");
-        message.setStyle("-fx-font-size: 13px; -fx-text-fill: #A8A29E; -fx-text-alignment: center; -fx-wrap-text: true;");
-        message.setMaxWidth(320);
-        message.setTextAlignment(TextAlignment.CENTER);
-
-        Button okButton = new Button("OK");
-        okButton.setStyle(
-                "-fx-background-color: #D4A853; -fx-text-fill: #1C0A04; " +
-                "-fx-font-size: 13px; -fx-font-weight: bold; " +
-                "-fx-background-radius: 8px; -fx-padding: 8px 32px; -fx-cursor: hand;"
-        );
-        okButton.setOnAction(e -> staffDashboardRoot.getChildren().remove(overlay));
-
-        dialog.getChildren().addAll(icon, title, message, okButton);
-        StackPane.setAlignment(dialog, Pos.CENTER);
-        overlay.getChildren().add(dialog);
-        staffDashboardRoot.getChildren().add(overlay);
     }
 
     private void loadTodayActivity() {

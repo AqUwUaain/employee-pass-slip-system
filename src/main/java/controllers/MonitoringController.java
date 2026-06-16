@@ -13,7 +13,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import models.PassSlip;
+import models.ActivityLog;
 import utils.NavigationHelper;
 import utils.PhilTime;
 
@@ -21,7 +21,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -56,43 +55,34 @@ public class MonitoringController {
     private Button btnLogout;
 
     @FXML
-    private Button btnNotificationsAlert;
-
-    @FXML
-    private Button btnHamburgerMenuToggle;
-
-    @FXML
     private Button btnRefreshMonitoringFeed;
 
     @FXML
-    private Label lblScannerStatus;
+    private Label lblTotalLogs;
 
     @FXML
-    private Label lblTotalInCampusCount;
+    private Label lblTodayEvents;
 
     @FXML
-    private Label lblActiveAlertsCount;
+    private Label lblUniqueUsers;
 
     @FXML
     private TextField txtSearchMonitoringLogs;
 
     @FXML
-    private TableView<PassSlip> monitoringTableView;
+    private TableView<ActivityLog> monitoringTableView;
 
     @FXML
-    private TableColumn<PassSlip, String> colTimestamp;
+    private TableColumn<ActivityLog, String> colTimestamp;
 
     @FXML
-    private TableColumn<PassSlip, String> colEmployeeID;
+    private TableColumn<ActivityLog, String> colUsername;
 
     @FXML
-    private TableColumn<PassSlip, String> colFullName;
+    private TableColumn<ActivityLog, String> colAction;
 
     @FXML
-    private TableColumn<PassSlip, String> colDepartment;
-
-    @FXML
-    private TableColumn<PassSlip, String> colAccessType;
+    private TableColumn<ActivityLog, String> colDescription;
 
     @FXML
     private Button btnManageEmployees;
@@ -100,7 +90,7 @@ public class MonitoringController {
     @FXML
     private VBox manageEmployeesSubMenu;
 
-    private ObservableList<PassSlip> monitoringData;
+    private ObservableList<ActivityLog> monitoringData;
 
     private final DateTimeFormatter formatter =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -123,6 +113,11 @@ public class MonitoringController {
                 manageEmployeesSubMenu.setVisible(!isVisible);
                 manageEmployeesSubMenu.setManaged(!isVisible);
             });
+        }
+
+        if (manageEmployeesSubMenu != null) {
+            manageEmployeesSubMenu.setVisible(true);
+            manageEmployeesSubMenu.setManaged(true);
         }
 
         btnSidebarEmployees.setOnAction(
@@ -153,12 +148,10 @@ public class MonitoringController {
         if (btnLogout != null)
             btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
 
-        if (btnNotificationsAlert != null)
-            btnNotificationsAlert.setOnAction(e -> utils.NotificationHelper.toggle(btnNotificationsAlert));
-        if (btnHamburgerMenuToggle != null)
-            btnHamburgerMenuToggle.setOnAction(e -> NavigationHelper.navigateTo(btnHamburgerMenuToggle, "/fxml/User.fxml"));
-
-        btnRefreshMonitoringFeed.setOnAction(event -> loadMonitoringDataAsync());
+        btnRefreshMonitoringFeed.setOnAction(event -> {
+            loadLogsAsync();
+            loadSummaryAsync();
+        });
 
         setupTableColumns();
 
@@ -166,7 +159,7 @@ public class MonitoringController {
                 (observable, oldValue, newValue) -> filterMonitoringData(newValue)
         );
 
-        loadMonitoringDataAsync();
+        loadLogsAsync();
         loadSummaryAsync();
 
     }
@@ -175,47 +168,42 @@ public class MonitoringController {
 
         colTimestamp.setCellValueFactory(
                 cellData -> {
-                    PassSlip ps = cellData.getValue();
-                    String timeOut = ps.getTimeOut() != null
-                            ? ps.getTimeOut().format(formatter) : "";
-                    return new ReadOnlyStringWrapper(timeOut);
+                    ActivityLog log = cellData.getValue();
+                    String ts = log.getTimestamp() != null
+                            ? log.getTimestamp().format(formatter) : "";
+                    return new ReadOnlyStringWrapper(ts);
                 }
         );
 
-        colEmployeeID.setCellValueFactory(
+        colUsername.setCellValueFactory(
                 cellData -> new ReadOnlyStringWrapper(
-                        String.valueOf(cellData.getValue().getEmployeeId())
+                        cellData.getValue().getUsername() != null
+                                ? cellData.getValue().getUsername() : ""
                 )
         );
 
-        colFullName.setCellValueFactory(
+        colAction.setCellValueFactory(
                 cellData -> new ReadOnlyStringWrapper(
-                        cellData.getValue().getEmployeeName()
+                        cellData.getValue().getAction() != null
+                                ? cellData.getValue().getAction() : ""
                 )
         );
 
-        colDepartment.setCellValueFactory(
+        colDescription.setCellValueFactory(
                 cellData -> new ReadOnlyStringWrapper(
-                        cellData.getValue().getDepartment() != null
-                                ? cellData.getValue().getDepartment() : ""
-                )
-        );
-
-        colAccessType.setCellValueFactory(
-                cellData -> new ReadOnlyStringWrapper(
-                        cellData.getValue().getStatus()
+                        cellData.getValue().getDescription() != null
+                                ? cellData.getValue().getDescription() : ""
                 )
         );
 
     }
 
-    private void loadMonitoringDataAsync() {
+    private void loadLogsAsync() {
 
-        Task<ObservableList<PassSlip>> task = new Task<>() {
+        Task<ObservableList<ActivityLog>> task = new Task<>() {
             @Override
-            protected ObservableList<PassSlip> call() {
-                updateExpiredPassSlips();
-                return fetchMonitoringData();
+            protected ObservableList<ActivityLog> call() {
+                return fetchLogsData();
             }
         };
 
@@ -230,9 +218,9 @@ public class MonitoringController {
 
     }
 
-    private ObservableList<PassSlip> fetchMonitoringData() {
+    private ObservableList<ActivityLog> fetchLogsData() {
 
-        ObservableList<PassSlip> data = FXCollections.observableArrayList();
+        ObservableList<ActivityLog> data = FXCollections.observableArrayList();
 
         try {
 
@@ -240,21 +228,9 @@ public class MonitoringController {
                     DatabaseConnection.connect();
 
             String query = """
-                    SELECT
-                        ps.id,
-                        ps.employee_id,
-                        e.first_name,
-                        e.last_name,
-                        e.department,
-                        ps.reason,
-                        ps.time_out,
-                        ps.time_in,
-                        ps.duration,
-                        ps.duration_minutes,
-                        ps.status
-                    FROM pass_slips ps
-                    JOIN employees e ON ps.employee_id = e.id
-                    ORDER BY ps.id DESC
+                    SELECT id, action, description, user_id, username, timestamp, employee_id
+                    FROM activity_logs
+                    ORDER BY timestamp DESC
                     """;
 
             PreparedStatement statement =
@@ -265,30 +241,22 @@ public class MonitoringController {
 
             while (resultSet.next()) {
 
-                LocalDateTime timeOut =
-                        resultSet.getTimestamp("time_out") != null
-                                ? resultSet.getTimestamp("time_out").toLocalDateTime()
+                LocalDateTime timestamp =
+                        resultSet.getTimestamp("timestamp") != null
+                                ? resultSet.getTimestamp("timestamp").toLocalDateTime()
                                 : null;
 
-                LocalDateTime timeIn =
-                        resultSet.getTimestamp("time_in") != null
-                                ? resultSet.getTimestamp("time_in").toLocalDateTime()
-                                : null;
-
-                PassSlip passSlip = new PassSlip(
+                ActivityLog log = new ActivityLog(
                         resultSet.getInt("id"),
-                        resultSet.getInt("employee_id"),
-                        resultSet.getString("first_name")
-                                + " " + resultSet.getString("last_name"),
-                        resultSet.getString("department"),
-                        resultSet.getString("reason"),
-                        timeOut,
-                        timeIn,
-                        resultSet.getLong("duration_minutes"),
-                        resultSet.getString("status")
+                        resultSet.getString("action"),
+                        resultSet.getString("description"),
+                        resultSet.getInt("user_id"),
+                        resultSet.getString("username"),
+                        timestamp,
+                        resultSet.getInt("employee_id")
                 );
 
-                data.add(passSlip);
+                data.add(log);
 
             }
 
@@ -307,20 +275,81 @@ public class MonitoringController {
             return;
         }
 
-        ObservableList<PassSlip> filtered =
+        ObservableList<ActivityLog> filtered =
                 FXCollections.observableArrayList();
 
-        for (PassSlip ps : monitoringData) {
-            if (ps.getEmployeeName().toLowerCase().contains(keyword.toLowerCase())
-                    || ps.getStatus().toLowerCase().contains(keyword.toLowerCase())
-                    || String.valueOf(ps.getEmployeeId()).contains(keyword)
-                    || (ps.getDepartment() != null
-                        && ps.getDepartment().toLowerCase().contains(keyword.toLowerCase()))) {
-                filtered.add(ps);
+        for (ActivityLog log : monitoringData) {
+            if ((log.getUsername() != null && log.getUsername().toLowerCase().contains(keyword.toLowerCase()))
+                    || (log.getAction() != null && log.getAction().toLowerCase().contains(keyword.toLowerCase()))
+                    || (log.getDescription() != null && log.getDescription().toLowerCase().contains(keyword.toLowerCase()))) {
+                filtered.add(log);
             }
         }
 
         monitoringTableView.setItems(filtered);
+
+    }
+
+    private void loadSummaryAsync() {
+
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                try {
+
+                    Connection connection =
+                            DatabaseConnection.connect();
+
+                    if (connection == null) {
+                        Platform.runLater(() -> {
+                            lblTotalLogs.setText("0");
+                            lblTodayEvents.setText("0");
+                            lblUniqueUsers.setText("0");
+                        });
+                        return null;
+                    }
+
+                    PreparedStatement totalStmt = connection.prepareStatement(
+                            "SELECT COUNT(*) FROM activity_logs"
+                    );
+                    ResultSet totalResult = totalStmt.executeQuery();
+                    int totalLogs = totalResult.next() ? totalResult.getInt(1) : 0;
+
+                    PreparedStatement todayStmt = connection.prepareStatement(
+                            "SELECT COUNT(*) FROM activity_logs WHERE DATE(timestamp) = CURRENT_DATE"
+                    );
+                    ResultSet todayResult = todayStmt.executeQuery();
+                    int todayEvents = todayResult.next() ? todayResult.getInt(1) : 0;
+
+                    PreparedStatement usersStmt = connection.prepareStatement(
+                            "SELECT COUNT(DISTINCT user_id) FROM activity_logs"
+                    );
+                    ResultSet usersResult = usersStmt.executeQuery();
+                    int uniqueUsers = usersResult.next() ? usersResult.getInt(1) : 0;
+
+                    int fTotal = totalLogs;
+                    int fToday = todayEvents;
+                    int fUsers = uniqueUsers;
+                    Platform.runLater(() -> {
+                        lblTotalLogs.setText(String.valueOf(fTotal));
+                        lblTodayEvents.setText(String.valueOf(fToday));
+                        lblUniqueUsers.setText(String.valueOf(fUsers));
+                    });
+
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        lblTotalLogs.setText("0");
+                        lblTodayEvents.setText("0");
+                        lblUniqueUsers.setText("0");
+                    });
+                }
+                return null;
+            }
+        };
+
+        Thread thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
 
     }
 
@@ -391,76 +420,6 @@ public class MonitoringController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-    }
-
-    private void loadSummaryAsync() {
-
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() {
-                try {
-
-                    Connection connection =
-                            DatabaseConnection.connect();
-
-                    if (connection == null) {
-                        Platform.runLater(() -> {
-                            lblScannerStatus.setText("OFFLINE");
-                            lblTotalInCampusCount.setText("0");
-                            lblActiveAlertsCount.setText("0");
-                        });
-                        return null;
-                    }
-
-                    Platform.runLater(() -> lblScannerStatus.setText("ONLINE"));
-
-                    PreparedStatement outStatement = connection.prepareStatement(
-                            "SELECT COUNT(*) FROM pass_slips WHERE status = 'OUT'"
-                    );
-
-                    ResultSet outResult = outStatement.executeQuery();
-
-                    int outCount = 0;
-                    if (outResult.next()) {
-                        outCount = outResult.getInt(1);
-                    }
-
-                    int finalOutCount = outCount;
-                    Platform.runLater(() -> lblTotalInCampusCount.setText(
-                            String.valueOf(finalOutCount)
-                    ));
-
-                    PreparedStatement expiredStatement = connection.prepareStatement(
-                            "SELECT COUNT(*) FROM pass_slips WHERE status = 'EXPIRED'"
-                    );
-
-                    ResultSet expiredResult = expiredStatement.executeQuery();
-
-                    int expiredCount = 0;
-                    if (expiredResult.next()) {
-                        expiredCount = expiredResult.getInt(1);
-                    }
-
-                    int finalExpiredCount = expiredCount;
-                    Platform.runLater(() -> lblActiveAlertsCount.setText(
-                            String.valueOf(finalExpiredCount)
-                    ));
-
-                } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        lblScannerStatus.setText("OFFLINE");
-                        lblTotalInCampusCount.setText("0");
-                        lblActiveAlertsCount.setText("0");
-                    });
-                }
-                return null;
-            }
-        };
-
-        Thread thread = new Thread(task);
-        thread.setDaemon(true);
-        thread.start();
 
     }
 

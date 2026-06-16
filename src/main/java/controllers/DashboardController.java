@@ -34,9 +34,6 @@ public class DashboardController {
     private Button btnNotificationsAlert;
 
     @FXML
-    private Button btnHamburgerMenuToggle;
-
-    @FXML
     private Button btnSidebarDashboard;
 
     @FXML
@@ -191,13 +188,6 @@ public class DashboardController {
                 event -> NotificationHelper.toggle(btnNotificationsAlert)
         );
 
-        btnHamburgerMenuToggle.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnHamburgerMenuToggle,
-                        "/fxml/User.fxml"
-                )
-        );
-
         if (btnViewAllActivity != null) {
             btnViewAllActivity.setOnAction(
                     event -> NavigationHelper.navigateTo(
@@ -222,6 +212,16 @@ public class DashboardController {
         btnNextMonth.setOnMouseClicked(event -> {
             currentYearMonth = currentYearMonth.plusMonths(1);
             loadCalendar();
+        });
+
+        gridCalendar.setOnScroll(event -> {
+            if (event.getDeltaY() > 0) {
+                currentYearMonth = currentYearMonth.minusMonths(1);
+            } else if (event.getDeltaY() < 0) {
+                currentYearMonth = currentYearMonth.plusMonths(1);
+            }
+            loadCalendar();
+            event.consume();
         });
 
         loadDashboardData();

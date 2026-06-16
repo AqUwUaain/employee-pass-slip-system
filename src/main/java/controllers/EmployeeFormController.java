@@ -89,9 +89,6 @@ public class EmployeeFormController {
     private Button btnNotificationsAlert;
 
     @FXML
-    private Button btnHamburgerMenuToggle;
-
-    @FXML
     private Button btnManageEmployees;
 
     @FXML
@@ -144,12 +141,26 @@ public class EmployeeFormController {
             btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
         if (btnNotificationsAlert != null)
             btnNotificationsAlert.setOnAction(e -> utils.NotificationHelper.toggle(btnNotificationsAlert));
-        if (btnHamburgerMenuToggle != null)
-            btnHamburgerMenuToggle.setOnAction(e -> NavigationHelper.navigateTo(btnHamburgerMenuToggle, "/fxml/User.fxml"));
-
         if (Session.selectedEmployeeId > 0) {
             loadEmployee();
         }
+
+        joinDatePicker.setOnScroll(event -> {
+            if (event.getDeltaY() > 0) {
+                joinDatePicker.setValue(
+                        joinDatePicker.getValue() != null
+                                ? joinDatePicker.getValue().plusDays(1)
+                                : java.time.LocalDate.now()
+                );
+            } else if (event.getDeltaY() < 0) {
+                joinDatePicker.setValue(
+                        joinDatePicker.getValue() != null
+                                ? joinDatePicker.getValue().minusDays(1)
+                                : java.time.LocalDate.now()
+                );
+            }
+            event.consume();
+        });
 
         btnSaveEmployee.setOnAction(
                 event -> saveEmployee()

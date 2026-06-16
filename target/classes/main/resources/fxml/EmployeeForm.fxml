@@ -67,7 +67,6 @@
                 <HBox spacing="12.0" alignment="CENTER">
                     <children>
                         <Button fx:id="btnNotificationsAlert" mnemonicParsing="false" text="&#x1F514;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
-                        <Button fx:id="btnHamburgerMenuToggle" mnemonicParsing="false" text="&#x2699;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
                     </children>
                 </HBox>
             </children>

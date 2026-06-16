@@ -51,9 +51,6 @@ public class UserController {
     private Button btnNotificationsAlert;
 
     @FXML
-    private Button btnHamburgerMenuToggle;
-
-    @FXML
     private Label lblTotalUsers;
 
     @FXML
@@ -156,8 +153,6 @@ public class UserController {
 
         if (btnNotificationsAlert != null)
             btnNotificationsAlert.setOnAction(e -> utils.NotificationHelper.toggle(btnNotificationsAlert));
-        if (btnHamburgerMenuToggle != null)
-            btnHamburgerMenuToggle.setOnAction(e -> NavigationHelper.navigateTo(btnHamburgerMenuToggle, "/fxml/User.fxml"));
 
         cmbUserRole.setItems(
                 FXCollections.observableArrayList("ADMIN", "STAFF")

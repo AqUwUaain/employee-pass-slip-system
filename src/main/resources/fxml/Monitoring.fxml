@@ -31,7 +31,7 @@
                         <Label text="MAIN MENU" style="-fx-text-fill: rgba(255,255,255,0.25); -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 0 8px 8px 8px;" />
                         <Button fx:id="btnSidebarDashboard" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Dashboard" styleClass="nav-item" />
                         <Button fx:id="btnSidebarMonitoring" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Monitoring" styleClass="nav-item nav-active" />
-                        <Button fx:id="btnManageEmployees" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Manage Employees  ▾" styleClass="nav-item" />
+                        <Button fx:id="btnManageEmployees" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Manage Employees  &#x25BE;" styleClass="nav-item" />
                         <VBox fx:id="manageEmployeesSubMenu" styleClass="nav-sub-menu" managed="false" visible="false">
                             <children>
                                 <Button fx:id="btnSidebarEmployees" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Employees" styleClass="nav-sub-item" />
@@ -57,8 +57,8 @@
             <children>
                 <VBox spacing="2.0">
                     <children>
-                        <Label text="Monitoring &amp; Logs" styleClass="pg-title" />
-                        <Label text="Real-time entry and exit tracking" styleClass="pg-sub" />
+                        <Label text="System Logs" styleClass="pg-title" />
+                        <Label text="Complete system audit trail" styleClass="pg-sub" />
                     </children>
                 </VBox>
                 <StackPane HBox.hgrow="ALWAYS" />
@@ -77,12 +77,11 @@
                                 <VBox alignment="CENTER" prefHeight="135.0" prefWidth="250.0" styleClass="stat-dark">
                                     <children>
                                         <VBox alignment="CENTER_LEFT" styleClass="stat-header" prefWidth="250.0">
-                                            <children><Label text="SCANNER STATUS" styleClass="stat-header-label" /></children>
+                                            <children><Label text="TOTAL LOGS" styleClass="stat-header-label" /></children>
                                         </VBox>
                                         <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
                                             <children>
-                                                <Label fx:id="lblScannerStatus" text="ONLINE" style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold;" />
-                                                <Label text="Gate Terminal Alpha" style="-fx-text-fill: rgba(212,168,83,0.7); -fx-font-size: 11px;" />
+                                                <Label fx:id="lblTotalLogs" text="0" style="-fx-text-fill: white; -fx-font-size: 42px; -fx-font-weight: bold;" />
                                             </children>
                                         </VBox>
                                     </children>
@@ -90,11 +89,11 @@
                                 <VBox alignment="CENTER" prefHeight="135.0" prefWidth="250.0" styleClass="stat-light">
                                     <children>
                                         <VBox alignment="CENTER_LEFT" styleClass="stat-header" prefWidth="250.0">
-                                            <children><Label text="TOTAL IN-CAMPUS" styleClass="stat-header-label" /></children>
+                                            <children><Label text="TODAY'S EVENTS" styleClass="stat-header-label" /></children>
                                         </VBox>
                                         <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
                                             <children>
-                                                <Label fx:id="lblTotalInCampusCount" text="0" style="-fx-text-fill: white; -fx-font-size: 42px; -fx-font-weight: bold;" />
+                                                <Label fx:id="lblTodayEvents" text="0" style="-fx-text-fill: white; -fx-font-size: 42px; -fx-font-weight: bold;" />
                                             </children>
                                         </VBox>
                                     </children>
@@ -102,11 +101,11 @@
                                 <VBox alignment="CENTER" prefHeight="135.0" prefWidth="250.0" styleClass="stat-light">
                                     <children>
                                         <VBox alignment="CENTER_LEFT" styleClass="stat-header" prefWidth="250.0">
-                                            <children><Label text="UNRESOLVED" styleClass="stat-header-label" /></children>
+                                            <children><Label text="UNIQUE USERS" styleClass="stat-header-label" /></children>
                                         </VBox>
                                         <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
                                             <children>
-                                                <Label fx:id="lblActiveAlertsCount" text="0" style="-fx-text-fill: white; -fx-font-size: 42px; -fx-font-weight: bold;" />
+                                                <Label fx:id="lblUniqueUsers" text="0" style="-fx-text-fill: white; -fx-font-size: 42px; -fx-font-weight: bold;" />
                                             </children>
                                         </VBox>
                                     </children>
@@ -116,21 +115,20 @@
                         <!-- Search -->
                         <VBox spacing="6.0" styleClass="card" style="-fx-padding: 18px 22px;">
                             <children>
-                                <Label text="Search Records" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #A8A29E;" />
-                                <TextField fx:id="txtSearchMonitoringLogs" promptText="Search by name, ID, or department..." />
+                                <Label text="Search Logs" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #A8A29E;" />
+                                <TextField fx:id="txtSearchMonitoringLogs" promptText="Search by user, action, or context..." />
                             </children>
                         </VBox>
                         <!-- Table -->
-                        <VBox spacing="10.0" VBox.vgrow="ALWAYS">
+                        <VBox spacing="10.0" VBox.vgrow="ALWAYS" styleClass="card" style="-fx-padding: 22px;">
                             <children>
-                                <Label text="Real-Time Entry &amp; Exit Stream" styleClass="sec-title" />
-                                <TableView fx:id="monitoringTableView" prefHeight="300.0" VBox.vgrow="ALWAYS">
+                                <Label text="&#x1F4CA; Complete System Audit Logs" styleClass="sec-title" />
+                                <TableView fx:id="monitoringTableView" prefHeight="400.0" VBox.vgrow="ALWAYS">
                                     <columns>
-                                        <TableColumn fx:id="colTimestamp" prefWidth="160.0" text="Timestamp" />
-                                        <TableColumn fx:id="colEmployeeID" prefWidth="120.0" text="Employee ID" />
-                                        <TableColumn fx:id="colFullName" prefWidth="220.0" text="Personnel Name" />
-                                        <TableColumn fx:id="colDepartment" prefWidth="180.0" text="Department" />
-                                        <TableColumn fx:id="colAccessType" prefWidth="130.0" text="Status" />
+                                        <TableColumn fx:id="colTimestamp" prefWidth="170.0" style="-fx-alignment: CENTER;" text="Timestamp" />
+                                        <TableColumn fx:id="colUsername" prefWidth="220.0" style="-fx-alignment: CENTER_LEFT;" text="User" />
+                                        <TableColumn fx:id="colAction" prefWidth="300.0" style="-fx-alignment: CENTER_LEFT;" text="Action" />
+                                        <TableColumn fx:id="colDescription" prefWidth="250.0" style="-fx-alignment: CENTER_LEFT;" text="Description" />
                                     </columns>
                                     <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY" /></columnResizePolicy>
                                 </TableView>

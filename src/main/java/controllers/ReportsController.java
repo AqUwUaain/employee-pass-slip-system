@@ -3,25 +3,35 @@ package controllers;
 import database.DatabaseConnection;
 
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import models.ActivityLog;
+import models.PassSlip;
 import utils.NavigationHelper;
 
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import javafx.scene.control.Alert;
 
 public class ReportsController {
 
@@ -35,9 +45,6 @@ public class ReportsController {
     private Button btnNotificationsAlert;
 
     @FXML
-    private Button btnHamburgerMenuToggle;
-
-    @FXML
     private Label lblTotalEmployees;
 
     @FXML
@@ -47,10 +54,40 @@ public class ReportsController {
     private Label lblMonthlyCount;
 
     @FXML
-    private VBox recentHistoryList;
+    private TextField txtSearchHistory;
+
+    @FXML
+    private TableView<PassSlip> historyTableView;
+
+    @FXML
+    private TableColumn<PassSlip, String> colTimestamp;
+
+    @FXML
+    private TableColumn<PassSlip, String> colEmployeeID;
+
+    @FXML
+    private TableColumn<PassSlip, String> colFullName;
+
+    @FXML
+    private TableColumn<PassSlip, String> colDepartment;
+
+    @FXML
+    private TableColumn<PassSlip, String> colReason;
+
+    @FXML
+    private TableColumn<PassSlip, String> colStatus;
+
+    @FXML
+    private TableColumn<PassSlip, String> colDuration;
+
+    @FXML
+    private TableColumn<PassSlip, String> colTimeIn;
 
     @FXML
     private Button btnExportCsv;
+
+    @FXML
+    private Button btnExportExcel;
 
     @FXML
     private Button btnSidebarDashboard;
@@ -84,6 +121,9 @@ public class ReportsController {
 
     @FXML
     private VBox manageEmployeesSubMenu;
+
+    private ObservableList<PassSlip> historyData;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @FXML
     private void initialize() {
@@ -133,8 +173,6 @@ public class ReportsController {
 
         if (btnNotificationsAlert != null)
             btnNotificationsAlert.setOnAction(e -> utils.NotificationHelper.toggle(btnNotificationsAlert));
-        if (btnHamburgerMenuToggle != null)
-            btnHamburgerMenuToggle.setOnAction(e -> NavigationHelper.navigateTo(btnHamburgerMenuToggle, "/fxml/User.fxml"));
 
         btnOpenDashboard.setOnAction(
                 event -> NavigationHelper.navigateToDashboard(btnOpenDashboard)
@@ -151,9 +189,161 @@ public class ReportsController {
             btnExportCsv.setOnAction(event -> exportReportCsv());
         }
 
-        loadReportsAsync();
-        loadRecentHistoryAsync();
+        if (btnExportExcel != null) {
+            btnExportExcel.setOnAction(event -> exportReportExcel());
+        }
 
+        setupHistoryTable();
+
+        txtSearchHistory.textProperty().addListener(
+                (observable, oldValue, newValue) -> filterHistoryData(newValue)
+        );
+
+        loadReportsAsync();
+        loadHistoryAsync();
+
+    }
+
+    private void setupHistoryTable() {
+        colTimestamp.setCellValueFactory(
+                cellData -> {
+                    PassSlip ps = cellData.getValue();
+                    String timeOut = ps.getTimeOut() != null ? ps.getTimeOut().format(formatter) : "";
+                    return new ReadOnlyStringWrapper(timeOut);
+                }
+        );
+
+        colEmployeeID.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(String.valueOf(cellData.getValue().getEmployeeId()))
+        );
+
+        colFullName.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(cellData.getValue().getEmployeeName())
+        );
+
+        colDepartment.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(
+                        cellData.getValue().getDepartment() != null ? cellData.getValue().getDepartment() : ""
+                )
+        );
+
+        colReason.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(
+                        cellData.getValue().getReason() != null ? cellData.getValue().getReason() : ""
+                )
+        );
+
+        colStatus.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(cellData.getValue().getStatus())
+        );
+
+        colDuration.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(cellData.getValue().getDurationText())
+        );
+
+        colTimeIn.setCellValueFactory(
+                cellData -> {
+                    PassSlip ps = cellData.getValue();
+                    String timeIn = ps.getTimeIn() != null ? ps.getTimeIn().format(formatter) : "";
+                    return new ReadOnlyStringWrapper(timeIn);
+                }
+        );
+    }
+
+    private void loadHistoryAsync() {
+        Task<ObservableList<PassSlip>> task = new Task<>() {
+            @Override
+            protected ObservableList<PassSlip> call() {
+                MonitoringController.updateExpiredPassSlips();
+                return fetchHistoryData();
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            historyData = task.getValue();
+            historyTableView.setItems(historyData);
+        });
+
+        Thread thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private ObservableList<PassSlip> fetchHistoryData() {
+        ObservableList<PassSlip> data = FXCollections.observableArrayList();
+
+        try {
+            Connection connection = DatabaseConnection.connect();
+
+            String query = """
+                    SELECT
+                        ps.id,
+                        ps.employee_id,
+                        e.first_name,
+                        e.last_name,
+                        e.department,
+                        ps.reason,
+                        ps.time_out,
+                        ps.time_in,
+                        ps.duration,
+                        ps.duration_minutes,
+                        ps.status
+                    FROM pass_slips ps
+                    JOIN employees e ON ps.employee_id = e.id
+                    ORDER BY ps.time_out DESC
+                    """;
+
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                LocalDateTime timeOut = resultSet.getTimestamp("time_out") != null
+                        ? resultSet.getTimestamp("time_out").toLocalDateTime() : null;
+
+                LocalDateTime timeIn = resultSet.getTimestamp("time_in") != null
+                        ? resultSet.getTimestamp("time_in").toLocalDateTime() : null;
+
+                PassSlip passSlip = new PassSlip(
+                        resultSet.getInt("id"),
+                        resultSet.getInt("employee_id"),
+                        resultSet.getString("first_name") + " " + resultSet.getString("last_name"),
+                        resultSet.getString("department"),
+                        resultSet.getString("reason"),
+                        timeOut,
+                        timeIn,
+                        resultSet.getLong("duration_minutes"),
+                        resultSet.getString("status")
+                );
+
+                data.add(passSlip);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return data;
+    }
+
+    private void filterHistoryData(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            historyTableView.setItems(historyData);
+            return;
+        }
+
+        ObservableList<PassSlip> filtered = FXCollections.observableArrayList();
+
+        for (PassSlip ps : historyData) {
+            if (ps.getEmployeeName().toLowerCase().contains(keyword.toLowerCase())
+                    || ps.getStatus().toLowerCase().contains(keyword.toLowerCase())
+                    || String.valueOf(ps.getEmployeeId()).contains(keyword)
+                    || (ps.getReason() != null && ps.getReason().toLowerCase().contains(keyword.toLowerCase()))
+                    || (ps.getDepartment() != null && ps.getDepartment().toLowerCase().contains(keyword.toLowerCase()))) {
+                filtered.add(ps);
+            }
+        }
+
+        historyTableView.setItems(filtered);
     }
 
     private void loadReportsAsync() {
@@ -177,21 +367,6 @@ public class ReportsController {
                             connection.prepareStatement("SELECT COUNT(*) FROM pass_slips");
                     ResultSet passSlipResult = passSlipStatement.executeQuery();
                     int psCount = passSlipResult.next() ? passSlipResult.getInt(1) : 0;
-
-                    PreparedStatement outStatement =
-                            connection.prepareStatement("SELECT COUNT(*) FROM pass_slips WHERE status = 'OUT'");
-                    ResultSet outResult = outStatement.executeQuery();
-                    int outCount = outResult.next() ? outResult.getInt(1) : 0;
-
-                    PreparedStatement returnedStatement =
-                            connection.prepareStatement("SELECT COUNT(*) FROM pass_slips WHERE status = 'RETURNED'");
-                    ResultSet returnedResult = returnedStatement.executeQuery();
-                    int retCount = returnedResult.next() ? returnedResult.getInt(1) : 0;
-
-                    PreparedStatement expiredStatement =
-                            connection.prepareStatement("SELECT COUNT(*) FROM pass_slips WHERE status = 'EXPIRED'");
-                    ResultSet expiredResult = expiredStatement.executeQuery();
-                    int expCount = expiredResult.next() ? expiredResult.getInt(1) : 0;
 
                     PreparedStatement monthlyStatement = connection.prepareStatement(
                         "SELECT COUNT(*) FROM pass_slips WHERE EXTRACT(YEAR FROM time_out) = EXTRACT(YEAR FROM CURRENT_DATE) AND EXTRACT(MONTH FROM time_out) = EXTRACT(MONTH FROM CURRENT_DATE)"
@@ -218,100 +393,6 @@ public class ReportsController {
         Thread thread = new Thread(task);
         thread.setDaemon(true);
         thread.start();
-
-    }
-
-    public static void loadReports(
-
-            Label totalEmployeesLabel,
-
-            Label totalPassSlipsLabel,
-
-            Label totalOutLabel,
-
-            Label totalReturnedLabel,
-
-            Label totalExpiredLabel
-
-    ) {
-
-        try {
-
-            Connection connection =
-                    DatabaseConnection.connect();
-
-            String employeeQuery =
-                    "SELECT COUNT(*) FROM employees";
-
-            PreparedStatement employeeStatement =
-                    connection.prepareStatement(employeeQuery);
-
-            ResultSet employeeResult =
-                    employeeStatement.executeQuery();
-
-            if (employeeResult.next()) {
-                totalEmployeesLabel.setText(
-                        "TOTAL EMPLOYEES: " + employeeResult.getInt(1)
-                );
-            }
-
-            String passSlipQuery =
-                    "SELECT COUNT(*) FROM pass_slips";
-
-            PreparedStatement passSlipStatement =
-                    connection.prepareStatement(passSlipQuery);
-
-            ResultSet passSlipResult =
-                    passSlipStatement.executeQuery();
-
-            if (passSlipResult.next()) {
-                totalPassSlipsLabel.setText(
-                        "TOTAL PASS SLIPS: " + passSlipResult.getInt(1)
-                );
-            }
-
-            String outQuery = """
-                    SELECT COUNT(*) FROM pass_slips WHERE status = 'OUT'
-                    """;
-
-            PreparedStatement outStatement =
-                    connection.prepareStatement(outQuery);
-
-            ResultSet outResult = outStatement.executeQuery();
-
-            if (outResult.next()) {
-                totalOutLabel.setText("TOTAL OUT: " + outResult.getInt(1));
-            }
-
-            String returnedQuery = """
-                    SELECT COUNT(*) FROM pass_slips WHERE status = 'RETURNED'
-                    """;
-
-            PreparedStatement returnedStatement =
-                    connection.prepareStatement(returnedQuery);
-
-            ResultSet returnedResult = returnedStatement.executeQuery();
-
-            if (returnedResult.next()) {
-                totalReturnedLabel.setText("TOTAL RETURNED: " + returnedResult.getInt(1));
-            }
-
-            String expiredQuery = """
-                    SELECT COUNT(*) FROM pass_slips WHERE status = 'EXPIRED'
-                    """;
-
-            PreparedStatement expiredStatement =
-                    connection.prepareStatement(expiredQuery);
-
-            ResultSet expiredResult = expiredStatement.executeQuery();
-
-            if (expiredResult.next()) {
-                totalExpiredLabel.setText("TOTAL EXPIRED: " + expiredResult.getInt(1));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
     }
 
@@ -392,217 +473,74 @@ public class ReportsController {
         return logs;
     }
 
-    public static ObservableList<String[]> getEmployeePassSlipFrequency() {
-
-        ObservableList<String[]> frequencyList =
-                FXCollections.observableArrayList();
+    public static ObservableList<PassSlip> getPassSlips() {
+        ObservableList<PassSlip> data = FXCollections.observableArrayList();
 
         try {
-
-            Connection connection =
-                    DatabaseConnection.connect();
+            Connection connection = DatabaseConnection.connect();
 
             String query = """
                     SELECT
-                        e.id,
-                        e.first_name || ' ' || e.last_name AS employee_name,
+                        ps.id,
+                        ps.employee_id,
+                        e.first_name,
+                        e.last_name,
                         e.department,
-                        COUNT(ps.id) AS total_slips,
-                        SUM(CASE WHEN ps.status = 'OUT' THEN 1 ELSE 0 END) AS currently_out,
-                        SUM(CASE WHEN ps.status = 'RETURNED' THEN 1 ELSE 0 END) AS returned_count,
-                        SUM(CASE WHEN ps.status = 'EXPIRED' THEN 1 ELSE 0 END) AS expired_count
-                    FROM employees e
-                    LEFT JOIN pass_slips ps ON e.id = ps.employee_id
-                    GROUP BY e.id, e.first_name, e.last_name, e.department
-                    ORDER BY total_slips DESC
+                        ps.reason,
+                        ps.time_out,
+                        ps.time_in,
+                        ps.duration,
+                        ps.duration_minutes,
+                        ps.status
+                    FROM pass_slips ps
+                    JOIN employees e ON ps.employee_id = e.id
+                    ORDER BY ps.time_out DESC
                     """;
 
-            PreparedStatement statement =
-                    connection.prepareStatement(query);
-
-            ResultSet resultSet =
-                    statement.executeQuery();
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
+                LocalDateTime timeOut = resultSet.getTimestamp("time_out") != null
+                        ? resultSet.getTimestamp("time_out").toLocalDateTime() : null;
 
-                frequencyList.add(new String[]{
-                        String.valueOf(resultSet.getInt("id")),
-                        resultSet.getString("employee_name"),
+                LocalDateTime timeIn = resultSet.getTimestamp("time_in") != null
+                        ? resultSet.getTimestamp("time_in").toLocalDateTime() : null;
+
+                PassSlip passSlip = new PassSlip(
+                        resultSet.getInt("id"),
+                        resultSet.getInt("employee_id"),
+                        resultSet.getString("first_name") + " " + resultSet.getString("last_name"),
                         resultSet.getString("department"),
-                        String.valueOf(resultSet.getInt("total_slips")),
-                        String.valueOf(resultSet.getInt("currently_out")),
-                        String.valueOf(resultSet.getInt("returned_count")),
-                        String.valueOf(resultSet.getInt("expired_count"))
-                });
-
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return frequencyList;
-
-    }
-
-    public static ObservableList<String[]> getEmployeePassSlipReasons(int employeeId) {
-
-        ObservableList<String[]> reasonsList =
-                FXCollections.observableArrayList();
-
-        try {
-
-            Connection connection =
-                    DatabaseConnection.connect();
-
-            String query = """
-                    SELECT id, reason, time_out, time_in, duration, status
-                    FROM pass_slips
-                    WHERE employee_id = ?
-                    ORDER BY time_out DESC
-                    """;
-
-            PreparedStatement statement =
-                    connection.prepareStatement(query);
-
-            statement.setInt(1, employeeId);
-
-            ResultSet resultSet =
-                    statement.executeQuery();
-
-            while (resultSet.next()) {
-
-                reasonsList.add(new String[]{
-                        String.valueOf(resultSet.getInt("id")),
                         resultSet.getString("reason"),
-                        resultSet.getTimestamp("time_out") != null
-                                ? resultSet.getTimestamp("time_out").toString() : "",
-                        resultSet.getTimestamp("time_in") != null
-                                ? resultSet.getTimestamp("time_in").toString() : "N/A",
-                        resultSet.getString("duration") != null
-                                ? resultSet.getString("duration") : "N/A",
+                        timeOut,
+                        timeIn,
+                        resultSet.getLong("duration_minutes"),
                         resultSet.getString("status")
-                });
-
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return reasonsList;
-
-    }
-
-    public static int getDailyPassSlipCount() {
-
-        try {
-
-            Connection connection = DatabaseConnection.connect();
-
-            PreparedStatement statement = connection.prepareStatement(
-                    "SELECT COUNT(*) FROM pass_slips WHERE DATE(time_out) = CURRENT_DATE"
-            );
-
-            ResultSet result = statement.executeQuery();
-
-            if (result.next()) {
-                return result.getInt(1);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return 0;
-
-    }
-
-    public static int getMonthlyPassSlipCount() {
-
-        try {
-
-            Connection connection = DatabaseConnection.connect();
-
-            PreparedStatement statement = connection.prepareStatement(
-                    """
-                    SELECT COUNT(*) FROM pass_slips
-                    WHERE EXTRACT(YEAR FROM time_out) = EXTRACT(YEAR FROM CURRENT_DATE)
-                    AND EXTRACT(MONTH FROM time_out) = EXTRACT(MONTH FROM CURRENT_DATE)
-                    AND status != 'REJECTED'
-                    """
-            );
-
-            ResultSet result = statement.executeQuery();
-
-            if (result.next()) {
-                return result.getInt(1);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return 0;
-
-    }
-
-    private void loadRecentHistoryAsync() {
-
-        Task<ObservableList<ActivityLog>> task = new Task<>() {
-            @Override
-            protected ObservableList<ActivityLog> call() {
-                return getLogs();
-            }
-        };
-
-        task.setOnSucceeded(e -> {
-            ObservableList<ActivityLog> logs = task.getValue();
-            recentHistoryList.getChildren().clear();
-            DateTimeFormatter formatter =
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
-            for (ActivityLog log : logs) {
-
-                HBox row = new HBox(10);
-                row.setStyle("-fx-padding: 10px 14px; -fx-background-radius: 8px;");
-                row.setOnMouseEntered(ev -> row.setStyle("-fx-padding: 10px 14px; -fx-background-radius: 8px; -fx-background-color: #3D3229;"));
-                row.setOnMouseExited(ev -> row.setStyle("-fx-padding: 10px 14px; -fx-background-radius: 8px;"));
-
-                Label userLabel = new Label(log.getUsername());
-                userLabel.setPrefWidth(180);
-                userLabel.setStyle("-fx-text-fill: #E7E5E4; -fx-font-size: 13px;");
-
-                Label actionLabel = new Label(log.getAction());
-                actionLabel.setPrefWidth(320);
-                actionLabel.setStyle("-fx-text-fill: #D6CCC2; -fx-font-size: 13px;");
-
-                Region spacer = new Region();
-                HBox.setHgrow(spacer, Priority.ALWAYS);
-
-                Label timeLabel = new Label(
-                        log.getTimestamp().format(formatter)
                 );
-                timeLabel.setStyle("-fx-text-fill: #78716C; -fx-font-size: 12px;");
 
-                row.getChildren().addAll(userLabel, actionLabel, spacer, timeLabel);
-
-                recentHistoryList.getChildren().add(row);
-
+                data.add(passSlip);
             }
-        });
 
-        Thread thread = new Thread(task);
-        thread.setDaemon(true);
-        thread.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        return data;
     }
 
     private void exportReportCsv() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export CSV Report");
+        fileChooser.setInitialFileName("pass_slip_report.csv");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv")
+        );
 
-        try {
+        File file = fileChooser.showSaveDialog(btnExportCsv.getScene().getWindow());
+        if (file == null) return;
 
-            PrintWriter writer = new PrintWriter(new FileWriter("pass_slip_report.csv"));
+        try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
 
             writer.println("ID,Employee,Department,Reason,Time Out,Time In,Duration,Status");
 
@@ -622,7 +560,6 @@ public class ReportsController {
             ResultSet result = statement.executeQuery();
 
             while (result.next()) {
-
                 writer.println(
                         result.getInt("id") + ","
                                 + "\"" + result.getString("name").replace("\"", "\"\"") + "\","
@@ -633,17 +570,106 @@ public class ReportsController {
                                 + "\"" + (result.getString("duration") != null ? result.getString("duration") : "") + "\","
                                 + result.getString("status")
                 );
-
             }
 
-            writer.close();
-
-            System.out.println("Report exported to pass_slip_report.csv");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Export Successful");
+            alert.setHeaderText(null);
+            alert.setContentText("CSV exported successfully to:\n" + file.getAbsolutePath());
+            alert.showAndWait();
 
         } catch (Exception e) {
             e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Export Failed");
+            alert.setHeaderText(null);
+            alert.setContentText("Failed to export CSV.");
+            alert.showAndWait();
         }
+    }
 
+    private void exportReportExcel() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export Excel Report");
+        fileChooser.setInitialFileName("pass_slip_report.xlsx");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Excel Files (*.xlsx)", "*.xlsx")
+        );
+
+        File file = fileChooser.showSaveDialog(btnExportExcel.getScene().getWindow());
+        if (file == null) return;
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Pass Slip Report");
+
+            Row headerRow = sheet.createRow(0);
+            String[] headers = {"ID", "Employee", "Department", "Reason", "Time Out", "Time In", "Duration", "Status"};
+            CellStyle headerStyle = workbook.createCellStyle();
+            Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            headerStyle.setFont(headerFont);
+
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerStyle);
+            }
+
+            Connection connection = DatabaseConnection.connect();
+            PreparedStatement statement = connection.prepareStatement(
+                    """
+                    SELECT ps.id, e.first_name || ' ' || e.last_name AS name,
+                           e.department, ps.reason, ps.time_out, ps.time_in,
+                           ps.duration, ps.status
+                    FROM pass_slips ps
+                    JOIN employees e ON ps.employee_id = e.id
+                    ORDER BY ps.time_out DESC
+                    """
+            );
+
+            ResultSet result = statement.executeQuery();
+            int rowNum = 1;
+
+            while (result.next()) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(result.getInt("id"));
+                row.createCell(1).setCellValue(result.getString("name"));
+                row.createCell(2).setCellValue(result.getString("department"));
+                row.createCell(3).setCellValue(result.getString("reason"));
+                row.createCell(4).setCellValue(
+                        result.getTimestamp("time_out") != null ? result.getTimestamp("time_out").toString() : ""
+                );
+                row.createCell(5).setCellValue(
+                        result.getTimestamp("time_in") != null ? result.getTimestamp("time_in").toString() : ""
+                );
+                row.createCell(6).setCellValue(
+                        result.getString("duration") != null ? result.getString("duration") : ""
+                );
+                row.createCell(7).setCellValue(result.getString("status"));
+            }
+
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            java.io.FileOutputStream fileOut = new java.io.FileOutputStream(file);
+            workbook.write(fileOut);
+            fileOut.close();
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Export Successful");
+            alert.setHeaderText(null);
+            alert.setContentText("Excel exported successfully to:\n" + file.getAbsolutePath());
+            alert.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Export Failed");
+            alert.setHeaderText(null);
+            alert.setContentText("Failed to export Excel.");
+            alert.showAndWait();
+        }
     }
 
 }

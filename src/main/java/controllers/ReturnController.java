@@ -56,9 +56,6 @@ public class ReturnController {
     private Button btnNotificationsAlert;
 
     @FXML
-    private Button btnHamburgerMenuToggle;
-
-    @FXML
     private Button btnLogout;
 
     @FXML
@@ -86,25 +83,25 @@ public class ReturnController {
     private TextField txtReturnTimeInStamp;
 
     @FXML
-    private TableView<?> tblOutstandingOutboundView;
+    private TableView<PassSlip> tblOutstandingOutboundView;
 
     @FXML
-    private TableColumn<?, ?> colReturnSlipId;
+    private TableColumn<PassSlip, String> colReturnSlipId;
 
     @FXML
-    private TableColumn<?, ?> colReturnEmployeeID;
+    private TableColumn<PassSlip, String> colReturnEmployeeID;
 
     @FXML
-    private TableColumn<?, ?> colReturnFullName;
+    private TableColumn<PassSlip, String> colReturnFullName;
 
     @FXML
-    private TableColumn<?, ?> colReturnDepartment;
+    private TableColumn<PassSlip, String> colReturnDepartment;
 
     @FXML
-    private TableColumn<?, ?> colReturnTimeOut;
+    private TableColumn<PassSlip, String> colReturnTimeOut;
 
     @FXML
-    private TableColumn<?, ?> colReturnExpectedIn;
+    private TableColumn<PassSlip, String> colReturnExpectedIn;
 
     @FXML
     private TextField txtMonitoringSearch;
@@ -137,6 +134,7 @@ public class ReturnController {
     private VBox manageEmployeesSubMenu;
 
     private ObservableList<PassSlip> monitoringData;
+    private ObservableList<PassSlip> outstandingSlipsData;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private int activePassSlipId;
@@ -204,12 +202,29 @@ public class ReturnController {
             btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
         if (btnNotificationsAlert != null)
             btnNotificationsAlert.setOnAction(e -> utils.NotificationHelper.toggle(btnNotificationsAlert));
-        if (btnHamburgerMenuToggle != null)
-            btnHamburgerMenuToggle.setOnAction(e -> NavigationHelper.navigateTo(btnHamburgerMenuToggle, "/fxml/User.fxml"));
 
         btnFetchActiveSlip.setOnAction(event -> fetchActiveSlip());
 
         btnConfirmReturnLog.setOnAction(event -> processReturn());
+
+        txtReturnSearchId.textProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    if (newValue == null || newValue.isBlank()) {
+                        activePassSlipId = 0;
+                        activeEmployeeId = 0;
+                        txtReturnEmployeeName.clear();
+                        lblReturnStatusMessage.setText("");
+                        tblOutstandingOutboundView.setItems(outstandingSlipsData);
+                        return;
+                    }
+                    try {
+                        int searchValue = Integer.parseInt(newValue.trim());
+                        filterOutstandingSlips(String.valueOf(searchValue));
+                        fetchActiveSlip();
+                    } catch (NumberFormatException ignored) {
+                    }
+                }
+        );
 
         btnRefreshMonitoring.setOnAction(event -> loadMonitoringDataAsync());
 
@@ -218,8 +233,10 @@ public class ReturnController {
         );
 
         setupMonitoringTable();
+        setupOutstandingTable();
         loadSummaryAsync();
         loadMonitoringDataAsync();
+        loadOutstandingSlipsAsync();
 
     }
 
@@ -337,7 +354,7 @@ public class ReturnController {
                 );
 
                 lblReturnStatusMessage.setText(
-                        "Active pass slip found: " + activePassSlipId
+                        "Active pass slip found — ID #" + activePassSlipId
                 );
 
             } else {
@@ -372,6 +389,7 @@ public class ReturnController {
             activePassSlipId = 0;
             activeEmployeeId = 0;
             loadSummaryAsync();
+            loadOutstandingSlipsAsync();
         } else {
             lblReturnStatusMessage.setText("Unable to record return.");
         }
@@ -427,6 +445,144 @@ public class ReturnController {
             );
             return row;
         });
+    }
+
+    private void setupOutstandingTable() {
+        colReturnSlipId.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(String.valueOf(cellData.getValue().getId()))
+        );
+
+        colReturnEmployeeID.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(String.valueOf(cellData.getValue().getEmployeeId()))
+        );
+
+        colReturnFullName.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(cellData.getValue().getEmployeeName())
+        );
+
+        colReturnDepartment.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(
+                        cellData.getValue().getDepartment() != null ? cellData.getValue().getDepartment() : ""
+                )
+        );
+
+        colReturnTimeOut.setCellValueFactory(
+                cellData -> {
+                    PassSlip ps = cellData.getValue();
+                    String timeOut = ps.getTimeOut() != null ? ps.getTimeOut().format(formatter) : "";
+                    return new ReadOnlyStringWrapper(timeOut);
+                }
+        );
+
+        colReturnExpectedIn.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper("N/A")
+        );
+
+        tblOutstandingOutboundView.setRowFactory(tv -> {
+            javafx.scene.control.TableRow<PassSlip> row = new javafx.scene.control.TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && !row.isEmpty()) {
+                    PassSlip selected = row.getItem();
+                    txtReturnSearchId.setText(String.valueOf(selected.getId()));
+                }
+            });
+            return row;
+        });
+    }
+
+    private void loadOutstandingSlipsAsync() {
+        Task<ObservableList<PassSlip>> task = new Task<>() {
+            @Override
+            protected ObservableList<PassSlip> call() {
+                return fetchOutstandingSlips();
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            outstandingSlipsData = task.getValue();
+            tblOutstandingOutboundView.setItems(outstandingSlipsData);
+        });
+
+        Thread thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private ObservableList<PassSlip> fetchOutstandingSlips() {
+        ObservableList<PassSlip> data = FXCollections.observableArrayList();
+
+        try {
+            Connection connection = DatabaseConnection.connect();
+
+            String query = """
+                    SELECT
+                        ps.id,
+                        ps.employee_id,
+                        e.first_name,
+                        e.last_name,
+                        e.department,
+                        ps.reason,
+                        ps.time_out,
+                        ps.time_in,
+                        ps.duration,
+                        ps.duration_minutes,
+                        ps.status
+                    FROM pass_slips ps
+                    JOIN employees e ON ps.employee_id = e.id
+                    WHERE ps.status = 'OUT'
+                    ORDER BY ps.id DESC
+                    """;
+
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                LocalDateTime timeOut = resultSet.getTimestamp("time_out") != null
+                        ? resultSet.getTimestamp("time_out").toLocalDateTime() : null;
+
+                LocalDateTime timeIn = resultSet.getTimestamp("time_in") != null
+                        ? resultSet.getTimestamp("time_in").toLocalDateTime() : null;
+
+                PassSlip passSlip = new PassSlip(
+                        resultSet.getInt("id"),
+                        resultSet.getInt("employee_id"),
+                        resultSet.getString("first_name") + " " + resultSet.getString("last_name"),
+                        resultSet.getString("department"),
+                        resultSet.getString("reason"),
+                        timeOut,
+                        timeIn,
+                        resultSet.getLong("duration_minutes"),
+                        resultSet.getString("status")
+                );
+
+                data.add(passSlip);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return data;
+    }
+
+    private void filterOutstandingSlips(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            tblOutstandingOutboundView.setItems(outstandingSlipsData);
+            return;
+        }
+
+        ObservableList<PassSlip> filtered = FXCollections.observableArrayList();
+
+        for (PassSlip ps : outstandingSlipsData) {
+            if (String.valueOf(ps.getId()).contains(keyword)
+                    || String.valueOf(ps.getEmployeeId()).contains(keyword)
+                    || ps.getEmployeeName().toLowerCase().contains(keyword.toLowerCase())
+                    || (ps.getDepartment() != null && ps.getDepartment().toLowerCase().contains(keyword.toLowerCase()))) {
+                filtered.add(ps);
+            }
+        }
+
+        tblOutstandingOutboundView.setItems(filtered);
     }
 
     private void updatePassSlipStatus(PassSlip passSlip, String newStatus) {

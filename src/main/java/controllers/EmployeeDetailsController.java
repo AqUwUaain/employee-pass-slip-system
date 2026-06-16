@@ -46,9 +46,6 @@ public class EmployeeDetailsController {
     private Button btnNotificationsAlert;
 
     @FXML
-    private Button btnHamburgerMenuToggle;
-
-    @FXML
     private Button btnBackToDirectory;
 
     @FXML
@@ -157,9 +154,6 @@ public class EmployeeDetailsController {
             btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
         if (btnNotificationsAlert != null)
             btnNotificationsAlert.setOnAction(e -> utils.NotificationHelper.toggle(btnNotificationsAlert));
-        if (btnHamburgerMenuToggle != null)
-            btnHamburgerMenuToggle.setOnAction(e -> NavigationHelper.navigateTo(btnHamburgerMenuToggle, "/fxml/User.fxml"));
-
         btnBackToDirectory.setOnAction(
                 event -> NavigationHelper.navigateTo(
                         btnBackToDirectory,
