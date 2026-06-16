@@ -2,6 +2,9 @@ package controllers;
 
 import database.DatabaseConnection;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -9,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import models.PassSlip;
 import utils.NavigationHelper;
 import utils.PhilTime;
 import utils.TimerService;
@@ -19,6 +23,7 @@ import java.sql.ResultSet;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ReturnController {
 
@@ -100,6 +105,33 @@ public class ReturnController {
     @FXML
     private TableColumn<?, ?> colReturnExpectedIn;
 
+    @FXML
+    private TextField txtMonitoringSearch;
+
+    @FXML
+    private Button btnRefreshMonitoring;
+
+    @FXML
+    private TableView<PassSlip> monitoringTableView;
+
+    @FXML
+    private TableColumn<PassSlip, String> colMonitorTimestamp;
+
+    @FXML
+    private TableColumn<PassSlip, String> colMonitorEmployeeID;
+
+    @FXML
+    private TableColumn<PassSlip, String> colMonitorFullName;
+
+    @FXML
+    private TableColumn<PassSlip, String> colMonitorDepartment;
+
+    @FXML
+    private TableColumn<PassSlip, String> colMonitorStatus;
+
+    private ObservableList<PassSlip> monitoringData;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     private int activePassSlipId;
     private int activeEmployeeId;
 
@@ -159,7 +191,15 @@ public class ReturnController {
 
         btnConfirmReturnLog.setOnAction(event -> processReturn());
 
+        btnRefreshMonitoring.setOnAction(event -> loadMonitoringDataAsync());
+
+        txtMonitoringSearch.textProperty().addListener(
+                (observable, oldValue, newValue) -> filterMonitoringData(newValue)
+        );
+
+        setupMonitoringTable();
         loadSummaryAsync();
+        loadMonitoringDataAsync();
 
     }
 
@@ -316,6 +356,188 @@ public class ReturnController {
             lblReturnStatusMessage.setText("Unable to record return.");
         }
 
+    }
+
+    private void setupMonitoringTable() {
+        colMonitorTimestamp.setCellValueFactory(
+                cellData -> {
+                    PassSlip ps = cellData.getValue();
+                    String timeOut = ps.getTimeOut() != null ? ps.getTimeOut().format(formatter) : "";
+                    return new ReadOnlyStringWrapper(timeOut);
+                }
+        );
+
+        colMonitorEmployeeID.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(String.valueOf(cellData.getValue().getEmployeeId()))
+        );
+
+        colMonitorFullName.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(cellData.getValue().getEmployeeName())
+        );
+
+        colMonitorDepartment.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(
+                        cellData.getValue().getDepartment() != null ? cellData.getValue().getDepartment() : ""
+                )
+        );
+
+        colMonitorStatus.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(cellData.getValue().getStatus())
+        );
+
+        monitoringTableView.setRowFactory(tv -> {
+            javafx.scene.control.TableRow<PassSlip> row = new javafx.scene.control.TableRow<>();
+            javafx.scene.control.ContextMenu contextMenu = new javafx.scene.control.ContextMenu();
+
+            javafx.scene.control.MenuItem approveItem = new javafx.scene.control.MenuItem("Approve (Set OUT)");
+            approveItem.setOnAction(event -> updatePassSlipStatus(row.getItem(), "OUT"));
+
+            javafx.scene.control.MenuItem rejectItem = new javafx.scene.control.MenuItem("Reject");
+            rejectItem.setOnAction(event -> updatePassSlipStatus(row.getItem(), "REJECTED"));
+
+            javafx.scene.control.MenuItem returnItem = new javafx.scene.control.MenuItem("Mark as RETURNED");
+            returnItem.setOnAction(event -> updatePassSlipStatus(row.getItem(), "RETURNED"));
+
+            contextMenu.getItems().addAll(approveItem, rejectItem, returnItem);
+
+            row.contextMenuProperty().bind(
+                    javafx.beans.binding.Bindings.when(row.emptyProperty())
+                            .then((javafx.scene.control.ContextMenu) null)
+                            .otherwise(contextMenu)
+            );
+            return row;
+        });
+    }
+
+    private void updatePassSlipStatus(PassSlip passSlip, String newStatus) {
+        if (passSlip == null) return;
+
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                try (Connection conn = DatabaseConnection.connect()) {
+                    String sql = "UPDATE pass_slips SET status = ? WHERE id = ?";
+                    if (newStatus.equals("RETURNED")) {
+                        sql = "UPDATE pass_slips SET status = ?, time_in = ? WHERE id = ?";
+                    }
+                    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                        pstmt.setString(1, newStatus);
+                        if (newStatus.equals("RETURNED")) {
+                            pstmt.setTimestamp(2, java.sql.Timestamp.valueOf(LocalDateTime.now(PhilTime.ZONE)));
+                            pstmt.setInt(3, passSlip.getId());
+                        } else {
+                            pstmt.setInt(2, passSlip.getId());
+                        }
+                        pstmt.executeUpdate();
+                    }
+                }
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            loadMonitoringDataAsync();
+            loadSummaryAsync();
+            utils.ActivityLogger.log("Pass Slip Updated", "Status changed to " + newStatus + " for Pass Slip #" + passSlip.getId(), passSlip.getEmployeeId());
+        });
+
+        new Thread(task).start();
+    }
+
+    private void loadMonitoringDataAsync() {
+        Task<ObservableList<PassSlip>> task = new Task<>() {
+            @Override
+            protected ObservableList<PassSlip> call() {
+                MonitoringController.updateExpiredPassSlips();
+                return fetchMonitoringData();
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            monitoringData = task.getValue();
+            monitoringTableView.setItems(monitoringData);
+        });
+
+        Thread thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private ObservableList<PassSlip> fetchMonitoringData() {
+        ObservableList<PassSlip> data = FXCollections.observableArrayList();
+
+        try {
+            Connection connection = DatabaseConnection.connect();
+
+            String query = """
+                    SELECT
+                        ps.id,
+                        ps.employee_id,
+                        e.first_name,
+                        e.last_name,
+                        e.department,
+                        ps.reason,
+                        ps.time_out,
+                        ps.time_in,
+                        ps.duration,
+                        ps.duration_minutes,
+                        ps.status
+                    FROM pass_slips ps
+                    JOIN employees e ON ps.employee_id = e.id
+                    ORDER BY ps.id DESC
+                    """;
+
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                LocalDateTime timeOut = resultSet.getTimestamp("time_out") != null
+                        ? resultSet.getTimestamp("time_out").toLocalDateTime() : null;
+
+                LocalDateTime timeIn = resultSet.getTimestamp("time_in") != null
+                        ? resultSet.getTimestamp("time_in").toLocalDateTime() : null;
+
+                PassSlip passSlip = new PassSlip(
+                        resultSet.getInt("id"),
+                        resultSet.getInt("employee_id"),
+                        resultSet.getString("first_name") + " " + resultSet.getString("last_name"),
+                        resultSet.getString("department"),
+                        resultSet.getString("reason"),
+                        timeOut,
+                        timeIn,
+                        resultSet.getLong("duration_minutes"),
+                        resultSet.getString("status")
+                );
+
+                data.add(passSlip);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return data;
+    }
+
+    private void filterMonitoringData(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            monitoringTableView.setItems(monitoringData);
+            return;
+        }
+
+        ObservableList<PassSlip> filtered = FXCollections.observableArrayList();
+
+        for (PassSlip ps : monitoringData) {
+            if (ps.getEmployeeName().toLowerCase().contains(keyword.toLowerCase())
+                    || ps.getStatus().toLowerCase().contains(keyword.toLowerCase())
+                    || String.valueOf(ps.getEmployeeId()).contains(keyword)
+                    || (ps.getDepartment() != null
+                        && ps.getDepartment().toLowerCase().contains(keyword.toLowerCase()))) {
+                filtered.add(ps);
+            }
+        }
+
+        monitoringTableView.setItems(filtered);
     }
 
     private void loadSummaryAsync() {

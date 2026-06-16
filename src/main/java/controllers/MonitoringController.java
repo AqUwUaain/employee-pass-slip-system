@@ -192,65 +192,6 @@ public class MonitoringController {
                 )
         );
 
-        // Add context menu for status management
-        monitoringTableView.setRowFactory(tv -> {
-            javafx.scene.control.TableRow<PassSlip> row = new javafx.scene.control.TableRow<>();
-            javafx.scene.control.ContextMenu contextMenu = new javafx.scene.control.ContextMenu();
-
-            javafx.scene.control.MenuItem approveItem = new javafx.scene.control.MenuItem("Approve (Set OUT)");
-            approveItem.setOnAction(event -> updatePassSlipStatus(row.getItem(), "OUT"));
-
-            javafx.scene.control.MenuItem rejectItem = new javafx.scene.control.MenuItem("Reject");
-            rejectItem.setOnAction(event -> updatePassSlipStatus(row.getItem(), "REJECTED"));
-
-            javafx.scene.control.MenuItem returnItem = new javafx.scene.control.MenuItem("Mark as RETURNED");
-            returnItem.setOnAction(event -> updatePassSlipStatus(row.getItem(), "RETURNED"));
-
-            contextMenu.getItems().addAll(approveItem, rejectItem, returnItem);
-
-            row.contextMenuProperty().bind(
-                    javafx.beans.binding.Bindings.when(row.emptyProperty())
-                            .then((javafx.scene.control.ContextMenu) null)
-                            .otherwise(contextMenu)
-            );
-            return row;
-        });
-
-    }
-
-    private void updatePassSlipStatus(PassSlip passSlip, String newStatus) {
-        if (passSlip == null) return;
-
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() throws Exception {
-                try (Connection conn = database.DatabaseConnection.connect()) {
-                    String sql = "UPDATE pass_slips SET status = ? WHERE id = ?";
-                    if (newStatus.equals("RETURNED")) {
-                        sql = "UPDATE pass_slips SET status = ?, time_in = ? WHERE id = ?";
-                    }
-                    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                        pstmt.setString(1, newStatus);
-                        if (newStatus.equals("RETURNED")) {
-                            pstmt.setTimestamp(2, java.sql.Timestamp.valueOf(LocalDateTime.now(PhilTime.ZONE)));
-                            pstmt.setInt(3, passSlip.getId());
-                        } else {
-                            pstmt.setInt(2, passSlip.getId());
-                        }
-                        pstmt.executeUpdate();
-                    }
-                }
-                return null;
-            }
-        };
-
-        task.setOnSucceeded(e -> {
-            loadMonitoringDataAsync();
-            loadSummaryAsync();
-            utils.ActivityLogger.log("Pass Slip Updated", "Status changed to " + newStatus + " for Pass Slip #" + passSlip.getId(), passSlip.getEmployeeId());
-        });
-
-        new Thread(task).start();
     }
 
     private void loadMonitoringDataAsync() {
