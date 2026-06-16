@@ -58,7 +58,7 @@
                     <VBox spacing="8.0">
                         <children>
                             <Label text="EMAIL ADDRESS" style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 11px; -fx-font-weight: bold;" />
-                            <TextField fx:id="emailField" promptText="name@pup.edu.ph" style="-fx-background-color: rgba(255,255,255,0.06); -fx-border-color: rgba(255,255,255,0.08); -fx-border-width: 1.5px; -fx-border-radius: 12px; -fx-background-radius: 12px; -fx-padding: 14px 16px; -fx-font-size: 14px; -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.25);" />
+                            <TextField fx:id="emailField" promptText="name@pup.edu.ph" style="-fx-background-color: #2D2520; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-padding: 12px 14px; -fx-font-size: 13px; -fx-text-fill: #E7E5E4; -fx-prompt-text-fill: #78716C; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;" />
                         </children>
                         <VBox.margin><Insets bottom="12.0" /></VBox.margin>
                     </VBox>
@@ -68,7 +68,7 @@
                             <Label text="PASSWORD" style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 11px; -fx-font-weight: bold;" />
                             <StackPane fx:id="passwordStackPane" alignment="CENTER_RIGHT">
                                 <children>
-                                    <PasswordField fx:id="passwordField" promptText="Enter your password" style="-fx-background-color: rgba(255,255,255,0.06); -fx-border-color: rgba(255,255,255,0.08); -fx-border-width: 1.5px; -fx-border-radius: 12px; -fx-background-radius: 12px; -fx-padding: 14px 16px; -fx-font-size: 14px; -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.25); -fx-pref-height: 46px;" />
+                                    <PasswordField fx:id="passwordField" promptText="Enter your password" style="-fx-background-color: #2D2520; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-padding: 12px 14px; -fx-font-size: 13px; -fx-text-fill: #E7E5E4; -fx-prompt-text-fill: #78716C; -fx-focus-color: transparent; -fx-faint-focus-color: transparent; -fx-pref-height: 44px;" />
                                     <Button fx:id="togglePasswordBtn" mnemonicParsing="false" text="&#x1f441;" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 15px;">
                                         <StackPane.margin><Insets right="12.0" /></StackPane.margin>
                                     </Button>

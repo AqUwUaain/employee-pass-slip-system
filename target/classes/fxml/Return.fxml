@@ -112,7 +112,7 @@
                                 <HBox alignment="CENTER_LEFT" spacing="8.0" style="-fx-padding: 0 0 10px 0; -fx-border-color: transparent transparent #3D3229 transparent; -fx-border-width: 0 0 1px 0;">
                                     <children>
                                         <VBox style="-fx-background-color: #D4A853; -fx-pref-width: 4px; -fx-pref-height: 16px;" />
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #D4A853;" text="LOG PERSONNEL RE-ENTRY" />
+                                        <Label styleClass="sec-title" text="LOG PERSONNEL RE-ENTRY" />
                                     </children>
                                 </HBox>
                                 <GridPane hgap="20.0" vgap="18.0">
@@ -127,17 +127,17 @@
                                         <RowConstraints minHeight="35.0" />
                                     </rowConstraints>
                                     <children>
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Scan or Enter Client ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                                        <TextField fx:id="txtReturnSearchId" promptText="Enter PUP-SR-XXXX ID reference..." style="-fx-font-size: 13px; -fx-padding: 8px 12px; -fx-background-color: #2D2520; -fx-border-color: #3D3229; -fx-border-radius: 4px; -fx-text-fill: #F5F5F4;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                                        <Button fx:id="btnFetchActiveSlip" mnemonicParsing="false" maxWidth="Infinity" style="-fx-background-color: #7C0A02; -fx-text-fill: #ffffff; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 8px 15px; -fx-background-radius: 4px; -fx-cursor: hand;" text="&#x1F50D; Find Slip" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Identified Personnel Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                                        <TextField fx:id="txtReturnEmployeeName" editable="false" promptText="Personnel match display name" style="-fx-font-size: 13px; -fx-padding: 8px 12px; -fx-background-color: #2D2520; -fx-border-color: #3D3229; -fx-border-radius: 4px; -fx-text-fill: #A8A29E;" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.columnSpan="2" />
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Verify Return Time In:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                                        <TextField fx:id="txtReturnTimeInStamp" promptText="e.g., 04:30 PM" style="-fx-font-size: 13px; -fx-padding: 8px 12px; -fx-background-color: #2D2520; -fx-border-color: #3D3229; -fx-border-radius: 4px; -fx-text-fill: #F5F5F4;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                        <Button fx:id="btnConfirmReturnLog" mnemonicParsing="false" maxWidth="Infinity" style="-fx-background-color: #38a169; -fx-text-fill: #ffffff; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 8px 15px; -fx-background-radius: 4px; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(56,161,105,0.25), 5, 0, 0, 2);" text="&#x1F4E5; Process Re-entry" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                        <Label style="-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 12px;" text="Scan or Enter Client ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                        <TextField fx:id="txtReturnSearchId" promptText="Enter PUP-SR-XXXX ID reference..." styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                        <Button fx:id="btnFetchActiveSlip" mnemonicParsing="false" maxWidth="Infinity" styleClass="btn-maroon" text="&#x1F50D; Find Slip" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                                        <Label style="-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 12px;" text="Identified Personnel Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                        <TextField fx:id="txtReturnEmployeeName" editable="false" promptText="Personnel match display name" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.columnSpan="2" />
+                                        <Label style="-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 12px;" text="Verify Return Time In:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                        <TextField fx:id="txtReturnTimeInStamp" promptText="e.g., 04:30 PM" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                        <Button fx:id="btnConfirmReturnLog" mnemonicParsing="false" maxWidth="Infinity" styleClass="btn-maroon" text="&#x1F4E5; Process Re-entry" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                     </children>
                                 </GridPane>
-                                <Label fx:id="lblReturnStatusMessage" style="-fx-text-fill: #D4A853; -fx-font-size: 12px; -fx-font-weight: bold;" text="" />
+                                <Label fx:id="lblReturnStatusMessage" styleClass="msg-info" text="" />
                             </children>
                         </VBox>
 
@@ -145,10 +145,10 @@
                             <children>
                                 <HBox alignment="CENTER_LEFT" spacing="8.0">
                                     <children>
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #D4A853;" text="&#x23F3; OUTSTANDING PASS SLIPS REQUIRING RETURN LOGS" />
+                                        <Label styleClass="sec-title" text="&#x23F3; OUTSTANDING PASS SLIPS REQUIRING RETURN LOGS" />
                                     </children>
                                 </HBox>
-                                <TableView fx:id="tblOutstandingOutboundView" prefHeight="260.0" style="-fx-background-color: #252220; -fx-border-color: #3D3229; -fx-border-width: 1px;" VBox.vgrow="ALWAYS">
+                                <TableView fx:id="tblOutstandingOutboundView" prefHeight="260.0" VBox.vgrow="ALWAYS">
                                     <columns>
                                         <TableColumn fx:id="colReturnSlipId" prefWidth="120.0" style="-fx-alignment: CENTER;" text="Slip ID" />
                                         <TableColumn fx:id="colReturnEmployeeID" prefWidth="140.0" style="-fx-alignment: CENTER;" text="Employee ID" />
