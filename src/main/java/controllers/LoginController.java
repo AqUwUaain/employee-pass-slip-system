@@ -357,6 +357,19 @@ public class LoginController {
 
             if (resultSet.next()) {
                 String storedPassword = resultSet.getString("password");
+
+                Session.currentUserId = resultSet.getInt("id");
+                String role = resultSet.getString("role");
+                Session.currentRole = role;
+                Session.currentUsername = email;
+
+                if (hasPendingPasswordReset(email)) {
+                    resetLockout(email);
+                    ActivityLogController.logActivity("User Logged In (Password Reset Pending)", 0);
+                    showResetPasswordDialog(email);
+                    return;
+                }
+
                 boolean passwordMatch = PasswordUtils.verifyPassword(password, storedPassword);
 
                 if (!passwordMatch) {
@@ -395,16 +408,9 @@ public class LoginController {
                     prefs.putBoolean("remember_me", false);
                 }
 
-                Session.currentUserId = resultSet.getInt("id");
-                String role = resultSet.getString("role");
-                Session.currentRole = role;
-                Session.currentUsername = email;
-
                 ActivityLogController.logActivity("User Logged In", 0);
 
-                if (hasPendingPasswordReset(email)) {
-                    showResetPasswordDialog(email);
-                } else if (role.equalsIgnoreCase("ADMIN")) {
+                if (role.equalsIgnoreCase("ADMIN")) {
                     NavigationHelper.navigateTo(emailField, "/fxml/Dashboard.fxml");
                 } else if (role.equalsIgnoreCase("STAFF")) {
                     NavigationHelper.navigateTo(emailField, "/fxml/StaffDashboard.fxml");

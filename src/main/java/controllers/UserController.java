@@ -82,6 +82,9 @@ public class UserController {
     private PasswordField txtUserPassword;
 
     @FXML
+    private Label btnTogglePassword;
+
+    @FXML
     private Label lblUserMessage;
 
     @FXML
@@ -166,10 +169,50 @@ public class UserController {
 
         btnClearUserForm.setOnAction(event -> clearForm());
 
+        btnTogglePassword.setOnMouseClicked(event -> {
+            if (btnTogglePassword.getText().equals("Show")) {
+                TextField visible = new TextField(txtUserPassword.getText());
+                visible.setStyle("-fx-background-color: transparent; -fx-text-fill: #F5F5F4; -fx-border-width: 0; -fx-padding: 8px 4px; -fx-font-size: 13px;");
+                visible.setPromptText("Enter password...");
+                visible.setMaxWidth(Double.MAX_VALUE);
+                HBox parent = (HBox) txtUserPassword.getParent();
+                int idx = parent.getChildren().indexOf(txtUserPassword);
+                parent.getChildren().set(idx, visible);
+                txtUserPassword = null;
+                btnTogglePassword.setText("Hide");
+                visible.requestFocus();
+                visible.positionCaret(visible.getText().length());
+            } else {
+                TextField visible = (TextField) ((HBox) btnTogglePassword.getParent()).getChildren().stream()
+                        .filter(c -> c instanceof TextField).findFirst().orElse(null);
+                if (visible != null) {
+                    PasswordField hidden = new PasswordField();
+                    hidden.setText(visible.getText());
+                    hidden.setPromptText("Enter password...");
+                    hidden.setStyle("-fx-background-color: transparent; -fx-text-fill: #F5F5F4; -fx-border-width: 0; -fx-padding: 8px 4px; -fx-font-size: 13px;");
+                    hidden.setMaxWidth(Double.MAX_VALUE);
+                    HBox parent = (HBox) visible.getParent();
+                    int idx = parent.getChildren().indexOf(visible);
+                    parent.getChildren().set(idx, hidden);
+                    txtUserPassword = hidden;
+                    btnTogglePassword.setText("Show");
+                    hidden.requestFocus();
+                }
+            }
+        });
+
         btnSaveUserRegistry.setOnAction(event -> {
+            String passwordText = "";
+            if (txtUserPassword != null) {
+                passwordText = txtUserPassword.getText().trim();
+            } else {
+                TextField vis = (TextField) btnTogglePassword.getParent().getChildrenUnmodifiable().stream()
+                        .filter(c -> c instanceof TextField).findFirst().orElse(null);
+                if (vis != null) passwordText = vis.getText().trim();
+            }
             createUser(
                     txtUserId,
-                    txtUserPassword,
+                    passwordText,
                     cmbUserRole,
                     lblUserMessage
             );
@@ -190,7 +233,7 @@ public class UserController {
     public static void createUser(
 
             TextField usernameField,
-            PasswordField passwordField,
+            String password,
             ComboBox<String> roleBox,
             Label messageLabel
 
@@ -198,9 +241,6 @@ public class UserController {
 
         String username =
                 usernameField.getText().trim();
-
-        String password =
-                passwordField.getText().trim();
 
         String role =
                 roleBox.getValue();
@@ -303,7 +343,6 @@ public class UserController {
                 messageLabel.setStyle("-fx-text-fill: #34D399; -fx-font-weight: bold;");
 
                 usernameField.clear();
-                passwordField.clear();
                 roleBox.setValue(null);
 
             } else {
@@ -342,7 +381,13 @@ public class UserController {
     private void clearForm() {
         txtUserId.clear();
         txtUserName.clear();
-        txtUserPassword.clear();
+        if (txtUserPassword != null) {
+            txtUserPassword.clear();
+        } else {
+            TextField vis = (TextField) btnTogglePassword.getParent().getChildrenUnmodifiable().stream()
+                    .filter(c -> c instanceof TextField).findFirst().orElse(null);
+            if (vis != null) vis.clear();
+        }
         cmbUserRole.setValue(null);
         lblUserMessage.setText("");
         lblUserMessage.setStyle("");
@@ -427,26 +472,17 @@ public class UserController {
         Label oldPwLabel = new Label("CURRENT PASSWORD");
         oldPwLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 11px;");
 
-        PasswordField oldPwField = new PasswordField();
-        oldPwField.setPromptText("Enter current password...");
-        oldPwField.setStyle("-fx-background-color: #2D2520; -fx-text-fill: #F5F5F4; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-padding: 8px 12px; -fx-font-size: 13px;");
-        oldPwField.setMaxWidth(Double.MAX_VALUE);
+        HBox oldPwBox = createPasswordFieldWithEye("Enter current password...");
 
         Label newPwLabel = new Label("NEW PASSWORD");
         newPwLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 11px;");
 
-        PasswordField newPwField = new PasswordField();
-        newPwField.setPromptText("Enter new password...");
-        newPwField.setStyle("-fx-background-color: #2D2520; -fx-text-fill: #F5F5F4; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-padding: 8px 12px; -fx-font-size: 13px;");
-        newPwField.setMaxWidth(Double.MAX_VALUE);
+        HBox newPwBox = createPasswordFieldWithEye("Enter new password...");
 
         Label confirmPwLabel = new Label("CONFIRM NEW PASSWORD");
         confirmPwLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 11px;");
 
-        PasswordField confirmPwField = new PasswordField();
-        confirmPwField.setPromptText("Re-enter new password...");
-        confirmPwField.setStyle("-fx-background-color: #2D2520; -fx-text-fill: #F5F5F4; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-padding: 8px 12px; -fx-font-size: 13px;");
-        confirmPwField.setMaxWidth(Double.MAX_VALUE);
+        HBox confirmPwBox = createPasswordFieldWithEye("Re-enter new password...");
 
         Label rulesLabel = new Label("Min 5 chars, 1 uppercase, 1 number, 1 special (!@#%*)");
         rulesLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #78716C; -fx-wrap-text: true;");
@@ -476,16 +512,16 @@ public class UserController {
 
         buttons.getChildren().addAll(btnCancel, btnConfirm);
 
-        dialog.getChildren().addAll(icon, title, subtitle, oldPwLabel, oldPwField, newPwLabel, newPwField, confirmPwLabel, confirmPwField, rulesLabel, msgLabel, buttons);
+        dialog.getChildren().addAll(icon, title, subtitle, oldPwLabel, oldPwBox, newPwLabel, newPwBox, confirmPwLabel, confirmPwBox, rulesLabel, msgLabel, buttons);
         overlay.getChildren().add(dialog);
         root.setCenter(overlay);
 
         btnCancel.setOnAction(e -> root.setCenter(originalCenter));
 
         btnConfirm.setOnAction(e -> {
-            String oldPw = oldPwField.getText().trim();
-            String newPw = newPwField.getText().trim();
-            String confirmPw = confirmPwField.getText().trim();
+            String oldPw = getPasswordFromBox(oldPwBox).trim();
+            String newPw = getPasswordFromBox(newPwBox).trim();
+            String confirmPw = getPasswordFromBox(confirmPwBox).trim();
 
             if (oldPw.isEmpty()) {
                 msgLabel.setText("Current password is required.");
@@ -566,7 +602,7 @@ public class UserController {
             }
         });
 
-        Platform.runLater(oldPwField::requestFocus);
+        Platform.runLater(() -> getPasswordFieldFromBox(oldPwBox).requestFocus());
     }
 
     private void showEditUserDialog() {
@@ -719,6 +755,68 @@ public class UserController {
         });
 
         Platform.runLater(emailField::requestFocus);
+    }
+
+    private HBox createPasswordFieldWithEye(String promptText) {
+        String pwStyle = "-fx-background-color: transparent; -fx-text-fill: #F5F5F4; -fx-border-width: 0; -fx-padding: 8px 4px; -fx-font-size: 13px;";
+
+        PasswordField pwField = new PasswordField();
+        pwField.setPromptText(promptText);
+        pwField.setStyle(pwStyle);
+        pwField.setMaxWidth(Double.MAX_VALUE);
+
+        Label eye = new Label("Show");
+        eye.setStyle("-fx-font-size: 11px; -fx-text-fill: #A8A29E; -fx-padding: 8px 10px 8px 4px; -fx-cursor: hand; -fx-underline: true;");
+
+        HBox box = new HBox();
+        box.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        box.setStyle("-fx-background-color: #2D2520; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-padding: 0 0 0 12px;");
+        box.getChildren().addAll(pwField, eye);
+        HBox.setHgrow(pwField, javafx.scene.layout.Priority.ALWAYS);
+
+        eye.setOnMouseClicked(e -> {
+            if (eye.getText().equals("Show")) {
+                TextField visible = new TextField(pwField.getText());
+                visible.setStyle(pwStyle);
+                visible.setPromptText(promptText);
+                visible.setMaxWidth(Double.MAX_VALUE);
+                int idx = box.getChildren().indexOf(pwField);
+                box.getChildren().set(idx, visible);
+                eye.setText("Hide");
+                visible.requestFocus();
+            } else {
+                TextField visible = (TextField) box.getChildren().stream()
+                        .filter(c -> c instanceof TextField).findFirst().orElse(null);
+                if (visible != null) {
+                    PasswordField hidden = new PasswordField();
+                    hidden.setText(visible.getText());
+                    hidden.setPromptText(promptText);
+                    hidden.setStyle(pwStyle);
+                    hidden.setMaxWidth(Double.MAX_VALUE);
+                    int idx = box.getChildren().indexOf(visible);
+                    box.getChildren().set(idx, hidden);
+                    eye.setText("Show");
+                    hidden.requestFocus();
+                }
+            }
+        });
+
+        return box;
+    }
+
+    private String getPasswordFromBox(HBox box) {
+        for (javafx.scene.Node child : box.getChildren()) {
+            if (child instanceof PasswordField pf) return pf.getText();
+            if (child instanceof TextField tf) return tf.getText();
+        }
+        return "";
+    }
+
+    private PasswordField getPasswordFieldFromBox(HBox box) {
+        for (javafx.scene.Node child : box.getChildren()) {
+            if (child instanceof PasswordField pf) return pf;
+        }
+        return null;
     }
 
 }

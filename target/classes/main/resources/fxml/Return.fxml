@@ -64,6 +64,7 @@
                 <VBox spacing="2.0">
                     <children>
                         <Label text="Log Return &amp; Monitoring" styleClass="pg-title" />
+                        <Label text="Track employee pass slip returns" styleClass="pg-sub" />
                     </children>
                 </VBox>
                 <StackPane HBox.hgrow="ALWAYS" />
