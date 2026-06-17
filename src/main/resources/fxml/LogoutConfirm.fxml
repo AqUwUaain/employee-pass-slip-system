@@ -5,20 +5,18 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="20.0" prefWidth="400.0"
-      style="-fx-background-color: #252220; -fx-background-radius: 20px; -fx-border-radius: 20px; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-padding: 40px;"
+<VBox fx:id="logoutDialogRoot" alignment="CENTER" spacing="20.0" prefWidth="400.0"
+      styleClass="modal-box logout-dialog"
       xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controllers.LogoutConfirmController">
     <children>
-        <Label text="Confirm Logout" style="-fx-text-fill: #D4A853; -fx-font-size: 22px; -fx-font-weight: bold;" />
-        <Label text="Are you sure you want to logout?" style="-fx-text-fill: #A8A29E; -fx-font-size: 14px;" />
+        <Label fx:id="dialogTitle" text="Confirm Logout" styleClass="dialog-title" />
+        <Label fx:id="dialogSubtitle" text="Are you sure you want to logout?" styleClass="dialog-subtitle" />
         <HBox alignment="CENTER" spacing="10.0">
             <children>
-                <Button fx:id="cancelBtn" text="Cancel"
-                        style="-fx-background-color: #3D3229; -fx-text-fill: #D6CCC2; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 11px 28px; -fx-border-color: #57534E; -fx-border-width: 1px; -fx-cursor: hand;" />
-                <Button fx:id="logoutBtn" text="Logout"
-                        style="-fx-background-color: linear-gradient(to right, #C9951A, #D4A853); -fx-text-fill: #1C1917; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 11px 28px; -fx-effect: dropshadow(three-pass-box, rgba(201,149,26,0.25), 8, 0, 0, 2); -fx-cursor: hand;" />
+                <Button fx:id="cancelBtn" text="Cancel" styleClass="btn-neutral" />
+                <Button fx:id="logoutBtn" text="Logout" styleClass="btn-gold" />
             </children>
         </HBox>
     </children>

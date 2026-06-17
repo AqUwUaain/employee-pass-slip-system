@@ -2,15 +2,27 @@ package controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import utils.ThemeManager;
 
 public class LogoutConfirmController {
+
+    @FXML
+    private VBox logoutDialogRoot;
 
     @FXML
     private Button cancelBtn;
 
     @FXML
     private Button logoutBtn;
+
+    @FXML
+    private Label dialogTitle;
+
+    @FXML
+    private Label dialogSubtitle;
 
     private Stage dialogStage;
     private boolean confirmed = false;
@@ -25,6 +37,12 @@ public class LogoutConfirmController {
 
     @FXML
     private void initialize() {
+        boolean isDark = ThemeManager.isDark();
+
+        if (!isDark) {
+            logoutDialogRoot.setStyle("-fx-background-color: #800517; -fx-background-radius: 20px; -fx-padding: 40px;");
+        }
+
         cancelBtn.setOnAction(e -> {
             confirmed = false;
             dialogStage.close();
@@ -34,5 +52,12 @@ public class LogoutConfirmController {
             confirmed = true;
             dialogStage.close();
         });
+
+        if (dialogTitle != null) {
+            dialogTitle.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: " + (isDark ? "#D4A853;" : "#FFFFFF;"));
+        }
+        if (dialogSubtitle != null) {
+            dialogSubtitle.setStyle("-fx-font-size: 14px; -fx-text-fill: " + (isDark ? "#A8A29E;" : "rgba(255,255,255,0.75);"));
+        }
     }
 }

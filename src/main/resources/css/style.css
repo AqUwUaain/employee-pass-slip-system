@@ -431,6 +431,19 @@ Button.nav-sub-active:hover {
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 14, 0, 0, 3);
 }
 
+.dashboard-activity-card {
+    -fx-border-color: #D4A853;
+    -fx-border-width: 2px;
+    -fx-background-color: #252220;
+    -fx-background-radius: 12px;
+}
+.dashboard-activity-card .content-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
 /* CREATE ENTRY ICON */
 .create-entry-icon {
     -fx-font-size: 42px;
@@ -557,6 +570,61 @@ Button.nav-sub-active:hover {
     -fx-background-color: linear-gradient(to right, #3D0C02, #5C1A10);
     -fx-background-radius: 12px 12px 0 0;
     -fx-padding: 20px 28px;
+}
+.modal-box.logout-dialog {
+    -fx-background-color: #252220;
+    -fx-background-radius: 20px;
+    -fx-padding: 40px;
+}
+.modal-box.logout-dialog .dialog-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #D4A853;
+}
+.modal-box.logout-dialog .dialog-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #A8A29E;
+}
+
+/* NOTIFICATION POPUP */
+.notification-popup {
+    -fx-background-color: #252220;
+    -fx-background-radius: 16px;
+    -fx-border-color: #3D3229;
+    -fx-border-width: 1px;
+    -fx-border-radius: 16px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 30, 0, 0, 8);
+}
+.notif-title {
+    -fx-text-fill: #F5F5F4;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+.notif-view-all-btn {
+    -fx-background-color: rgba(212,168,83,0.12);
+    -fx-text-fill: #D4A853;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px 16px;
+    -fx-cursor: hand;
+}
+.notif-row-action {
+    -fx-font-size: 13px;
+    -fx-text-fill: #E7E5E4;
+    -fx-font-weight: bold;
+}
+.notif-row-time {
+    -fx-font-size: 11px;
+    -fx-text-fill: #78716C;
+}
+.notif-row-dot {
+    -fx-text-fill: #D4A853;
+    -fx-font-size: 10px;
+}
+.notif-empty {
+    -fx-text-fill: #78716C;
+    -fx-font-size: 13px;
 }
 
 /* ==========================================================================

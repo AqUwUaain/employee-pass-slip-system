@@ -86,7 +86,7 @@ public class NotificationPopupController {
             emptyBox.setAlignment(Pos.CENTER);
             emptyBox.setStyle("-fx-padding: 30 0;");
             Label noAct = new Label(isStaff ? "No personal notifications yet." : "No recent activities");
-            noAct.setStyle("-fx-text-fill: #78716C; -fx-font-size: 13px;");
+            noAct.getStyleClass().add("notif-empty");
             emptyBox.getChildren().add(noAct);
             vboxNotifications.getChildren().add(emptyBox);
             return;
@@ -102,13 +102,13 @@ public class NotificationPopupController {
             row.setOnMouseExited(e -> row.setStyle("-fx-padding: 10px 12px; -fx-background-radius: 8px;"));
 
             Label dot = new Label("●");
-            dot.setStyle("-fx-text-fill: #D4A853; -fx-font-size: 10px;");
+            dot.getStyleClass().add("notif-row-dot");
 
             VBox textBox = new VBox(2);
             Label actionLabel = new Label(log.getAction());
-            actionLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #E7E5E4; -fx-font-weight: bold;");
+            actionLabel.getStyleClass().add("notif-row-action");
             Label timeLabel = new Label(log.getTimestamp().format(formatter));
-            timeLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #78716C;");
+            timeLabel.getStyleClass().add("notif-row-time");
             textBox.getChildren().addAll(actionLabel, timeLabel);
 
             StackPane spacer = new StackPane();

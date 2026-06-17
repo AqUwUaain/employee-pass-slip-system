@@ -21,13 +21,21 @@ public final class NotificationHelper {
     private static final String OVERLAY_STYLE =
             "-fx-background-color: transparent;";
 
-    private static final String POPUP_STYLE =
+    private static final String POPUP_STYLE_DARK =
             "-fx-background-color: #252220;" +
             "-fx-background-radius: 16px;" +
             "-fx-border-color: #3D3229;" +
             "-fx-border-width: 1px;" +
             "-fx-border-radius: 16px;" +
             "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 30, 0, 0, 8);";
+
+    private static final String POPUP_STYLE_LIGHT =
+            "-fx-background-color: #800517;" +
+            "-fx-background-radius: 16px;" +
+            "-fx-border-color: #6B0413;" +
+            "-fx-border-width: 1px;" +
+            "-fx-border-radius: 16px;" +
+            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 30, 0, 0, 8);";
 
     private static StackPane findRootOverlay(Node source) {
         Scene scene = source.getScene();
@@ -94,7 +102,7 @@ public final class NotificationHelper {
             popup.setPrefWidth(380);
             popup.setMaxWidth(380);
             popup.setMaxHeight(500);
-            popup.setStyle(POPUP_STYLE);
+            popup.setStyle(ThemeManager.isDark() ? POPUP_STYLE_DARK : POPUP_STYLE_LIGHT);
 
             Bounds bounds = bellButton.localToScreen(bellButton.getBoundsInLocal());
             if (bounds == null) return;

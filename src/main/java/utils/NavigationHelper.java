@@ -157,6 +157,7 @@ public final class NavigationHelper {
 
             Scene scene = new Scene(root);
             scene.setFill(Color.TRANSPARENT);
+            scene.getStylesheets().add(ThemeManager.getCssPath());
             dialogStage.setScene(scene);
             dialogStage.setResizable(false);
 

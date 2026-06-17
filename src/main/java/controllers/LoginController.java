@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Hyperlink;
@@ -62,6 +63,9 @@ public class LoginController {
     private StackPane leftHeroPanel;
 
     @FXML
+    private StackPane rightFormPanel;
+
+    @FXML
     private ImageView campusImageView;
 
     private TextField visiblePasswordField;
@@ -75,14 +79,17 @@ public class LoginController {
         campusImageView.fitWidthProperty().bind(leftHeroPanel.widthProperty());
         campusImageView.fitHeightProperty().bind(leftHeroPanel.heightProperty());
 
-        // Load saved credentials
+        // Load saved credentials (password is encrypted with machine-specific key)
         String savedEmail = prefs.get("saved_email", "");
-        String savedPassword = prefs.get("saved_password", "");
+        String savedEncryptedPassword = prefs.get("saved_password", "");
         boolean rememberMe = prefs.getBoolean("remember_me", false);
 
         if (rememberMe && !savedEmail.isEmpty()) {
             emailField.setText(savedEmail);
-            passwordField.setText(savedPassword);
+            String decryptedPassword = utils.MachineCrypto.decrypt(savedEncryptedPassword);
+            if (!decryptedPassword.isEmpty()) {
+                passwordField.setText(decryptedPassword);
+            }
             rememberMeCheckbox.setSelected(true);
         }
 
@@ -90,24 +97,77 @@ public class LoginController {
         visiblePasswordField = new TextField();
         visiblePasswordField.setPromptText("Enter your password");
 
-        visiblePasswordField.setStyle(
-                "-fx-background-color: rgba(255,255,255,0.06); " +
-                        "-fx-border-color: rgba(255,255,255,0.08); " +
-                        "-fx-border-width: 1.5px; " +
-                        "-fx-border-radius: 12px; " +
-                        "-fx-background-radius: 12px; " +
-                        "-fx-padding: 14px 16px; " +
-                        "-fx-font-size: 14px; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-prompt-text-fill: rgba(255,255,255,0.25); " +
-                        "-fx-pref-height: 46px;"
-        );
+        if (utils.ThemeManager.isDark()) {
+            visiblePasswordField.setStyle(
+                    "-fx-background-color: rgba(255,255,255,0.06); " +
+                            "-fx-border-color: rgba(255,255,255,0.08); " +
+                            "-fx-border-width: 1.5px; " +
+                            "-fx-border-radius: 12px; " +
+                            "-fx-background-radius: 12px; " +
+                            "-fx-padding: 14px 16px; " +
+                            "-fx-font-size: 14px; " +
+                            "-fx-text-fill: white; " +
+                            "-fx-prompt-text-fill: rgba(255,255,255,0.25); " +
+                            "-fx-pref-height: 46px;"
+            );
+        } else {
+            visiblePasswordField.setStyle(
+                    "-fx-background-color: rgba(255,255,255,0.15); " +
+                            "-fx-border-color: rgba(255,255,255,0.2); " +
+                            "-fx-border-width: 1.5px; " +
+                            "-fx-border-radius: 12px; " +
+                            "-fx-background-radius: 12px; " +
+                            "-fx-padding: 14px 16px; " +
+                            "-fx-font-size: 14px; " +
+                            "-fx-text-fill: white; " +
+                            "-fx-prompt-text-fill: rgba(255,255,255,0.45); " +
+                            "-fx-pref-height: 46px;"
+            );
+        }
 
         togglePasswordBtn.setOnAction(e -> togglePasswordVisibility());
 
         forgotPasswordLink.setOnAction(e -> showForgotPasswordDialog());
         privacyPolicyLink.setOnAction(e -> showModal("/fxml/PrivacyPolicy.fxml"));
         termsOfServiceLink.setOnAction(e -> showModal("/fxml/TermsConditions.fxml"));
+
+        if (!utils.ThemeManager.isDark()) {
+            applyLightMode();
+        }
+    }
+
+    private void applyLightMode() {
+        rightFormPanel.setStyle("-fx-background-color: #800517;");
+
+        for (javafx.scene.Node node : rightFormPanel.lookupAll(".label")) {
+            if (node instanceof Label label) {
+                String text = label.getText();
+                if (text != null) {
+                    if (text.equals("Sign in to")) {
+                        label.setStyle("-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 18px; -fx-font-weight: bold;");
+                    } else if (text.contains("Polytechnic")) {
+                        label.setStyle("-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold; -fx-line-spacing: 4px;");
+                    } else if (text.equals("Santa Rosa Campus")) {
+                        label.setStyle("-fx-text-fill: rgba(212,168,83,0.8); -fx-font-size: 12px;");
+                    } else if (text.equals("EMAIL ADDRESS") || text.equals("PASSWORD")) {
+                        label.setStyle("-fx-text-fill: rgba(255,255,255,0.6); -fx-font-size: 11px; -fx-font-weight: bold;");
+                    } else if (text.equals("|")) {
+                        label.setStyle("-fx-text-fill: rgba(255,255,255,0.15); -fx-font-size: 11px;");
+                    }
+                }
+            }
+        }
+
+        emailField.setStyle("-fx-background-color: rgba(255,255,255,0.15); -fx-border-color: rgba(255,255,255,0.2); -fx-border-width: 1px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-padding: 12px 14px; -fx-font-size: 13px; -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.45); -fx-focus-color: transparent; -fx-faint-focus-color: transparent;");
+        passwordField.setStyle("-fx-background-color: rgba(255,255,255,0.15); -fx-border-color: rgba(255,255,255,0.2); -fx-border-width: 1px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-padding: 12px 14px; -fx-font-size: 13px; -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.45); -fx-focus-color: transparent; -fx-faint-focus-color: transparent; -fx-pref-height: 44px;");
+        visiblePasswordField.setStyle("-fx-background-color: rgba(255,255,255,0.15); -fx-border-color: rgba(255,255,255,0.2); -fx-border-width: 1.5px; -fx-border-radius: 12px; -fx-background-radius: 12px; -fx-padding: 14px 16px; -fx-font-size: 14px; -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.45); -fx-pref-height: 46px;");
+
+        rememberMeCheckbox.setStyle("-fx-text-fill: rgba(255,255,255,0.55); -fx-font-size: 12px;");
+        forgotPasswordLink.setStyle("-fx-text-fill: #D4A853; -fx-font-size: 12px;");
+        messageLabel.setStyle("-fx-text-fill: #FCA5A5; -fx-font-size: 12px; -fx-padding: 6px 0;");
+
+        privacyPolicyLink.setStyle("-fx-text-fill: rgba(255,255,255,0.5); -fx-font-size: 11px; -fx-cursor: hand;");
+        termsOfServiceLink.setStyle("-fx-text-fill: rgba(255,255,255,0.5); -fx-font-size: 11px; -fx-cursor: hand;");
     }
 
     private void togglePasswordVisibility() {
@@ -140,6 +200,7 @@ public class LoginController {
 
             Scene scene = new Scene(root);
             scene.setFill(Color.TRANSPARENT);
+            scene.getStylesheets().add(utils.ThemeManager.getCssPath());
             modalStage.setScene(scene);
             modalStage.setResizable(false);
 
@@ -171,6 +232,7 @@ public class LoginController {
 
             Scene scene = new Scene(root);
             scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+            scene.getStylesheets().add(utils.ThemeManager.getCssPath());
             dialogStage.setScene(scene);
             dialogStage.setResizable(false);
             dialogStage.showAndWait();
@@ -236,6 +298,7 @@ public class LoginController {
 
             Scene scene = new Scene(root);
             scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+            scene.getStylesheets().add(utils.ThemeManager.getCssPath());
             dialogStage.setScene(scene);
             dialogStage.setResizable(false);
             dialogStage.showAndWait();
@@ -399,10 +462,10 @@ public class LoginController {
                     } catch (Exception ignored) {}
                 }
 
-                // --- Remember Me ---
+                // --- Remember Me (password encrypted with machine-specific key) ---
                 if (rememberMeCheckbox.isSelected()) {
                     prefs.put("saved_email", email);
-                    prefs.put("saved_password", password);
+                    prefs.put("saved_password", utils.MachineCrypto.encrypt(password));
                     prefs.putBoolean("remember_me", true);
                 } else {
                     prefs.remove("saved_email");
