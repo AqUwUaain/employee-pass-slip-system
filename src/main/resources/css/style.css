@@ -563,7 +563,10 @@ Button.nav-sub-active:hover {
 .modal-bg { -fx-background-color: rgba(0,0,0,0.7); }
 .modal-box {
     -fx-background-color: #252220;
-    -fx-background-radius: 12px;
+    -fx-background-radius: 16px;
+    -fx-border-color: #D4A853;
+    -fx-border-width: 1px;
+    -fx-border-radius: 16px;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 50, 0, 0, 12);
 }
 .modal-top {
@@ -574,6 +577,9 @@ Button.nav-sub-active:hover {
 .modal-box.logout-dialog {
     -fx-background-color: #252220;
     -fx-background-radius: 20px;
+    -fx-border-color: #D4A853;
+    -fx-border-width: 1px;
+    -fx-border-radius: 20px;
     -fx-padding: 40px;
 }
 .modal-box.logout-dialog .dialog-title {

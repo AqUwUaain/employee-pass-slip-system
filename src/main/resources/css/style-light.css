@@ -415,9 +415,9 @@ Button.nav-sub-active:hover { -fx-background-color: rgba(255,255,255,0.24); -fx-
    ========================================================================== */
 
 .modal-bg { -fx-background-color: rgba(0,0,0,0.4); }
-.modal-box { -fx-background-color: #FDF8EE; -fx-background-radius: 12px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 40, 0, 0, 10); }
+.modal-box { -fx-background-color: #FDF8EE; -fx-background-radius: 16px; -fx-border-color: #800517; -fx-border-width: 1px; -fx-border-radius: 16px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 40, 0, 0, 10); }
 .modal-top { -fx-background-color: linear-gradient(to right, #7C0A02, #9B1B30); -fx-background-radius: 12px 12px 0 0; -fx-padding: 20px 28px; }
-.modal-box.logout-dialog { -fx-background-color: #800517; -fx-background-radius: 20px; -fx-padding: 40px; }
+.modal-box.logout-dialog { -fx-background-color: #800517; -fx-background-radius: 20px; -fx-border-color: #D4A853; -fx-border-width: 1px; -fx-border-radius: 20px; -fx-padding: 40px; }
 .modal-box.logout-dialog .dialog-title { -fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #FFFFFF; }
 .modal-box.logout-dialog .dialog-subtitle { -fx-font-size: 14px; -fx-text-fill: rgba(255,255,255,0.75); }
 

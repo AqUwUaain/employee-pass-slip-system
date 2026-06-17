@@ -100,10 +100,10 @@
                             <Label text="|" style="-fx-text-fill: rgba(255,255,255,0.1); -fx-font-size: 11px;" />
                             <Hyperlink fx:id="termsOfServiceLink" text="Terms of Service" style="-fx-text-fill: rgba(255,255,255,0.35); -fx-font-size: 11px; -fx-cursor: hand;" />
                         </children>
-                        <HBox.margin><Insets top="48.0" /></HBox.margin>
+                        <HBox.margin><Insets top="24.0" /></HBox.margin>
                     </HBox>
                 </children>
-                <padding><Insets left="8.0" right="8.0" /></padding>
+                <padding><Insets top="20.0" left="8.0" right="8.0" /></padding>
             </VBox>
         </StackPane>
     </children>
