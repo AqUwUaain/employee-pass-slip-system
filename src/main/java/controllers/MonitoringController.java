@@ -103,7 +103,7 @@ public class MonitoringController {
     private ObservableList<ActivityLog> monitoringData;
 
     private final DateTimeFormatter formatter =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a");
 
     @FXML
     private void initialize() {
@@ -123,11 +123,6 @@ public class MonitoringController {
                 manageEmployeesSubMenu.setVisible(!isVisible);
                 manageEmployeesSubMenu.setManaged(!isVisible);
             });
-        }
-
-        if (manageEmployeesSubMenu != null) {
-            manageEmployeesSubMenu.setVisible(true);
-            manageEmployeesSubMenu.setManaged(true);
         }
 
         btnRefreshMonitoringFeed.setOnAction(event -> {
@@ -375,7 +370,7 @@ public class MonitoringController {
 
                     String updateQuery = """
                             UPDATE pass_slips
-                            SET status = 'EXPIRED'
+                            SET status = 'OVERDUE'
                             WHERE id = ?
                             """;
 

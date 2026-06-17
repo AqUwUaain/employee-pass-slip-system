@@ -75,12 +75,14 @@ public class LoginController {
         campusImageView.fitWidthProperty().bind(leftHeroPanel.widthProperty());
         campusImageView.fitHeightProperty().bind(leftHeroPanel.heightProperty());
 
-        // Load saved credentials (stored as hashed password, not plain text)
+        // Load saved credentials
         String savedEmail = prefs.get("saved_email", "");
+        String savedPassword = prefs.get("saved_password", "");
         boolean rememberMe = prefs.getBoolean("remember_me", false);
 
         if (rememberMe && !savedEmail.isEmpty()) {
             emailField.setText(savedEmail);
+            passwordField.setText(savedPassword);
             rememberMeCheckbox.setSelected(true);
         }
 
@@ -397,10 +399,10 @@ public class LoginController {
                     } catch (Exception ignored) {}
                 }
 
-                // --- Remember Me (stores hashed password, not plain text) ---
+                // --- Remember Me ---
                 if (rememberMeCheckbox.isSelected()) {
                     prefs.put("saved_email", email);
-                    prefs.put("saved_password", PasswordUtils.hashPassword(password));
+                    prefs.put("saved_password", password);
                     prefs.putBoolean("remember_me", true);
                 } else {
                     prefs.remove("saved_email");

@@ -940,3 +940,61 @@ Button.nav-sub-active:hover {
     -fx-border-width: 4px 0 1px 0;
     -fx-padding: 0 25px 0 15px;
 }
+
+/* ==========================================================================
+   CUSTOM CALENDAR (Add Employee join date)
+   ========================================================================== */
+
+.cal-container {
+    -fx-background-color: linear-gradient(to bottom, #7C0A02, #5C0801);
+    -fx-background-radius: 8px;
+    -fx-padding: 10px;
+}
+.cal-header {
+    -fx-padding: 0 0 6px 0;
+}
+.cal-nav {
+    -fx-text-fill: #D4A853;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+    -fx-padding: 2px 6px;
+}
+.cal-year-nav {
+    -fx-text-fill: #D4A853;
+    -fx-font-size: 10px;
+    -fx-cursor: hand;
+    -fx-padding: 2px 4px;
+}
+.cal-title {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+.cal-day-name {
+    -fx-text-fill: #D4A853;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+}
+.cal-day {
+    -fx-font-size: 11px;
+    -fx-text-fill: #FFFFFF;
+    -fx-cursor: hand;
+    -fx-background-radius: 12px;
+}
+.cal-day-disabled {
+    -fx-font-size: 11px;
+    -fx-text-fill: #FFFFFF;
+    -fx-cursor: default;
+    -fx-background-radius: 12px;
+}
+.cal-today {
+    -fx-text-fill: #D4A853;
+    -fx-font-weight: bold;
+    -fx-border-color: rgba(212,168,83,0.5);
+    -fx-border-radius: 12px;
+}
+.cal-selected {
+    -fx-background-color: #D4A853;
+    -fx-text-fill: #1C0A04;
+    -fx-font-weight: bold;
+}

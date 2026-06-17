@@ -2,15 +2,19 @@ package controllers;
 
 import database.DatabaseConnection;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import models.Employee;
 import utils.NavigationHelper;
 import utils.Session;
 import utils.SidebarHelper;
+
+import java.time.LocalDate;
+import java.time.YearMonth;
 
 public class EmployeeFormController {
 
@@ -30,7 +34,28 @@ public class EmployeeFormController {
     private TextField contactField;
 
     @FXML
-    private DatePicker joinDatePicker;
+    private VBox joinDateCalendar;
+
+    @FXML
+    private TextField joinDateField;
+
+    @FXML
+    private Label btnCalPrevMonth;
+
+    @FXML
+    private Label btnCalNextMonth;
+
+    @FXML
+    private Label btnCalPrevYear;
+
+    @FXML
+    private Label btnCalNextYear;
+
+    @FXML
+    private Label lblCalMonthYear;
+
+    @FXML
+    private GridPane gridJoinDateCalendar;
 
     @FXML
     private TextField managerField;
@@ -104,6 +129,9 @@ public class EmployeeFormController {
     @FXML
     private VBox manageEmployeesSubMenu;
 
+    private YearMonth calYearMonth = YearMonth.now();
+    private LocalDate selectedJoinDate;
+
     @FXML
     private void initialize() {
         SidebarHelper.initialize(
@@ -133,34 +161,93 @@ public class EmployeeFormController {
             loadEmployee();
         }
 
-        joinDatePicker.setOnScroll(event -> {
-            if (event.getDeltaY() > 0) {
-                joinDatePicker.setValue(
-                        joinDatePicker.getValue() != null
-                                ? joinDatePicker.getValue().plusDays(1)
-                                : java.time.LocalDate.now()
-                );
-            } else if (event.getDeltaY() < 0) {
-                joinDatePicker.setValue(
-                        joinDatePicker.getValue() != null
-                                ? joinDatePicker.getValue().minusDays(1)
-                                : java.time.LocalDate.now()
-                );
-            }
-            event.consume();
+        btnCalPrevMonth.setOnMouseClicked(e -> {
+            calYearMonth = calYearMonth.minusMonths(1);
+            loadJoinDateCalendar();
         });
+
+        btnCalNextMonth.setOnMouseClicked(e -> {
+            calYearMonth = calYearMonth.plusMonths(1);
+            loadJoinDateCalendar();
+        });
+
+        btnCalPrevYear.setOnMouseClicked(e -> {
+            calYearMonth = calYearMonth.minusYears(1);
+            loadJoinDateCalendar();
+        });
+
+        btnCalNextYear.setOnMouseClicked(e -> {
+            calYearMonth = calYearMonth.plusYears(1);
+            loadJoinDateCalendar();
+        });
+
+        joinDateField.setOnMouseClicked(e -> {
+            joinDateCalendar.setVisible(!joinDateCalendar.isVisible());
+            joinDateCalendar.setManaged(!joinDateCalendar.isManaged());
+        });
+
+        loadJoinDateCalendar();
 
         btnSaveEmployee.setOnAction(
                 event -> saveEmployee()
         );
 
         btnBack.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnBack,
-                        "/fxml/EmployeeList.fxml"
-                )
+                event -> NavigationHelper.goBack(btnBack)
         );
 
+    }
+
+    private void loadJoinDateCalendar() {
+        lblCalMonthYear.setText(calYearMonth.getMonth().name() + " " + calYearMonth.getYear());
+        gridJoinDateCalendar.getChildren().removeIf(node -> GridPane.getRowIndex(node) != null && GridPane.getRowIndex(node) > 0);
+
+        LocalDate firstOfMonth = calYearMonth.atDay(1);
+        int dayOfWeek = firstOfMonth.getDayOfWeek().getValue() % 7;
+        int daysInMonth = calYearMonth.lengthOfMonth();
+
+        int row = 1;
+        int col = dayOfWeek;
+
+        for (int day = 1; day <= daysInMonth; day++) {
+            final int dayOfMonth = day;
+            LocalDate date = calYearMonth.atDay(dayOfMonth);
+            Label dayLabel = new Label(String.valueOf(day));
+            dayLabel.setAlignment(Pos.CENTER);
+            dayLabel.setPrefWidth(30);
+            dayLabel.setPrefHeight(22);
+            dayLabel.getStyleClass().add("cal-day");
+
+            if (date.equals(LocalDate.now())) {
+                dayLabel.getStyleClass().add("cal-today");
+            }
+
+            if (date.equals(selectedJoinDate)) {
+                dayLabel.getStyleClass().add("cal-selected");
+            }
+
+            if (date.isAfter(LocalDate.now())) {
+                dayLabel.setOpacity(0.3);
+                dayLabel.getStyleClass().remove("cal-day");
+                dayLabel.getStyleClass().add("cal-day-disabled");
+            } else {
+                dayLabel.setOnMouseClicked(event -> {
+                    selectedJoinDate = calYearMonth.atDay(dayOfMonth);
+                    joinDateField.setText((selectedJoinDate.getMonthValue()) + "/" + selectedJoinDate.getDayOfMonth() + "/" + selectedJoinDate.getYear());
+                    joinDateCalendar.setVisible(false);
+                    joinDateCalendar.setManaged(false);
+                    loadJoinDateCalendar();
+                });
+            }
+
+            gridJoinDateCalendar.add(dayLabel, col, row);
+
+            col++;
+            if (col > 6) {
+                col = 0;
+                row++;
+            }
+        }
     }
 
     private void loadEmployee() {
@@ -184,7 +271,13 @@ public class EmployeeFormController {
         departmentField.setText(employee.getDepartment());
         positionField.setText(employee.getPosition());
         contactField.setText(employee.getContact());
-        joinDatePicker.setValue(employee.getJoinDate());
+
+        if (employee.getJoinDate() != null) {
+            selectedJoinDate = employee.getJoinDate();
+            calYearMonth = YearMonth.from(selectedJoinDate);
+            joinDateField.setText((selectedJoinDate.getMonthValue()) + "/" + selectedJoinDate.getDayOfMonth() + "/" + selectedJoinDate.getYear());
+            loadJoinDateCalendar();
+        }
 
         if (employee.getManager() != null) {
             managerField.setText(employee.getManager());
@@ -238,7 +331,7 @@ public class EmployeeFormController {
                 departmentField.getText(),
                 positionField.getText(),
                 contactField.getText(),
-                joinDatePicker.getValue(),
+                selectedJoinDate,
                 managerField.getText(),
                 emailField.getText(),
                 addressField.getText(),

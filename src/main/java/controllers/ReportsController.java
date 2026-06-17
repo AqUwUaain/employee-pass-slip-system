@@ -133,7 +133,7 @@ public class ReportsController {
     private VBox manageEmployeesSubMenu;
 
     private ObservableList<PassSlip> historyData;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a");
 
     @FXML
     private void initialize() {

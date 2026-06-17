@@ -98,7 +98,7 @@ public class EmployeeImportController {
             manageEmployeesSubMenu.setManaged(true);
         }
 
-        btnBackToEmployees.setOnAction(e -> NavigationHelper.navigateTo(btnBackToEmployees, "/fxml/EmployeeController.fxml"));
+        btnBackToEmployees.setOnAction(e -> NavigationHelper.goBack(btnBackToEmployees));
         btnChooseFile.setOnAction(e -> chooseFile());
         btnImportAll.setOnAction(e -> importAll());
 

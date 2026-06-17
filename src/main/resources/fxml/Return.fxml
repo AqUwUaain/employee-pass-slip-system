@@ -35,6 +35,7 @@
                         <Label text="MAIN MENU" style="-fx-text-fill: rgba(255,255,255,0.25); -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 0 8px 8px 8px;" />
                         <Button fx:id="btnSidebarDashboard" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Dashboard" styleClass="nav-item" />
                         <Button fx:id="btnSidebarMonitoring" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   System Logs" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Log Return &amp; Monitoring" styleClass="nav-item nav-active" />
                         <Button fx:id="btnManageEmployees" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Manage Employees  ▾" styleClass="nav-item" />
                         <VBox fx:id="manageEmployeesSubMenu" styleClass="nav-sub-menu" managed="false" visible="false">
                             <children>
@@ -42,7 +43,6 @@
                                 <Button fx:id="btnSidebarAddEmployee" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Add New Employee" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarImportEmployee" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Import Employees" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarReports" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Reports" styleClass="nav-sub-item" />
-                                <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Log Return &amp; Monitoring" styleClass="nav-sub-item nav-sub-active" />
                                 <Button fx:id="btnSidebarUsers" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Users" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarSignatures" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Signatures" styleClass="nav-sub-item" />
                             </children>
@@ -136,8 +136,7 @@
                                     </rowConstraints>
                                     <children>
                                         <Label style="-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 12px;" text="Scan or Enter Client ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                                        <TextField fx:id="txtReturnSearchId" promptText="Enter XXXX ID reference..." styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                                        <Button fx:id="btnFetchActiveSlip" mnemonicParsing="false" maxWidth="Infinity" styleClass="btn-maroon" text="&#x1F50D; Find Slip" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                                        <TextField fx:id="txtReturnSearchId" promptText="Enter XXXX ID reference..." styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.columnSpan="2" />
                                         <Label style="-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 12px;" text="Identified Personnel Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                                         <TextField fx:id="txtReturnEmployeeName" editable="false" promptText="Personnel match display name" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.columnSpan="2" />
                                         <Label style="-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 12px;" text="Verify Return Time In:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
@@ -146,29 +145,6 @@
                                     </children>
                                 </GridPane>
                                 <Label fx:id="lblReturnStatusMessage" styleClass="msg-info" text="" />
-                            </children>
-                        </VBox>
-
-                        <VBox spacing="12.0" VBox.vgrow="ALWAYS" styleClass="card" style="-fx-padding: 22px;">
-                            <children>
-                                <HBox alignment="CENTER_LEFT" spacing="8.0">
-                                    <children>
-                                        <Label styleClass="sec-title" text="&#x23F3; OUTSTANDING PASS SLIPS REQUIRING RETURN LOGS" />
-                                    </children>
-                                </HBox>
-                                <TableView fx:id="tblOutstandingOutboundView" prefHeight="260.0" VBox.vgrow="ALWAYS">
-                                    <columns>
-                                        <TableColumn fx:id="colReturnSlipId" prefWidth="120.0" style="-fx-alignment: CENTER;" text="Slip ID" />
-                                        <TableColumn fx:id="colReturnEmployeeID" prefWidth="140.0" style="-fx-alignment: CENTER;" text="Employee ID" />
-                                        <TableColumn fx:id="colReturnFullName" prefWidth="220.0" style="-fx-alignment: CENTER_LEFT;" text="Personnel Name" />
-                                        <TableColumn fx:id="colReturnDepartment" prefWidth="140.0" style="-fx-alignment: CENTER;" text="Department" />
-                                        <TableColumn fx:id="colReturnTimeOut" prefWidth="120.0" style="-fx-alignment: CENTER;" text="Time Out" />
-                                        <TableColumn fx:id="colReturnExpectedIn" prefWidth="120.0" style="-fx-alignment: CENTER;" text="Expected In" />
-                                    </columns>
-                                    <columnResizePolicy>
-                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                                    </columnResizePolicy>
-                                </TableView>
                             </children>
                         </VBox>
 

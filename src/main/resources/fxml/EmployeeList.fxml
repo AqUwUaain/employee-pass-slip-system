@@ -32,6 +32,7 @@
                         <Label text="MAIN MENU" style="-fx-text-fill: rgba(255,255,255,0.25); -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 0 8px 8px 8px;" />
                         <Button fx:id="btnSidebarDashboard" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Dashboard" styleClass="nav-item" />
                         <Button fx:id="btnSidebarMonitoring" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   System Logs" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Log Return &amp; Monitoring" styleClass="nav-item" />
                         <Button fx:id="btnManageEmployees" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Manage Employees  ▾" styleClass="nav-item" />
                         <VBox fx:id="manageEmployeesSubMenu" styleClass="nav-sub-menu" managed="false" visible="false">
                             <children>
@@ -39,7 +40,6 @@
                                 <Button fx:id="btnSidebarAddEmployee" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Add New Employee" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarImportEmployee" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Import Employees" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarReports" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Reports" styleClass="nav-sub-item" />
-                                <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Log Return &amp; Monitoring" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarUsers" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Users" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarSignatures" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Signatures" styleClass="nav-sub-item" />
                             </children>
@@ -89,7 +89,7 @@
                                         </VBox>
                                         <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
                                             <children>
-                                                <Label text="&#x1F464;" style="-fx-font-size: 38px;" />
+                                                <Label text="&#x1F464;" style="-fx-font-size: 38px; -fx-text-fill: white;" />
                                                 <Label text="Add New Employee" styleClass="stat-label" />
                                             </children>
                                         </VBox>
@@ -142,11 +142,6 @@
                                                     </children>
                                                 </HBox>
                                                 <Button fx:id="btnFilterAll" mnemonicParsing="false" text="All" styleClass="btn-ghost" />
-                                                <Button fx:id="btnFilterEducation" mnemonicParsing="false" text="Education" styleClass="btn-ghost" />
-                                                <Button fx:id="btnFilterIT" mnemonicParsing="false" text="IT" styleClass="btn-ghost" />
-                                                <Button fx:id="btnFilterEngineering" mnemonicParsing="false" text="Engineering" styleClass="btn-ghost" />
-                                                <Button fx:id="btnFilterHRM" mnemonicParsing="false" text="HRM" styleClass="btn-ghost" />
-                                                <Button fx:id="btnFilterAccountancy" mnemonicParsing="false" text="Accountancy" styleClass="btn-ghost" />
                                             </children>
                                         </HBox>
                                     </children>

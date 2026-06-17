@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
@@ -33,6 +32,7 @@
                         <Label text="MAIN MENU" style="-fx-text-fill: rgba(255,255,255,0.25); -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 0 8px 8px 8px;" />
                         <Button fx:id="btnSidebarDashboard" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Dashboard" styleClass="nav-item" />
                         <Button fx:id="btnSidebarMonitoring" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   System Logs" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Log Return &amp; Monitoring" styleClass="nav-item" />
                         <Button fx:id="btnManageEmployees" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Manage Employees  ▾" styleClass="nav-item" />
                         <VBox fx:id="manageEmployeesSubMenu" styleClass="nav-sub-menu" managed="false" visible="false">
                             <children>
@@ -40,7 +40,6 @@
                                 <Button fx:id="btnSidebarAddEmployee" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Add New Employee" styleClass="nav-sub-item nav-sub-active" />
                                 <Button fx:id="btnSidebarImportEmployee" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Import Employees" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarReports" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Reports" styleClass="nav-sub-item" />
-                                <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Log Return &amp; Monitoring" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarUsers" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Users" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarSignatures" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Signatures" styleClass="nav-sub-item" />
                             </children>
@@ -118,7 +117,46 @@
                                 <Label text="Contact Number" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="4" />
                                 <TextField fx:id="contactField" promptText="Enter contact number" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                 <Label text="Join Date" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-                                <DatePicker fx:id="joinDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                <VBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                    <children>
+                                        <TextField fx:id="joinDateField" promptText="Click to select date" editable="false" styleClass="text-field" style="-fx-cursor: hand;" />
+                                        <VBox fx:id="joinDateCalendar" visible="false" managed="false" styleClass="cal-container" maxWidth="280.0">
+                                            <children>
+                                                <HBox alignment="CENTER" spacing="4.0" styleClass="cal-header">
+                                                    <children>
+                                                        <Label fx:id="btnCalPrevMonth" text="&#x25C0;" styleClass="cal-nav" />
+                                                        <HBox alignment="CENTER" spacing="4.0" HBox.hgrow="ALWAYS">
+                                                            <children>
+                                                                <Label fx:id="btnCalPrevYear" text="&#x25C0;" styleClass="cal-year-nav" />
+                                                                <Label fx:id="lblCalMonthYear" text="JUNE 2026" styleClass="cal-title" />
+                                                                <Label fx:id="btnCalNextYear" text="&#x25B6;" styleClass="cal-year-nav" />
+                                                            </children>
+                                                            <HBox.hgrow>ALWAYS</HBox.hgrow>
+                                                        </HBox>
+                                                        <Label fx:id="btnCalNextMonth" text="&#x25B6;" styleClass="cal-nav" />
+                                                    </children>
+                                                </HBox>
+                                                <GridPane fx:id="gridJoinDateCalendar" hgap="1.0" vgap="1.0" alignment="CENTER">
+                                                    <columnConstraints>
+                                                        <ColumnConstraints halignment="CENTER" minWidth="30.0" /><ColumnConstraints halignment="CENTER" minWidth="30.0" /><ColumnConstraints halignment="CENTER" minWidth="30.0" /><ColumnConstraints halignment="CENTER" minWidth="30.0" /><ColumnConstraints halignment="CENTER" minWidth="30.0" /><ColumnConstraints halignment="CENTER" minWidth="30.0" /><ColumnConstraints halignment="CENTER" minWidth="30.0" />
+                                                    </columnConstraints>
+                                                    <rowConstraints>
+                                                        <RowConstraints minHeight="20.0" valignment="CENTER" /><RowConstraints minHeight="24.0" valignment="CENTER" /><RowConstraints minHeight="24.0" valignment="CENTER" /><RowConstraints minHeight="24.0" valignment="CENTER" /><RowConstraints minHeight="24.0" valignment="CENTER" /><RowConstraints minHeight="24.0" valignment="CENTER" /><RowConstraints minHeight="24.0" valignment="CENTER" />
+                                                    </rowConstraints>
+                                                    <children>
+                                                        <Label text="SUN" styleClass="cal-day-name" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                                        <Label text="MON" styleClass="cal-day-name" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                                        <Label text="TUE" styleClass="cal-day-name" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                                                        <Label text="WED" styleClass="cal-day-name" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                                                        <Label text="THU" styleClass="cal-day-name" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+                                                        <Label text="FRI" styleClass="cal-day-name" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+                                                        <Label text="SAT" styleClass="cal-day-name" GridPane.columnIndex="6" GridPane.rowIndex="0" />
+                                                    </children>
+                                                </GridPane>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </VBox>
                                 <Label text="Manager" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="6" />
                                 <TextField fx:id="managerField" promptText="Enter manager name" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                 <Label text="Email" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="7" />

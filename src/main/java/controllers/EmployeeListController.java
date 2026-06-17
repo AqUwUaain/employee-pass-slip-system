@@ -91,21 +91,6 @@ public class EmployeeListController {
     private Button btnFilterAll;
 
     @FXML
-    private Button btnFilterEducation;
-
-    @FXML
-    private Button btnFilterIT;
-
-    @FXML
-    private Button btnFilterEngineering;
-
-    @FXML
-    private Button btnFilterHRM;
-
-    @FXML
-    private Button btnFilterAccountancy;
-
-    @FXML
     private TableView<Employee> employeeTableView;
 
     @FXML
@@ -173,7 +158,7 @@ public class EmployeeListController {
         }
 
         if (btnBackToEmployees != null)
-            btnBackToEmployees.setOnAction(e -> NavigationHelper.navigateTo(btnBackToEmployees, "/fxml/EmployeeController.fxml"));
+            btnBackToEmployees.setOnAction(e -> NavigationHelper.goBack(btnBackToEmployees));
 
         cardCreateEmployee.setOnMouseClicked(
                 event -> {
@@ -286,26 +271,6 @@ public class EmployeeListController {
                 event -> applyFilter(txtSearchEmployee.getText(), null)
         );
 
-        btnFilterEducation.setOnAction(
-                event -> applyFilter(txtSearchEmployee.getText(), "Education")
-        );
-
-        btnFilterIT.setOnAction(
-                event -> applyFilter(txtSearchEmployee.getText(), "IT")
-        );
-
-        btnFilterEngineering.setOnAction(
-                event -> applyFilter(txtSearchEmployee.getText(), "Engineering")
-        );
-
-        btnFilterHRM.setOnAction(
-                event -> applyFilter(txtSearchEmployee.getText(), "HRM")
-        );
-
-        btnFilterAccountancy.setOnAction(
-                event -> applyFilter(txtSearchEmployee.getText(), "Accountancy")
-        );
-
         loadEmployeesAsync();
 
     }
@@ -402,13 +367,7 @@ public class EmployeeListController {
                             || String.valueOf(employee.getId())
                             .contains(keyword);
 
-            boolean matchesDepartment =
-                    department == null
-                            || department.equalsIgnoreCase(
-                            employee.getDepartment()
-                    );
-
-            return matchesKeyword && matchesDepartment;
+            return matchesKeyword;
 
         });
 

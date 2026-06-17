@@ -107,6 +107,9 @@ public class DashboardController {
     private GridPane gridCalendar;
 
     @FXML
+    private VBox vboxRightColumn;
+
+    @FXML
     private StackPane dashboardRoot;
 
     @FXML
@@ -118,7 +121,7 @@ public class DashboardController {
     private YearMonth currentYearMonth;
     private LocalDate selectedDate;
     private Timeline autoRefreshTimeline;
-    private String currentFilter = "All";
+    private String currentFilter = "Today";
 
     @FXML
     private void initialize() {
@@ -266,18 +269,30 @@ public class DashboardController {
             activityFilterBox.getChildren().clear();
             
             // Add Filter UI to fixed filter box (outside scroll)
-            String[] filters = {"All", "Today", "This Week", "This Month"};
             boolean isDarkTheme = utils.ThemeManager.isDark();
-            for (String f : filters) {
-                Label fl = new Label(f);
-                boolean isActive = f.equals(currentFilter);
-                String activeColor = isDarkTheme ? "#D4A853" : "#800517";
-                String inactiveColor = isDarkTheme ? "#78716C" : "#8A8272";
-                fl.setStyle("-fx-text-fill: " + (isActive ? activeColor : inactiveColor) + "; -fx-cursor: hand; -fx-font-size: 11px;" + (isActive ? "-fx-font-weight: bold;" : ""));
-                fl.setOnMouseClicked(e -> {
-                    loadActivities(f);
-                });
-                activityFilterBox.getChildren().add(fl);
+            String activeColor = isDarkTheme ? "#D4A853" : "#800517";
+            String inactiveColor = isDarkTheme ? "#78716C" : "#8A8272";
+
+            if (currentFilter.equals("DateSelection") && selectedDate != null) {
+                Label dateLabel = new Label(selectedDate.getDayOfWeek().getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.ENGLISH)
+                        + ", " + selectedDate.getMonth().getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.ENGLISH)
+                        + " " + selectedDate.getDayOfMonth() + ", " + selectedDate.getYear());
+                dateLabel.setStyle("-fx-text-fill: " + activeColor + "; -fx-cursor: hand; -fx-font-size: 11px; -fx-font-weight: bold;");
+                activityFilterBox.getChildren().add(dateLabel);
+
+                Label allLabel = new Label("Show All");
+                allLabel.setStyle("-fx-text-fill: " + inactiveColor + "; -fx-cursor: hand; -fx-font-size: 11px;");
+                allLabel.setOnMouseClicked(e -> loadActivities("All"));
+                activityFilterBox.getChildren().add(allLabel);
+            } else {
+                String[] filters = {"All", "Today", "This Week", "This Month"};
+                for (String f : filters) {
+                    Label fl = new Label(f);
+                    boolean isActive = f.equals(currentFilter);
+                    fl.setStyle("-fx-text-fill: " + (isActive ? activeColor : inactiveColor) + "; -fx-cursor: hand; -fx-font-size: 11px;" + (isActive ? "-fx-font-weight: bold;" : ""));
+                    fl.setOnMouseClicked(e -> loadActivities(f));
+                    activityFilterBox.getChildren().add(fl);
+                }
             }
 
             if (filteredLogs.isEmpty()) {
@@ -308,7 +323,7 @@ public class DashboardController {
                         rowText = isOdd ? "#800517" : "#FFFFFF";
                         dotColor = isOdd ? "#800517" : "#FFFFFF";
                         timeColor = isOdd ? "#8A8272" : "rgba(255,255,255,0.7)";
-                        hoverBg = isOdd ? "rgba(128,5,23,0.08)" : "rgba(255,255,255,0.1)";
+                        hoverBg = isOdd ? "rgba(128,5,23,0.08)" : "#6B0413";
                     }
 
                     HBox row = new HBox(10);
@@ -363,18 +378,24 @@ public class DashboardController {
 
         for (int day = 1; day <= daysInMonth; day++) {
             final int dayOfMonth = day;
+            LocalDate date = currentYearMonth.atDay(dayOfMonth);
             Label dayLabel = new Label(String.valueOf(day));
             dayLabel.setAlignment(Pos.CENTER);
             dayLabel.setPrefWidth(32);
             dayLabel.setPrefHeight(28);
             
-            updateDayLabelStyle(dayLabel, currentYearMonth.atDay(dayOfMonth));
+            updateDayLabelStyle(dayLabel, date);
             
-            dayLabel.setOnMouseClicked(event -> {
-                selectedDate = currentYearMonth.atDay(dayOfMonth);
-                loadCalendar(); // Refresh styles to show selection
-                loadCalendarEvents(selectedDate);
-            });
+            if (date.isAfter(LocalDate.now())) {
+                dayLabel.setOpacity(0.3);
+                dayLabel.setStyle(dayLabel.getStyle().replace("-fx-cursor: hand;", "-fx-cursor: default;"));
+            } else {
+                dayLabel.setOnMouseClicked(event -> {
+                    selectedDate = currentYearMonth.atDay(dayOfMonth);
+                    loadCalendar();
+                    loadCalendarEvents(selectedDate);
+                });
+            }
 
             gridCalendar.add(dayLabel, col, row);
 

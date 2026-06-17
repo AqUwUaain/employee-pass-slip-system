@@ -12,6 +12,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -26,6 +28,9 @@ public final class NavigationHelper {
             return size() > 12;
         }
     };
+
+    private static final Deque<String> navigationHistory = new ArrayDeque<>();
+    private static final int MAX_HISTORY = 10;
 
     public static void setActiveButton(Button button) {
         if (button == null) return;
@@ -44,6 +49,13 @@ public final class NavigationHelper {
             boolean wasFullScreen = stage.isFullScreen();
             double prevWidth = stage.getWidth();
             double prevHeight = stage.getHeight();
+
+            if (Session.currentFxmlPath != null && !Session.currentFxmlPath.equals(fxmlPath)) {
+                navigationHistory.push(Session.currentFxmlPath);
+                if (navigationHistory.size() > MAX_HISTORY) {
+                    navigationHistory.removeLast();
+                }
+            }
 
             FXMLLoader loader = new FXMLLoader(NavigationHelper.class.getResource(fxmlPath));
             Parent root = loader.load();
@@ -106,6 +118,30 @@ public final class NavigationHelper {
         return Session.currentFxmlPath != null ? Session.currentFxmlPath : "/fxml/Dashboard.fxml";
     }
 
+    public static void goBack(Node source) {
+        if (navigationHistory.isEmpty()) {
+            navigateToDashboard(source);
+            return;
+        }
+        String previousPath = navigationHistory.pop();
+        Stage stage = (Stage) source.getScene().getWindow();
+        try {
+            FXMLLoader loader = new FXMLLoader(NavigationHelper.class.getResource(previousPath));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(ThemeManager.getCssPath());
+            stage.setScene(scene);
+            Session.currentFxmlPath = previousPath;
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to load FXML: " + previousPath, e);
+        }
+    }
+
+    public static void clearHistory() {
+        navigationHistory.clear();
+    }
+
     // ==================== FIXED LOGOUT METHOD ====================
     public static void logout(Node source) {
         try {
@@ -138,6 +174,7 @@ public final class NavigationHelper {
                 controllers.ActivityLogController.logActivity("User Logged Out", 0);
                 Session.clear();
                 loaderCache.clear();
+                clearHistory();
                 navigateTo(source, "/fxml/Login.fxml");
             }
         } catch (IOException e) {

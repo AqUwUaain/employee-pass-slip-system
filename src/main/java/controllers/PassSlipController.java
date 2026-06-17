@@ -50,9 +50,6 @@ public class PassSlipController {
     private Button btnCancelSlipAction;
 
     @FXML
-    private Button btnPrintSlipAction;
-
-    @FXML
     private Button btnSaveSlipAction;
 
     @FXML
@@ -160,18 +157,17 @@ public class PassSlipController {
                 event -> NavigationHelper.navigateToDashboard(btnCancelSlipAction)
         );
 
-        btnPrintSlipAction.setOnAction(
-                event -> printSlip()
-        );
-
-        btnSaveSlipAction.setOnAction(
-                event -> issuePassSlip(
-                        txtSlipClientId.getText(),
-                        txtSlipPurpose.getText(),
-                        lblSlipStatusMessage,
-                        selectedEstimatedReturn
-                )
-        );
+        btnSaveSlipAction.setOnAction(event -> {
+            issuePassSlip(
+                    txtSlipClientId.getText(),
+                    txtSlipPurpose.getText(),
+                    lblSlipStatusMessage,
+                    selectedEstimatedReturn
+            );
+            if ("PASS SLIP ISSUED".equals(lblSlipStatusMessage.getText())) {
+                autoPrintSlip();
+            }
+        });
 
     }
 
@@ -423,6 +419,146 @@ public class PassSlipController {
             e.printStackTrace();
         }
         return "Unknown";
+    }
+
+    private void autoPrintSlip() {
+        if (selectedEmployeeId == 0) return;
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Pass Slip as PDF");
+        fileChooser.setInitialFileName("PassSlip_" + txtSlipClientId.getText() + ".pdf");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("PDF Files", "*.pdf")
+        );
+
+        File file = fileChooser.showSaveDialog(
+                passSlipModalRoot.getScene().getWindow()
+        );
+
+        if (file != null) {
+            try {
+                generatePdf(file);
+                lblSlipStatusMessage.setText("PASS SLIP ISSUED — PDF SAVED");
+
+                String empName = txtSlipEmployeeName.getText();
+                String purpose = txtSlipPurpose.getText();
+                ActivityLogger.log(
+                        "PRINT_SLIP",
+                        "Printed pass slip for " + empName + " — Purpose: " + purpose,
+                        selectedEmployeeId
+                );
+            } catch (Exception e) {
+                e.printStackTrace();
+                lblSlipStatusMessage.setText("FAILED TO SAVE PDF");
+            }
+        } else {
+            lblSlipStatusMessage.setText("PASS SLIP ISSUED — PDF SAVE CANCELLED");
+        }
+    }
+
+    private void generatePdf(File file) throws Exception {
+        DeviceRgb white = new DeviceRgb(255, 255, 255);
+        DeviceRgb gold = new DeviceRgb(212, 168, 83);
+        DeviceRgb maroon = new DeviceRgb(124, 10, 2);
+        DeviceRgb lightGray = new DeviceRgb(240, 240, 240);
+        DeviceRgb medGray = new DeviceRgb(100, 100, 100);
+        DeviceRgb darkText = new DeviceRgb(30, 30, 30);
+
+        PdfWriter writer = new PdfWriter(file);
+        PdfDocument pdfDoc = new PdfDocument(writer);
+        Document document = new Document(pdfDoc);
+        document.setMargins(20, 20, 20, 20);
+        document.setBackgroundColor(white);
+
+        Table headerTable = new Table(UnitValue.createPercentArray(new float[]{12, 88}))
+                .useAllAvailableWidth()
+                .setAutoLayout();
+
+        Cell sideCell = new Cell(1, 1);
+        sideCell.setBackgroundColor(maroon);
+        sideCell.setVerticalAlignment(VerticalAlignment.MIDDLE);
+        sideCell.setHorizontalAlignment(com.itextpdf.layout.properties.HorizontalAlignment.CENTER);
+        sideCell.setKeepTogether(false);
+        sideCell.setWidth(UnitValue.createPercentValue(12));
+        Paragraph sideText = new Paragraph("PASS SLIP")
+                .setFontColor(white)
+                .setFontSize(16)
+                .setBold()
+                .setTextAlignment(TextAlignment.CENTER)
+                .setRotationAngle(Math.toRadians(90));
+        sideCell.add(sideText);
+        headerTable.addCell(sideCell);
+
+        Cell mainCell = new Cell(1, 1);
+        mainCell.setPadding(8);
+        mainCell.setBorder(new SolidBorder(medGray, 1));
+
+        Table infoRow = new Table(UnitValue.createPercentArray(new float[]{20, 30, 25, 25}))
+                .useAllAvailableWidth()
+                .setAutoLayout();
+        infoRow.addCell(createLabelCell("YEAR", medGray, white));
+        infoRow.addCell(createValueCell(txtSlipYear.getText(), darkText, lightGray));
+        infoRow.addCell(createLabelCell("EFFECTIVE SYSTEM LOG DATE", medGray, white));
+        infoRow.addCell(createValueCell(txtSlipFormattedDate.getText(), gold, lightGray));
+        mainCell.add(infoRow);
+
+        Table idRow = new Table(UnitValue.createPercentArray(new float[]{20, 80}))
+                .useAllAvailableWidth()
+                .setAutoLayout();
+        idRow.addCell(createLabelCell("CLIENT #:", medGray, white));
+        idRow.addCell(createValueCell(txtSlipClientId.getText(), darkText, lightGray));
+        mainCell.add(idRow);
+
+        Table nameRow = new Table(UnitValue.createPercentArray(new float[]{20, 80}))
+                .useAllAvailableWidth()
+                .setAutoLayout();
+        nameRow.addCell(createLabelCell("NAME:", medGray, white));
+        nameRow.addCell(createValueCell(txtSlipEmployeeName.getText(), darkText, lightGray));
+        mainCell.add(nameRow);
+
+        Table purposeRow = new Table(UnitValue.createPercentArray(new float[]{20, 80}))
+                .useAllAvailableWidth()
+                .setAutoLayout();
+        purposeRow.addCell(createLabelCell("PURPOSE:", medGray, white));
+        purposeRow.addCell(createValueCell(txtSlipPurpose.getText(), darkText, lightGray));
+        mainCell.add(purposeRow);
+
+        Table timeRow = new Table(UnitValue.createPercentArray(new float[]{20, 30, 25, 25}))
+                .useAllAvailableWidth()
+                .setAutoLayout();
+        timeRow.addCell(createLabelCell("TIME OUT:", medGray, white));
+        timeRow.addCell(createValueCell(txtSlipTimeOut.getText(), darkText, lightGray));
+        timeRow.addCell(createLabelCell("TIME IN:", medGray, white));
+        timeRow.addCell(createValueCell("Pending", darkText, lightGray));
+        mainCell.add(timeRow);
+
+        Table signeeRow = new Table(UnitValue.createPercentArray(new float[]{20, 80}))
+                .useAllAvailableWidth()
+                .setAutoLayout();
+        signeeRow.addCell(createLabelCell("ADMIN SIGNATURE:", medGray, white));
+        Cell signeeValueCell = new Cell();
+        signeeValueCell.setBorder(new SolidBorder(new DeviceRgb(200, 200, 200), 0.5f));
+        signeeValueCell.setPadding(5);
+        signeeValueCell.setBackgroundColor(lightGray);
+        byte[] sigData = SignatureController.getSignatureByUserId(Session.currentUserId);
+        if (sigData != null) {
+            com.itextpdf.layout.element.Image sigImage = new com.itextpdf.layout.element.Image(
+                    ImageDataFactory.create(sigData)
+            );
+            sigImage.setWidth(150);
+            sigImage.setHeight(50);
+            signeeValueCell.add(sigImage);
+        } else {
+            signeeValueCell.add(new Paragraph(Session.currentUsername != null ? Session.currentUsername : "")
+                    .setFontColor(gold)
+                    .setFontSize(10));
+        }
+        signeeRow.addCell(signeeValueCell);
+        mainCell.add(signeeRow);
+
+        headerTable.addCell(mainCell);
+        document.add(headerTable);
+        document.close();
     }
 
     private void printSlip() {
