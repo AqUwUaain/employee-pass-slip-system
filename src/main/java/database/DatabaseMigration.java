@@ -7,10 +7,7 @@ public class DatabaseMigration {
 
     public static void runMigrations() {
 
-        try {
-
-            Connection connection =
-                    DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             if (connection == null) {
                 System.err.println("Cannot run migrations: no database connection.");
@@ -37,7 +34,9 @@ public class DatabaseMigration {
                     "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_pass_slips_employee') THEN ALTER TABLE pass_slips ADD CONSTRAINT fk_pass_slips_employee FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE CASCADE; END IF; END $$",
                     "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_activity_logs_user') THEN ALTER TABLE activity_logs ADD CONSTRAINT fk_activity_logs_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL; END IF; END $$",
                     "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_activity_logs_employee') THEN ALTER TABLE activity_logs ADD CONSTRAINT fk_activity_logs_employee FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE SET NULL; END IF; END $$",
-                    "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_signatures_user') THEN ALTER TABLE signatures ADD CONSTRAINT fk_signatures_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE; END IF; END $$"
+                    "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_signatures_user') THEN ALTER TABLE signatures ADD CONSTRAINT fk_signatures_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE; END IF; END $$",
+                    // Account lockout table
+                    "CREATE TABLE IF NOT EXISTS login_lockouts (email VARCHAR(255) PRIMARY KEY, fail_attempts INT DEFAULT 0, lockout_time BIGINT DEFAULT 0)"
             };
 
             for (String sql : migrations) {
@@ -51,7 +50,6 @@ public class DatabaseMigration {
             System.out.println("Database migrations completed.");
 
             statement.close();
-            connection.close();
 
         } catch (Exception e) {
             System.err.println("Migration error: " + e.getMessage());

@@ -179,8 +179,7 @@ public class LoginController {
     }
 
     private boolean hasPendingPasswordReset(String email) {
-        try {
-            Connection connection = DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
             String query = "SELECT id FROM password_reset_requests WHERE email = ? AND status = 'APPROVED' AND (used = FALSE OR used IS NULL) LIMIT 1";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, email);
@@ -188,7 +187,6 @@ public class LoginController {
             boolean hasPending = resultSet.next();
             resultSet.close();
             statement.close();
-            connection.close();
             return hasPending;
         } catch (Exception e) {
             e.printStackTrace();
@@ -197,8 +195,7 @@ public class LoginController {
     }
 
     private int getPendingResetRequestId(String email) {
-        try {
-            Connection connection = DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
             String query = "SELECT id FROM password_reset_requests WHERE email = ? AND status = 'APPROVED' AND (used = FALSE OR used IS NULL) LIMIT 1";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, email);
@@ -209,7 +206,6 @@ public class LoginController {
             }
             resultSet.close();
             statement.close();
-            connection.close();
             return id;
         } catch (Exception e) {
             e.printStackTrace();
@@ -266,6 +262,57 @@ public class LoginController {
     private static final int MAX_ATTEMPTS = 5;
     private static final long LOCKOUT_DURATION_MS = 15 * 60 * 1000;
 
+    private int getFailAttempts(String email) {
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement ps = conn.prepareStatement(
+                     "SELECT fail_attempts FROM login_lockouts WHERE email = ?")) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            return rs.next() ? rs.getInt("fail_attempts") : 0;
+        } catch (Exception e) { return 0; }
+    }
+
+    private long getLockoutTime(String email) {
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement ps = conn.prepareStatement(
+                     "SELECT lockout_time FROM login_lockouts WHERE email = ?")) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            return rs.next() ? rs.getLong("lockout_time") : 0;
+        } catch (Exception e) { return 0; }
+    }
+
+    private void updateFailAttempts(String email, int attempts) {
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement ps = conn.prepareStatement(
+                     "INSERT INTO login_lockouts (email, fail_attempts) VALUES (?, ?) " +
+                     "ON CONFLICT (email) DO UPDATE SET fail_attempts = ?")) {
+            ps.setString(1, email);
+            ps.setInt(2, attempts);
+            ps.setInt(3, attempts);
+            ps.executeUpdate();
+        } catch (Exception ignored) {}
+    }
+
+    private void updateLockoutTime(String email, long time) {
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement ps = conn.prepareStatement(
+                     "UPDATE login_lockouts SET lockout_time = ? WHERE email = ?")) {
+            ps.setLong(1, time);
+            ps.setString(2, email);
+            ps.executeUpdate();
+        } catch (Exception ignored) {}
+    }
+
+    private void resetLockout(String email) {
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement ps = conn.prepareStatement(
+                     "UPDATE login_lockouts SET fail_attempts = 0, lockout_time = 0 WHERE email = ?")) {
+            ps.setString(1, email);
+            ps.executeUpdate();
+        } catch (Exception ignored) {}
+    }
+
     @FXML
     private void handleLogin(ActionEvent event) {
         String email = emailField.getText().trim();
@@ -286,8 +333,8 @@ public class LoginController {
             return;
         }
 
-        int attempts = prefs.getInt("fail_attempts_" + email, 0);
-        long lockoutTime = prefs.getLong("lockout_time_" + email, 0);
+        int attempts = getFailAttempts(email);
+        long lockoutTime = getLockoutTime(email);
 
         if (attempts >= MAX_ATTEMPTS) {
             long elapsed = System.currentTimeMillis() - lockoutTime;
@@ -297,14 +344,12 @@ public class LoginController {
                 messageLabel.setText("Too many failed attempts. Try again in " + remaining + "m " + seconds + "s.");
                 return;
             } else {
-                prefs.putInt("fail_attempts_" + email, 0);
-                prefs.remove("lockout_time_" + email);
+                resetLockout(email);
                 attempts = 0;
             }
         }
 
-        try {
-            Connection connection = DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
             String query = "SELECT * FROM users WHERE username = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, email);
@@ -312,17 +357,13 @@ public class LoginController {
 
             if (resultSet.next()) {
                 String storedPassword = resultSet.getString("password");
-                boolean passwordMatch = storedPassword.equals(password);
-
-                if (!passwordMatch && storedPassword.length() == 64) {
-                    passwordMatch = PasswordUtils.verifyPassword(password, storedPassword);
-                }
+                boolean passwordMatch = PasswordUtils.verifyPassword(password, storedPassword);
 
                 if (!passwordMatch) {
                     attempts++;
-                    prefs.putInt("fail_attempts_" + email, attempts);
+                    updateFailAttempts(email, attempts);
                     if (attempts >= MAX_ATTEMPTS) {
-                        prefs.putLong("lockout_time_" + email, System.currentTimeMillis());
+                        updateLockoutTime(email, System.currentTimeMillis());
                         messageLabel.setText("Too many failed attempts. Account locked for 15 minutes.");
                     } else {
                         messageLabel.setText("Invalid username or password. (" + attempts + "/" + MAX_ATTEMPTS + " attempts)");
@@ -330,12 +371,10 @@ public class LoginController {
                     return;
                 }
 
-                prefs.putInt("fail_attempts_" + email, 0);
-                prefs.remove("lockout_time_" + email);
+                resetLockout(email);
 
                 if (!storedPassword.equals(PasswordUtils.hashPassword(password))) {
-                    try {
-                        Connection conn2 = DatabaseConnection.connect();
+                    try (Connection conn2 = DatabaseConnection.connect()) {
                         PreparedStatement upgrade = conn2.prepareStatement(
                                 "UPDATE users SET password = ? WHERE id = ?"
                         );
@@ -374,9 +413,9 @@ public class LoginController {
                 }
             } else {
                 attempts++;
-                prefs.putInt("fail_attempts_" + email, attempts);
+                updateFailAttempts(email, attempts);
                 if (attempts >= MAX_ATTEMPTS) {
-                    prefs.putLong("lockout_time_" + email, System.currentTimeMillis());
+                    updateLockoutTime(email, System.currentTimeMillis());
                     messageLabel.setText("Too many failed attempts. Account locked for 15 minutes.");
                 } else {
                     messageLabel.setText("Invalid username or password. (" + attempts + "/" + MAX_ATTEMPTS + " attempts)");

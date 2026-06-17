@@ -250,8 +250,7 @@ public class EmployeeImportController {
 
     private Set<String> loadExistingEmails() {
         Set<String> emails = new HashSet<>();
-        try {
-            Connection conn = DatabaseConnection.connect();
+        try (Connection conn = DatabaseConnection.connect()) {
             if (conn == null) return emails;
             PreparedStatement ps = conn.prepareStatement("SELECT LOWER(email) FROM employees WHERE email IS NOT NULL AND email != ''");
             ResultSet rs = ps.executeQuery();
@@ -260,7 +259,6 @@ public class EmployeeImportController {
             }
             rs.close();
             ps.close();
-            conn.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -280,8 +278,7 @@ public class EmployeeImportController {
                 int skipped = 0;
                 int failed = 0;
 
-                try {
-                    Connection conn = DatabaseConnection.connect();
+                try (Connection conn = DatabaseConnection.connect()) {
                     if (conn == null) return new int[]{0, 0, 0};
 
                     String sql = """
@@ -318,7 +315,6 @@ public class EmployeeImportController {
                     }
 
                     ps.close();
-                    conn.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

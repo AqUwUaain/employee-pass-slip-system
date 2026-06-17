@@ -180,9 +180,7 @@ public class PassSlipController {
         ObservableList<String> employeeOptions =
                 FXCollections.observableArrayList();
 
-        try {
-
-            Connection connection = DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String query = "SELECT id, first_name, last_name FROM employees ORDER BY id";
             PreparedStatement statement = connection.prepareStatement(query);
@@ -301,9 +299,7 @@ public class PassSlipController {
 
     private void loadEmployeeName(int employeeId) {
 
-        try {
-
-            Connection connection = DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String query = "SELECT first_name, last_name FROM employees WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
@@ -363,10 +359,7 @@ public class PassSlipController {
             return;
         }
 
-        try {
-
-            Connection connection =
-                    DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String query = """
                     INSERT INTO pass_slips

@@ -126,8 +126,7 @@ public class PasswordResetRequestsController {
 
     private ObservableList<PasswordResetRequest> getPendingRequests() {
         ObservableList<PasswordResetRequest> requests = FXCollections.observableArrayList();
-        try {
-            Connection connection = DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
             String query = "SELECT * FROM password_reset_requests WHERE status = 'PENDING' AND (used = FALSE OR used IS NULL) ORDER BY requested_at DESC";
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
@@ -144,7 +143,6 @@ public class PasswordResetRequestsController {
             }
 
             statement.close();
-            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -159,8 +157,7 @@ public class PasswordResetRequestsController {
             return;
         }
 
-        try {
-            Connection connection = DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
             String updateQuery;
             if ("APPROVED".equals(status)) {
                 updateQuery = "UPDATE password_reset_requests SET status = ?, approved_at = ? WHERE id = ?";
@@ -188,7 +185,6 @@ public class PasswordResetRequestsController {
             }
 
             statement.close();
-            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
             messageLabel.setText("Database error: " + e.getMessage());

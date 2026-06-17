@@ -205,9 +205,7 @@ public class ReturnController {
 
     public static boolean recordReturn(int passSlipId) {
 
-        try {
-
-            Connection connection = DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String getQuery = """
                     SELECT time_out, employee_id
@@ -282,49 +280,49 @@ public class ReturnController {
             int searchValue =
                     Integer.parseInt(txtReturnSearchId.getText().trim());
 
-            Connection connection =
-                    DatabaseConnection.connect();
+            try (Connection connection = DatabaseConnection.connect()) {
 
-            if (connection == null) {
-                lblReturnStatusMessage.setText("Database unavailable.");
-                return;
-            }
+                if (connection == null) {
+                    lblReturnStatusMessage.setText("Database unavailable.");
+                    return;
+                }
 
-            PreparedStatement statement = connection.prepareStatement("""
-                    SELECT p.id, p.employee_id, e.first_name, e.last_name
-                    FROM pass_slips p
-                    JOIN employees e ON p.employee_id = e.id
-                    WHERE p.status = 'OUT'
-                      AND (p.id = ? OR e.id = ?)
-                    ORDER BY p.id DESC
-                    LIMIT 1
-                    """);
+                PreparedStatement statement = connection.prepareStatement("""
+                        SELECT p.id, p.employee_id, e.first_name, e.last_name
+                        FROM pass_slips p
+                        JOIN employees e ON p.employee_id = e.id
+                        WHERE p.status = 'OUT'
+                          AND (p.id = ? OR e.id = ?)
+                        ORDER BY p.id DESC
+                        LIMIT 1
+                        """);
 
-            statement.setInt(1, searchValue);
-            statement.setInt(2, searchValue);
+                statement.setInt(1, searchValue);
+                statement.setInt(2, searchValue);
 
-            ResultSet resultSet = statement.executeQuery();
+                ResultSet resultSet = statement.executeQuery();
 
-            if (resultSet.next()) {
+                if (resultSet.next()) {
 
-                activePassSlipId = resultSet.getInt("id");
-                activeEmployeeId = resultSet.getInt("employee_id");
+                    activePassSlipId = resultSet.getInt("id");
+                    activeEmployeeId = resultSet.getInt("employee_id");
 
-                txtReturnEmployeeName.setText(
-                        resultSet.getString("first_name")
-                                + " "
-                                + resultSet.getString("last_name")
-                );
+                    txtReturnEmployeeName.setText(
+                            resultSet.getString("first_name")
+                                    + " "
+                                    + resultSet.getString("last_name")
+                    );
 
-                lblReturnStatusMessage.setText(
-                        "Active pass slip found — ID #" + activePassSlipId
-                );
+                    lblReturnStatusMessage.setText(
+                            "Active pass slip found — ID #" + activePassSlipId
+                    );
 
-            } else {
-                activePassSlipId = 0;
-                activeEmployeeId = 0;
-                txtReturnEmployeeName.clear();
-                lblReturnStatusMessage.setText("No active pass slip found.");
+                } else {
+                    activePassSlipId = 0;
+                    activeEmployeeId = 0;
+                    txtReturnEmployeeName.clear();
+                    lblReturnStatusMessage.setText("No active pass slip found.");
+                }
             }
 
         } catch (Exception e) {
@@ -474,8 +472,7 @@ public class ReturnController {
     private ObservableList<PassSlip> fetchOutstandingSlips() {
         ObservableList<PassSlip> data = FXCollections.observableArrayList();
 
-        try {
-            Connection connection = DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String query = """
                     SELECT
@@ -610,8 +607,7 @@ public class ReturnController {
     private ObservableList<PassSlip> fetchMonitoringData() {
         ObservableList<PassSlip> data = FXCollections.observableArrayList();
 
-        try {
-            Connection connection = DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String query = """
                     SELECT
@@ -694,10 +690,7 @@ public class ReturnController {
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() {
-                try {
-
-                    Connection connection =
-                            DatabaseConnection.connect();
+                try (Connection connection = DatabaseConnection.connect()) {
 
                     if (connection == null) {
                         return null;

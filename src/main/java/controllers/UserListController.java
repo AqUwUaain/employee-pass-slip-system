@@ -16,16 +16,7 @@ public class UserListController {
         ObservableList<User> userList =
                 FXCollections.observableArrayList();
 
-
-
-
-        try {
-
-            Connection connection =
-                    DatabaseConnection.connect();
-
-
-
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String query =
                     """
@@ -33,20 +24,11 @@ public class UserListController {
                     ORDER BY id ASC
                     """;
 
-
-
-
             PreparedStatement statement =
                     connection.prepareStatement(query);
 
-
-
-
             ResultSet resultSet =
                     statement.executeQuery();
-
-
-
 
             while(resultSet.next()) {
 
@@ -73,9 +55,6 @@ public class UserListController {
             e.printStackTrace();
 
         }
-
-
-
 
         return userList;
 

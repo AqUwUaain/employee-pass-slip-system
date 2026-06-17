@@ -255,8 +255,7 @@ public class ReportsController {
     private ObservableList<PassSlip> fetchHistoryData() {
         ObservableList<PassSlip> data = FXCollections.observableArrayList();
 
-        try {
-            Connection connection = DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String query = """
                     SELECT
@@ -339,10 +338,7 @@ public class ReportsController {
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() {
-                try {
-
-                    Connection connection =
-                            DatabaseConnection.connect();
+                try (Connection connection = DatabaseConnection.connect()) {
 
                     if (connection == null) return null;
 
@@ -464,8 +460,7 @@ public class ReportsController {
     public static ObservableList<PassSlip> getPassSlips() {
         ObservableList<PassSlip> data = FXCollections.observableArrayList();
 
-        try {
-            Connection connection = DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String query = """
                     SELECT
@@ -533,11 +528,10 @@ public class ReportsController {
         File file = fileChooser.showSaveDialog(btnExportCsv.getScene().getWindow());
         if (file == null) return;
 
-        try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(file));
+             Connection connection = DatabaseConnection.connect()) {
 
             writer.println("ID,Employee,Department,Reason,Time Out,Time In,Duration,Status");
-
-            Connection connection = DatabaseConnection.connect();
 
             PreparedStatement statement = connection.prepareStatement(
                     """
@@ -592,7 +586,8 @@ public class ReportsController {
         File file = fileChooser.showSaveDialog(btnExportExcel.getScene().getWindow());
         if (file == null) return;
 
-        try (Workbook workbook = new XSSFWorkbook()) {
+        try (Workbook workbook = new XSSFWorkbook();
+             Connection connection = DatabaseConnection.connect()) {
             Sheet sheet = workbook.createSheet("Pass Slip Report");
 
             Row headerRow = sheet.createRow(0);
@@ -608,7 +603,6 @@ public class ReportsController {
                 cell.setCellStyle(headerStyle);
             }
 
-            Connection connection = DatabaseConnection.connect();
             PreparedStatement statement = connection.prepareStatement(
                     """
                     SELECT ps.id, e.first_name || ' ' || e.last_name AS name,

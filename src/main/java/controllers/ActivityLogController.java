@@ -206,8 +206,7 @@ public class ActivityLogController {
     private ObservableList<PassSlip> fetchMonitoringData() {
         ObservableList<PassSlip> data = FXCollections.observableArrayList();
 
-        try {
-            Connection connection = DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String query = """
                     SELECT
@@ -291,10 +290,8 @@ public class ActivityLogController {
 
     public static void logActivity(String action, String description, int employeeId) {
 
-        try {
-
-            Connection connection =
-                    DatabaseConnection.connect();
+        try (Connection connection =
+                    DatabaseConnection.connect()) {
 
             String query = """
                     INSERT INTO activity_logs (username, action, description, employee_id, user_id, timestamp)

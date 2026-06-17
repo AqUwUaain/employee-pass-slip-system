@@ -9,12 +9,7 @@ public class DeleteEmployeeController {
 
     public static boolean deleteEmployee(int employeeId) {
 
-        try {
-
-            Connection connection =
-                    DatabaseConnection.connect();
-
-
+        try (Connection connection = DatabaseConnection.connect()) {
 
             // DELETE ACTIVITY LOGS FIRST
             String deleteLogsQuery =

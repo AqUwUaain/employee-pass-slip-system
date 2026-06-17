@@ -9,10 +9,7 @@ public class DeleteUserController {
 
     public static boolean deleteUser(int userId) {
 
-        try {
-
-            Connection connection =
-                    DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String query =
                     "DELETE FROM users WHERE id = ?";

@@ -153,10 +153,7 @@ public class EmployeeController {
             return;
         }
 
-        try {
-
-            Connection connection =
-                    DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String sql = """
                     INSERT INTO employees
@@ -215,10 +212,7 @@ public class EmployeeController {
 
     ) {
 
-        try {
-
-            Connection connection =
-                    DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String query = """
                     UPDATE employees
@@ -269,10 +263,7 @@ public class EmployeeController {
         ArrayList<Employee> employeeList =
                 new ArrayList<>();
 
-        try {
-
-            Connection connection =
-                    DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String query = "SELECT * FROM employees";
 

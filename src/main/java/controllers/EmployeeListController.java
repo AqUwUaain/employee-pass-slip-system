@@ -329,10 +329,7 @@ public class EmployeeListController {
         ObservableList<Employee> employeeList =
                 FXCollections.observableArrayList();
 
-        try {
-
-            Connection connection =
-                    DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String query =
                     "SELECT * FROM employees ORDER BY id ASC";
@@ -425,8 +422,7 @@ public class EmployeeListController {
 
         int count = selectedEmployees.size();
 
-        try {
-            Connection connection = DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             for (Employee employee : selectedEmployees) {
                 int employeeId = employee.getId();

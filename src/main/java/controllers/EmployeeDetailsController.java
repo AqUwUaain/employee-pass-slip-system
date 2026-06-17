@@ -135,10 +135,7 @@ public class EmployeeDetailsController {
 
     public static Employee getEmployeeById(int employeeId) {
 
-        try {
-
-            Connection connection =
-                    DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String query =
                     "SELECT * FROM employees WHERE id = ?";

@@ -377,10 +377,8 @@ public class DashboardController {
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() {
-                try {
-
-                    Connection connection =
-                            DatabaseConnection.connect();
+                try (Connection connection =
+                            DatabaseConnection.connect()) {
 
                     if (connection == null) {
                         return null;

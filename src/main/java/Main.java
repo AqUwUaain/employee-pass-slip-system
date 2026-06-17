@@ -33,6 +33,7 @@ public class  Main extends Application {
 
     public static void main(String[] args) {
 
+        Runtime.getRuntime().addShutdownHook(new Thread(DatabaseConnection::shutdown));
         DatabaseConnection.connect();
         DatabaseMigration.runMigrations();
 

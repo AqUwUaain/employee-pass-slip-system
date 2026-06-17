@@ -2,13 +2,13 @@ package utils;
 
 public class Session {
 
-    public static int currentUserId;
+    public static volatile int currentUserId;
 
-    public static String currentUsername;
+    public static volatile String currentUsername;
 
-    public static String currentRole;
+    public static volatile String currentRole;
 
-    public static int selectedEmployeeId;
+    public static volatile int selectedEmployeeId;
 
     public static void clear() {
 

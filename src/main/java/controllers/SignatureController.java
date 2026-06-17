@@ -103,8 +103,7 @@ public class SignatureController {
     }
 
     private void loadCurrentSignature() {
-        try {
-            Connection connection = DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
             PreparedStatement stmt = connection.prepareStatement(
                     "SELECT signature_name, image_data FROM signatures WHERE user_id = ?"
             );
@@ -134,9 +133,6 @@ public class SignatureController {
                 btnRemoveSignature.setManaged(false);
             }
 
-            rs.close();
-            stmt.close();
-            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -160,44 +156,44 @@ public class SignatureController {
             byte[] imageBytes = fis.readAllBytes();
             fis.close();
 
-            Connection connection = DatabaseConnection.connect();
+            try (Connection connection = DatabaseConnection.connect()) {
 
-            PreparedStatement deleteStmt = connection.prepareStatement(
-                    "DELETE FROM signatures WHERE user_id = ?"
-            );
-            deleteStmt.setInt(1, Session.currentUserId);
-            deleteStmt.executeUpdate();
-            deleteStmt.close();
+                PreparedStatement deleteStmt = connection.prepareStatement(
+                        "DELETE FROM signatures WHERE user_id = ?"
+                );
+                deleteStmt.setInt(1, Session.currentUserId);
+                deleteStmt.executeUpdate();
+                deleteStmt.close();
 
-            PreparedStatement stmt = connection.prepareStatement(
-                    "INSERT INTO signatures (user_id, signature_name, image_data) VALUES (?, ?, ?)"
-            );
-            stmt.setInt(1, Session.currentUserId);
-            stmt.setString(2, file.getName());
-            stmt.setBytes(3, imageBytes);
+                PreparedStatement stmt = connection.prepareStatement(
+                        "INSERT INTO signatures (user_id, signature_name, image_data) VALUES (?, ?, ?)"
+                );
+                stmt.setInt(1, Session.currentUserId);
+                stmt.setString(2, file.getName());
+                stmt.setBytes(3, imageBytes);
 
-            int inserted = stmt.executeUpdate();
+                int inserted = stmt.executeUpdate();
 
-            if (inserted > 0) {
-                lblSignatureName.setText(file.getName());
-                lblSignatureStatus.setText("Signature uploaded successfully");
-                lblSignatureStatus.setStyle("-fx-text-fill: #34D399; -fx-font-weight: bold;");
+                if (inserted > 0) {
+                    lblSignatureName.setText(file.getName());
+                    lblSignatureStatus.setText("Signature uploaded successfully");
+                    lblSignatureStatus.setStyle("-fx-text-fill: #34D399; -fx-font-weight: bold;");
 
-                ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
-                Image fxImage = new Image(bis);
-                imgSignaturePreview.setImage(fxImage);
+                    ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
+                    Image fxImage = new Image(bis);
+                    imgSignaturePreview.setImage(fxImage);
 
-                btnRemoveSignature.setVisible(true);
-                btnRemoveSignature.setManaged(true);
+                    btnRemoveSignature.setVisible(true);
+                    btnRemoveSignature.setManaged(true);
 
-                ActivityLogController.logActivity("Uploaded signature: " + file.getName(), 0);
-            } else {
-                lblSignatureStatus.setText("FAILED TO UPLOAD SIGNATURE");
-                lblSignatureStatus.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
+                    ActivityLogController.logActivity("Uploaded signature: " + file.getName(), 0);
+                } else {
+                    lblSignatureStatus.setText("FAILED TO UPLOAD SIGNATURE");
+                    lblSignatureStatus.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
+                }
+
+                stmt.close();
             }
-
-            stmt.close();
-            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
             lblSignatureStatus.setText("ERROR: " + e.getMessage());
@@ -206,8 +202,7 @@ public class SignatureController {
     }
 
     private void removeSignature() {
-        try {
-            Connection connection = DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
             PreparedStatement stmt = connection.prepareStatement(
                     "DELETE FROM signatures WHERE user_id = ?"
             );
@@ -227,15 +222,13 @@ public class SignatureController {
             }
 
             stmt.close();
-            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public static byte[] getSignatureByUserId(int userId) {
-        try {
-            Connection connection = DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
             PreparedStatement stmt = connection.prepareStatement(
                     "SELECT image_data FROM signatures WHERE user_id = ?"
             );
@@ -249,7 +242,6 @@ public class SignatureController {
 
             rs.close();
             stmt.close();
-            connection.close();
             return imageData;
         } catch (Exception e) {
             e.printStackTrace();

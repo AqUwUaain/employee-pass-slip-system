@@ -252,10 +252,7 @@ public class UserController {
             return;
         }
 
-        try {
-
-            Connection connection =
-                    DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String checkQuery =
                     "SELECT * FROM users WHERE username = ?";
@@ -309,7 +306,6 @@ public class UserController {
             statement.close();
             resultSet.close();
             checkStatement.close();
-            connection.close();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -518,14 +514,13 @@ public class UserController {
                 return;
             }
 
-            try {
-                java.sql.Connection connection = DatabaseConnection.connect();
+            try (Connection connection = DatabaseConnection.connect()) {
 
-                java.sql.PreparedStatement verifyStmt = connection.prepareStatement(
+                PreparedStatement verifyStmt = connection.prepareStatement(
                         "SELECT password FROM users WHERE id = ?"
                 );
                 verifyStmt.setInt(1, selectedUser.getId());
-                java.sql.ResultSet rs = verifyStmt.executeQuery();
+                ResultSet rs = verifyStmt.executeQuery();
 
                 if (rs.next()) {
                     String storedHash = rs.getString("password");
@@ -533,7 +528,6 @@ public class UserController {
                         msgLabel.setText("Current password is incorrect.");
                         rs.close();
                         verifyStmt.close();
-                        connection.close();
                         return;
                     }
                 }
@@ -541,14 +535,13 @@ public class UserController {
                 verifyStmt.close();
 
                 String hashed = PasswordUtils.hashPassword(newPw);
-                java.sql.PreparedStatement updateStmt = connection.prepareStatement(
+                PreparedStatement updateStmt = connection.prepareStatement(
                         "UPDATE users SET password = ? WHERE id = ?"
                 );
                 updateStmt.setString(1, hashed);
                 updateStmt.setInt(2, selectedUser.getId());
                 int updated = updateStmt.executeUpdate();
                 updateStmt.close();
-                connection.close();
 
                 if (updated > 0) {
                     root.setCenter(originalCenter);
@@ -673,28 +666,26 @@ public class UserController {
                 return;
             }
 
-            try {
-                java.sql.Connection connection = DatabaseConnection.connect();
+            try (Connection connection = DatabaseConnection.connect()) {
 
                 if (!newUsername.equals(selectedUser.getUsername())) {
-                    java.sql.PreparedStatement checkStmt = connection.prepareStatement(
+                    PreparedStatement checkStmt = connection.prepareStatement(
                             "SELECT id FROM users WHERE username = ? AND id != ?"
                     );
                     checkStmt.setString(1, newUsername);
                     checkStmt.setInt(2, selectedUser.getId());
-                    java.sql.ResultSet rs = checkStmt.executeQuery();
+                    ResultSet rs = checkStmt.executeQuery();
                     if (rs.next()) {
                         msgLabel.setText("Username already exists.");
                         rs.close();
                         checkStmt.close();
-                        connection.close();
                         return;
                     }
                     rs.close();
                     checkStmt.close();
                 }
 
-                java.sql.PreparedStatement updateStmt = connection.prepareStatement(
+                PreparedStatement updateStmt = connection.prepareStatement(
                         "UPDATE users SET username = ?, role = ? WHERE id = ?"
                 );
                 updateStmt.setString(1, newUsername);
@@ -702,7 +693,6 @@ public class UserController {
                 updateStmt.setInt(3, selectedUser.getId());
                 int updated = updateStmt.executeUpdate();
                 updateStmt.close();
-                connection.close();
 
                 if (updated > 0) {
                     root.setCenter(originalCenter);

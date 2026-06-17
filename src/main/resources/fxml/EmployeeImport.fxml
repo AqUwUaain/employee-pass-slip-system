@@ -75,20 +75,20 @@
                 <VBox spacing="20.0" style="-fx-padding: 28px 36px;">
                     <children>
                         <!-- Action buttons -->
-                        <HBox alignment="TOP_LEFT" spacing="12.0">
+                        <VBox spacing="6.0">
                             <children>
-                                <VBox spacing="4.0">
+                                <HBox alignment="CENTER_LEFT" spacing="12.0">
                                     <children>
                                         <Button fx:id="btnChooseFile" text="&#x1F4C1;  Choose File" style="-fx-background-color: linear-gradient(to right, #C9951A, #D4A853); -fx-text-fill: #1C1917; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 11px 24px; -fx-cursor: hand;" />
-                                        <Label text="Only Excel files (.xlsx) are supported" style="-fx-text-fill: #78716C; -fx-font-size: 11px;" />
+                                        <Button fx:id="btnImportAll" text="&#x2795;  Import All" disable="true" style="-fx-background-color: #34D399; -fx-text-fill: #1C1917; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 11px 24px; -fx-cursor: hand;" />
+                                        <Button fx:id="btnBackToEmployees" text="&#x25C0;  Back" style="-fx-background-color: #3D3229; -fx-text-fill: #D6CCC2; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 11px 24px; -fx-border-color: #57534E; -fx-border-width: 1px; -fx-cursor: hand;" />
+                                        <StackPane HBox.hgrow="ALWAYS" />
+                                        <Label fx:id="lblImportSummary" text="" style="-fx-text-fill: #A8A29E; -fx-font-size: 13px;" />
                                     </children>
-                                </VBox>
-                                <Button fx:id="btnImportAll" text="&#x2795;  Import All" disable="true" style="-fx-background-color: #34D399; -fx-text-fill: #1C1917; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 11px 24px; -fx-cursor: hand;" />
-                                <Button fx:id="btnBackToEmployees" text="&#x25C0;  Back" style="-fx-background-color: #3D3229; -fx-text-fill: #D6CCC2; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 11px 24px; -fx-border-color: #57534E; -fx-border-width: 1px; -fx-cursor: hand;" />
-                                <StackPane HBox.hgrow="ALWAYS" />
-                                <Label fx:id="lblImportSummary" text="" style="-fx-text-fill: #A8A29E; -fx-font-size: 13px;" />
+                                </HBox>
+                                <Label text="Only Excel files (.xlsx) are supported" style="-fx-text-fill: #78716C; -fx-font-size: 11px; -fx-padding: 0 0 0 4px;" />
                             </children>
-                        </HBox>
+                        </VBox>
                         <!-- Message label -->
                         <Label fx:id="lblMessage" text="" style="-fx-font-size: 13px; -fx-padding: 4px 0;" />
                         <!-- Preview table -->

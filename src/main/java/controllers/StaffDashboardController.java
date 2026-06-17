@@ -126,8 +126,7 @@ public class StaffDashboardController {
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() {
-                try {
-                    Connection connection = DatabaseConnection.connect();
+                try (Connection connection = DatabaseConnection.connect()) {
                     if (connection == null) {
                         return null;
                     }
@@ -151,8 +150,6 @@ public class StaffDashboardController {
                     }
 
                     int currentlyOut = TimerService.getOutCount();
-
-                    connection.close();
 
                     final int finalPassSlipsToday = passSlipsToday;
                     final int finalReturnsToday = returnsToday;

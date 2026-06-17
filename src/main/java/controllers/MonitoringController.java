@@ -194,10 +194,7 @@ public class MonitoringController {
 
         ObservableList<ActivityLog> data = FXCollections.observableArrayList();
 
-        try {
-
-            Connection connection =
-                    DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String query = """
                     SELECT id, action, description, user_id, username, timestamp, employee_id
@@ -267,10 +264,7 @@ public class MonitoringController {
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() {
-                try {
-
-                    Connection connection =
-                            DatabaseConnection.connect();
+                try (Connection connection = DatabaseConnection.connect()) {
 
                     if (connection == null) {
                         Platform.runLater(() -> {
@@ -327,10 +321,7 @@ public class MonitoringController {
 
     public static void updateExpiredPassSlips() {
 
-        try {
-
-            Connection connection =
-                    DatabaseConnection.connect();
+        try (Connection connection = DatabaseConnection.connect()) {
 
             String query = """
                     SELECT id, time_out, estimated_return
