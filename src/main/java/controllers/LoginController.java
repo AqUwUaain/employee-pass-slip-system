@@ -87,6 +87,7 @@ public class LoginController {
         // Show/hide password toggle
         visiblePasswordField = new TextField();
         visiblePasswordField.setPromptText("Enter your password");
+
         visiblePasswordField.setStyle(
                 "-fx-background-color: rgba(255,255,255,0.06); " +
                         "-fx-border-color: rgba(255,255,255,0.08); " +

@@ -126,6 +126,16 @@ public class PassSlipController {
             }
         });
 
+        cmbTimeIn.getEditor().focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+            if (!isFocused && selectedEstimatedReturn != null) {
+                String current = cmbTimeIn.getEditor().getText();
+                if (current == null || current.isBlank()) {
+                    DateTimeFormatter fmt = DateTimeFormatter.ofPattern("hh:mm a");
+                    cmbTimeIn.getEditor().setText(selectedEstimatedReturn.format(fmt));
+                }
+            }
+        });
+
         cmbEmployeeSelect.setOnAction(event -> {
             String selected = cmbEmployeeSelect.getValue();
             if (selected != null && !selected.isEmpty()) {
@@ -230,7 +240,7 @@ public class PassSlipController {
     private void handleTimeInSelection(LocalDateTime now) {
         String selected = cmbTimeIn.getValue();
         if (selected != null) {
-            String timeStr = selected.split("  \\(")[0];
+            String timeStr = selected.split("  \\(")[0].trim().toUpperCase();
             try {
                 DateTimeFormatter parser = DateTimeFormatter.ofPattern("hh:mm a");
                 LocalTime timeInParsed = LocalTime.parse(timeStr, parser);
@@ -250,8 +260,9 @@ public class PassSlipController {
 
     private void handleTimeInManualInput(String input, LocalDateTime now) {
         if (input.isBlank()) {
-            selectedEstimatedReturn = null;
-            lblDuration.setText("");
+            if (selectedEstimatedReturn == null) {
+                lblDuration.setText("");
+            }
             return;
         }
 
