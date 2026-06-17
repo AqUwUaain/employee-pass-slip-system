@@ -68,6 +68,7 @@
                 <StackPane HBox.hgrow="ALWAYS" />
                 <HBox spacing="12.0" alignment="CENTER">
                     <children>
+                        <Button fx:id="btnThemeToggle" mnemonicParsing="false" text="☀" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
                         <Button fx:id="btnNotificationsAlert" mnemonicParsing="false" text="&#x1F514;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
                     </children>
                 </HBox>
@@ -106,25 +107,25 @@
                                 <RowConstraints />
                             </rowConstraints>
                             <children>
-                                <Label text="First Name" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <Label text="First Name" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                                 <TextField fx:id="firstNameField" promptText="Enter first name" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                                <Label text="Last Name" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <Label text="Last Name" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                                 <TextField fx:id="lastNameField" promptText="Enter last name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                <Label text="Department" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <Label text="Department" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                                 <TextField fx:id="departmentField" promptText="Enter department" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                <Label text="Position" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                <Label text="Position" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="3" />
                                 <TextField fx:id="positionField" promptText="Enter position" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                <Label text="Contact Number" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                <Label text="Contact Number" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="4" />
                                 <TextField fx:id="contactField" promptText="Enter contact number" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                <Label text="Join Date" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                                <Label text="Join Date" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="5" />
                                 <DatePicker fx:id="joinDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                <Label text="Manager" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                                <Label text="Manager" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="6" />
                                 <TextField fx:id="managerField" promptText="Enter manager name" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                <Label text="Email" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                                <Label text="Email" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="7" />
                                 <TextField fx:id="emailField" promptText="Enter email address" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                                <Label text="Address" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                                <Label text="Address" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="8" />
                                 <TextField fx:id="addressField" promptText="Enter address" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                                <Label text="Emergency Contact" style="-fx-text-fill: #D6CCC2;" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+                                <Label text="Emergency Contact" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="9" />
                                 <TextField fx:id="emergencyContactField" promptText="Enter emergency contact number" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                             </children>
                         </GridPane>

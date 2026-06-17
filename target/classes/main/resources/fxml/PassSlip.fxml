@@ -17,16 +17,15 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="passSlipModalRoot" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="650.0" spacing="0.0" style="-fx-background-color: #252220; -fx-background-radius: 12px; -fx-border-color: #7C0A02; -fx-border-radius: 12px; -fx-border-width: 2px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.55), 20, 0, 0, 6);" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.PassSlipController">
+<VBox fx:id="passSlipModalRoot" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="650.0" spacing="0.0" styleClass="pass-slip-border" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.PassSlipController">
     <children>
 
         <!-- MODAL HEADER BAR (Matches Institutional Dashboard Identity) -->
-        <HBox alignment="CENTER_LEFT" prefHeight="55.0" style="-fx-background-color: #7C0A02; -fx-background-radius: 9px 9px 0 0; -fx-padding: 0 20px;">
+        <HBox alignment="CENTER_LEFT" prefHeight="55.0" styleClass="modal-top">
             <children>
-                <Label style="-fx-font-family: 'Arial'; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #ffe600;" text="🎫 SYSTEM PASS SLIP REGISTRY" />
+                <Label text="🎫 SYSTEM PASS SLIP REGISTRY" style="-fx-font-family: 'Arial'; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #ffe600;" />
                 <StackPane HBox.hgrow="ALWAYS" />
-                <!-- Tiny Top Close Window Control Switch -->
-                <Button fx:id="btnTopClose" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-family: 'Arial'; -fx-font-size: 14px; -fx-cursor: hand;" text="✕" />
+                <Button fx:id="btnTopClose" mnemonicParsing="false" styleClass="btn-top-close" text="✕" />
             </children>
         </HBox>
 
@@ -35,7 +34,7 @@
             <children>
 
                 <!-- INSTRUCTION BANNER -->
-                <HBox alignment="CENTER_LEFT" spacing="8.0" style="-fx-background-color: rgba(212,168,83,0.1); -fx-border-color: #D4A853; -fx-border-width: 1; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-padding: 10px 14px;">
+                <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="pass-slip-section" style="-fx-padding: 10px 14px; -fx-background-color: rgba(212,168,83,0.1);">
                     <children>
                         <Label style="-fx-font-size: 13px; -fx-text-fill: #D4A853;" text="&#x2139;" />
                         <Label style="-fx-font-size: 11px; -fx-text-fill: #D4A853; -fx-wrap-text: true;" text="Select an employee, enter the purpose, and choose an estimated return time. Fields marked with * are required." HBox.hgrow="ALWAYS" />
@@ -43,13 +42,13 @@
                 </HBox>
 
                 <!-- THE STRUCTURAL SLIP DOCUMENT CONTAINER LAYER -->
-                <HBox style="-fx-border-color: #3D3229; -fx-border-width: 2px; -fx-background-color: #2D2520;">
+                <HBox styleClass="pass-slip-border">
                     <children>
 
                         <!-- VERTICAL LEFT BAR SIDE TITLE: PASS SLIP -->
-                        <VBox alignment="CENTER" prefWidth="65.0" style="-fx-background-color: #2D2520; -fx-border-color: transparent #3D3229 transparent transparent; -fx-border-width: 0 2px 0 0; -fx-padding: 10px 0;">
+                        <VBox alignment="CENTER" prefWidth="65.0" styleClass="pass-slip-section" style="-fx-padding: 10px 0;">
                             <children>
-                                <Label rotate="-90.0" style="-fx-font-family: 'Arial Black'; -fx-font-size: 28px; -fx-text-fill: #F5F5F4; -fx-min-width: 240px; -fx-alignment: center;" text="PASS SLIP" />
+                                <Label rotate="-90.0" styleClass="pass-slip-title" text="PASS SLIP" />
                             </children>
                         </VBox>
 
@@ -58,25 +57,24 @@
                             <children>
 
                                 <!-- ROW SECTION 1: CALENDAR CHRONOLOGY MATRIX HEADER BLOCK -->
-                                <HBox style="-fx-border-color: transparent transparent #3D3229 transparent; -fx-border-width: 0 0 2px 0;">
+                                <HBox styleClass="pass-slip-border-bottom">
                                     <children>
 
                                         <!-- YEAR COMPARTMENT ELEMENT -->
-                                        <VBox alignment="CENTER" prefWidth="120.0" style="-fx-border-color: transparent #3D3229 transparent transparent; -fx-border-width: 0 2px 0 0; -fx-padding: 8px;">
+                                        <VBox alignment="CENTER" prefWidth="120.0" styleClass="pass-slip-border-right" style="-fx-padding: 8px;">
                                             <children>
-                                                <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-text-fill: #A8A29E;" text="YEAR" />
-                                                <TextField fx:id="txtSlipYear" alignment="CENTER" editable="false" prefHeight="28.0" style="-fx-font-family: 'Arial'; -fx-font-size: 15px; -fx-font-weight: bold; -fx-background-color: transparent; -fx-padding: 0; -fx-text-fill: #F5F5F4;" text="2026" />
+                                                <Label styleClass="pass-slip-year-label" text="YEAR" />
+                                                <TextField fx:id="txtSlipYear" alignment="CENTER" editable="false" prefHeight="28.0" styleClass="pass-slip-year-value" text="2026" />
                                             </children>
                                         </VBox>
 
                                         <!-- LIVE DATE STAMP SELECTION BOX -->
                                         <VBox alignment="CENTER_LEFT" style="-fx-padding: 8px 12px;" HBox.hgrow="ALWAYS">
                                             <children>
-                                                <Label style="-fx-font-family: 'Arial'; -fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #A8A29E;" text="EFFECTIVE SYSTEM LOG DATE" />
+                                                <Label styleClass="pass-slip-date-label" text="EFFECTIVE SYSTEM LOG DATE" />
                                                 <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-padding: 4px 0 0 0;">
                                                     <children>
-                                                        <!-- Dynamic output read directly from calendar backend controller context -->
-                                                        <TextField fx:id="txtSlipFormattedDate" editable="false" promptText="Select Current Date Stamp" style="-fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-background-color: transparent; -fx-padding: 0; -fx-font-weight: bold; -fx-text-fill: #D4A853;" text="JUNE 02, 2026" HBox.hgrow="ALWAYS" />
+                                                        <TextField fx:id="txtSlipFormattedDate" editable="false" promptText="Select Current Date Stamp" styleClass="pass-slip-date-value" text="JUNE 02, 2026" HBox.hgrow="ALWAYS" />
                                                     </children>
                                                 </HBox>
                                             </children>
@@ -86,75 +84,75 @@
                                 </HBox>
 
                                 <!-- ROW SECTION 2: IDENTITY MATRICES (CLIENT ID & STAFF NAME) -->
-                                <HBox style="-fx-border-color: transparent transparent #3D3229 transparent; -fx-border-width: 0 0 2px 0;">
+                                <HBox styleClass="pass-slip-border-bottom">
                                     <children>
                                         <!-- Client / Employee ID Field -->
-                                        <VBox prefWidth="140.0" style="-fx-border-color: transparent #3D3229 transparent transparent; -fx-border-width: 0 2px 0 0; -fx-padding: 6px 10px;">
+                                        <VBox prefWidth="140.0" styleClass="pass-slip-border-right" style="-fx-padding: 6px 10px;">
                                             <children>
-                                                <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2;" text="CLIENT #:" />
-                                                <TextField fx:id="txtSlipClientId" promptText="XXXX" style="-fx-background-color: transparent; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
+                                                <Label styleClass="pass-slip-label" text="CLIENT #:" />
+                                                <TextField fx:id="txtSlipClientId" promptText="XXXX" styleClass="pass-slip-input" />
                                             </children>
                                         </VBox>
                                         <!-- Personnel Full Name Field -->
                                         <VBox HBox.hgrow="ALWAYS" style="-fx-padding: 6px 10px;">
                                             <children>
-                                                <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2;" text="SELECT EMPLOYEE * :" />
-                                                <ComboBox fx:id="cmbEmployeeSelect" promptText="Choose from the list" prefWidth="280.0" style="-fx-background-color: transparent; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px;" />
-                                                <Label style="-fx-font-family: 'Arial'; -fx-font-size: 9px; -fx-text-fill: #78716C; -fx-padding: 2px 0 0 0;" text="Employee ID and name will auto-fill below" />
-                                                <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 6px 0 0 0; -fx-text-fill: #D6CCC2;" text="NAME :" />
-                                                <TextField fx:id="txtSlipEmployeeName" editable="false" promptText="Auto-filled on selection" style="-fx-background-color: transparent; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
+                                                <Label styleClass="pass-slip-label" text="SELECT EMPLOYEE * :" />
+                                                <ComboBox fx:id="cmbEmployeeSelect" promptText="Choose from the list" prefWidth="280.0" styleClass="combo-box" />
+                                                <Label styleClass="pass-slip-hint" text="Employee ID and name will auto-fill below" />
+                                                <Label styleClass="pass-slip-label" style="-fx-padding: 6px 0 0 0;" text="NAME :" />
+                                                <TextField fx:id="txtSlipEmployeeName" editable="false" promptText="Auto-filled on selection" styleClass="pass-slip-input" />
                                             </children>
                                         </VBox>
                                     </children>
                                 </HBox>
 
                                 <!-- ROW SECTION 3: PURPOSE STATEMENT FIELD BLOCK -->
-                                <VBox style="-fx-border-color: transparent transparent #3D3229 transparent; -fx-border-width: 0 0 2px 0; -fx-padding: 8px 10px;">
+                                <VBox styleClass="pass-slip-section" style="-fx-padding: 8px 10px;">
                                     <children>
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2;" text="PURPOSE * :" />
-                                        <TextArea fx:id="txtSlipPurpose" prefHeight="55.0" promptText="e.g., Medical appointment, personal errand, official business..." style="-fx-background-color: transparent; -fx-control-inner-background: #1C0A04; -fx-background-insets: 0; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-text-fill: #FFFFFF;" wrapText="true" />
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 9px; -fx-text-fill: #78716C; -fx-padding: 2px 0 0 0;" text="Minimum 5 characters required" />
+                                        <Label styleClass="pass-slip-label" text="PURPOSE * :" />
+                                        <TextArea fx:id="txtSlipPurpose" prefHeight="55.0" promptText="e.g., Medical appointment, personal errand, official business..." styleClass="pass-slip-purpose" wrapText="true" />
+                                        <Label styleClass="pass-slip-hint" text="Minimum 5 characters required" />
                                     </children>
                                 </VBox>
 
                                 <!-- ROW SECTION 4: TEMPORAL TELEMETRY MARKS (TIME OUT / TIME IN) -->
-                                <VBox style="-fx-border-color: transparent transparent #3D3229 transparent; -fx-border-width: 0 0 2px 0;">
+                                <VBox styleClass="pass-slip-section">
                                     <children>
                                         <HBox>
                                             <children>
                                                 <!-- Time Out Input Slot -->
-                                                <VBox HBox.hgrow="ALWAYS" style="-fx-border-color: transparent #3D3229 transparent transparent; -fx-border-width: 0 2px 0 0; -fx-padding: 6px 10px;">
+                                                <VBox HBox.hgrow="ALWAYS" styleClass="pass-slip-border-right" style="-fx-padding: 6px 10px;">
                                                     <children>
-                                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2;" text="TIME OUT :" />
-                                                        <TextField fx:id="txtSlipTimeOut" editable="false" promptText="Auto-recorded" style="-fx-background-color: transparent; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-text-fill: #F5F5F4;" />
-                                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 9px; -fx-text-fill: #78716C; -fx-padding: 2px 0 0 0;" text="Automatically recorded" />
+                                                        <Label styleClass="pass-slip-label" text="TIME OUT :" />
+                                                        <TextField fx:id="txtSlipTimeOut" editable="false" promptText="Auto-recorded" styleClass="pass-slip-input" />
+                                                        <Label styleClass="pass-slip-hint" text="Automatically recorded" />
                                                     </children>
                                                 </VBox>
                                                 <!-- Time In Input Slot -->
                                                 <VBox HBox.hgrow="ALWAYS" style="-fx-padding: 6px 10px;">
                                                     <children>
-                                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2;" text="ESTIMATED TIME IN * :" />
-                                                        <ComboBox fx:id="cmbTimeIn" editable="true" promptText="Select or type time" prefWidth="200.0" style="-fx-background-color: transparent; -fx-padding: 4px 0 0 0; -fx-font-family: 'Arial'; -fx-font-size: 13px;" />
-                                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 9px; -fx-text-fill: #78716C; -fx-padding: 2px 0 0 0;" text="Format: HH:MM AM/PM (Example: 09:30 AM)" />
+                                                        <Label styleClass="pass-slip-label" text="ESTIMATED TIME IN * :" />
+                                                        <ComboBox fx:id="cmbTimeIn" editable="true" promptText="Select or type time" prefWidth="200.0" styleClass="combo-box" />
+                                                        <Label styleClass="pass-slip-hint" text="Format: HH:MM AM/PM (Example: 09:30 AM)" />
                                                     </children>
                                                 </VBox>
                                             </children>
                                         </HBox>
                                         <!-- DURATION DISPLAY -->
-                                        <Label fx:id="lblDuration" style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D4A853; -fx-padding: 4px 10px 6px 10px;" text="" />
+                                        <Label fx:id="lblDuration" styleClass="pass-slip-duration" text="" />
                                     </children>
                                 </VBox>
 
                                 <!-- ROW SECTION 5: VALIDATION SIGNATURE BLOCK FOOTER -->
                                 <VBox alignment="BOTTOM_CENTER" style="-fx-padding: 6px 0;">
                                     <children>
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D6CCC2; -fx-padding: 0 0 4px 0;" text="ADMIN SIGNATURE :" />
-                                        <VBox maxWidth="320.0" alignment="CENTER" style="-fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 4px; -fx-background-color: #FFFFFF; -fx-background-radius: 4px; -fx-padding: 4px;">
+                                        <Label styleClass="pass-slip-label" style="-fx-padding: 0 0 4px 0;" text="ADMIN SIGNATURE :" />
+                                        <VBox maxWidth="320.0" alignment="CENTER" styleClass="pass-slip-signature-box">
                                             <children>
                                                 <ImageView fx:id="imgAdminSignature" fitHeight="60.0" fitWidth="280.0" preserveRatio="true" />
                                             </children>
                                         </VBox>
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-size: 9px; -fx-text-fill: #78716C;" text="Auto-signed with your registered signature" />
+                                        <Label styleClass="pass-slip-footer-label" text="Auto-signed with your registered signature" />
                                     </children>
                                 </VBox>
 
@@ -166,21 +164,16 @@
                 <!-- MODAL CONTROL ACTIONS GRID ROW TOOLBAR -->
                 <HBox alignment="CENTER_RIGHT" spacing="12.0">
                     <children>
-                        <!-- Terminate Dialog Window Session Button -->
-                        <Button fx:id="btnCancelSlipAction" mnemonicParsing="false" prefHeight="36.0" prefWidth="110.0" style="-fx-background-color: #2D2520; -fx-text-fill: #A8A29E; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 6px; -fx-border-color: #3D3229; -fx-border-radius: 6px; -fx-cursor: hand;" text="Dismiss" />
-
-                        <!-- Print Document Frame Event Trigger Button -->
-                        <Button fx:id="btnPrintSlipAction" mnemonicParsing="false" prefHeight="36.0" prefWidth="120.0" style="-fx-background-color: transparent; -fx-text-fill: #D4A853; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-border-color: #7C0A02; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-cursor: hand;" text="🖨️ Print Slip" />
-
-                        <!-- Commit Record Entry Payload To Active System Database Button -->
-                        <Button fx:id="btnSaveSlipAction" mnemonicParsing="false" prefHeight="36.0" prefWidth="160.0" style="-fx-background-color: #7C0A02; -fx-text-fill: #ffffff; -fx-font-family: 'Arial'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 6px; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(124,10,2,0.35), 8, 0, 0, 2);" text="💾 Authorize &amp; Log" />
+                        <Button fx:id="btnCancelSlipAction" mnemonicParsing="false" prefHeight="36.0" prefWidth="110.0" styleClass="btn-dismiss" text="Dismiss" />
+                        <Button fx:id="btnPrintSlipAction" mnemonicParsing="false" prefHeight="36.0" prefWidth="120.0" styleClass="btn-print" text="🖨️ Print Slip" />
+                        <Button fx:id="btnSaveSlipAction" mnemonicParsing="false" prefHeight="36.0" prefWidth="160.0" styleClass="btn-authorize" text="💾 Authorize &amp; Log" />
                     </children>
                     <VBox.margin>
                         <Insets top="5.0" />
                     </VBox.margin>
                 </HBox>
 
-                <Label fx:id="lblSlipStatusMessage" style="-fx-text-fill: #D4A853; -fx-font-family: 'Arial'; -fx-font-size: 12px; -fx-font-weight: bold;" text="" />
+                <Label fx:id="lblSlipStatusMessage" styleClass="pass-slip-status" text="" />
 
             </children>
         </VBox>

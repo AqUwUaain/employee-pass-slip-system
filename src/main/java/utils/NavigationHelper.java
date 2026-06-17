@@ -50,6 +50,7 @@ public final class NavigationHelper {
             Scene scene = new Scene(root);
             scene.getStylesheets().add(ThemeManager.getCssPath());
             stage.setScene(scene);
+            Session.currentFxmlPath = fxmlPath;
 
             if (wasFullScreen) {
                 stage.setFullScreen(true);
@@ -99,6 +100,10 @@ public final class NavigationHelper {
             btnSidebarMonitoring.setVisible(false);
             btnSidebarMonitoring.setManaged(false);
         }
+    }
+
+    public static String getCurrentFxmlPath(Node source) {
+        return Session.currentFxmlPath != null ? Session.currentFxmlPath : "/fxml/Dashboard.fxml";
     }
 
     // ==================== FIXED LOGOUT METHOD ====================

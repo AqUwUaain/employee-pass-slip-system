@@ -55,6 +55,9 @@ public class EmployeeController {
     private Button btnNotificationsAlert;
 
     @FXML
+    private Button btnThemeToggle;
+
+    @FXML
     private VBox btnGatewayViewList;
 
     @FXML
@@ -78,7 +81,7 @@ public class EmployeeController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarEmployeeDirectory
+                btnSidebarEmployeeDirectory, btnThemeToggle
         );
 
         if (btnManageEmployees != null) {

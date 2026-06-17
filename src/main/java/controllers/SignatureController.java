@@ -58,6 +58,9 @@ public class SignatureController {
     private Button btnNotificationsAlert;
 
     @FXML
+    private Button btnThemeToggle;
+
+    @FXML
     private ImageView imgSignaturePreview;
 
     @FXML
@@ -87,7 +90,7 @@ public class SignatureController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarSignatures
+                btnSidebarSignatures, btnThemeToggle
         );
 
         if (btnManageEmployees != null) {

@@ -71,6 +71,7 @@
                 <StackPane HBox.hgrow="ALWAYS" />
                 <HBox spacing="12.0" alignment="CENTER">
                     <children>
+                        <Button fx:id="btnThemeToggle" mnemonicParsing="false" text="☀" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
                         <Button fx:id="btnNotificationsAlert" mnemonicParsing="false" text="&#x1F514;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
                     </children>
                 </HBox>
@@ -125,28 +126,28 @@
                                             <children>
                                                 <VBox spacing="6.0" GridPane.rowIndex="0">
                                                     <children>
-                                                        <Label text="USERNAME" style="-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 11px;" />
+                                                        <Label text="USERNAME" styleClass="form-label" style="-fx-font-size: 11px;" />
                                                         <TextField fx:id="txtUserId" promptText="e.g., admin@pup.edu.ph" />
                                                     </children>
                                                 </VBox>
                                                 <VBox spacing="6.0" GridPane.rowIndex="1">
                                                     <children>
-                                                        <Label text="FULL NAME" style="-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 11px;" />
+                                                        <Label text="FULL NAME" styleClass="form-label" style="-fx-font-size: 11px;" />
                                                         <TextField fx:id="txtUserName" promptText="Enter full name..." />
                                                     </children>
                                                 </VBox>
                                                 <VBox spacing="6.0" GridPane.rowIndex="2">
                                                     <children>
-                                                        <Label text="ROLE" style="-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 11px;" />
+                                                        <Label text="ROLE" styleClass="form-label" style="-fx-font-size: 11px;" />
                                                         <ComboBox fx:id="cmbUserRole" maxWidth="Infinity" promptText="Select Role" />
                                                     </children>
                                                 </VBox>
                                                 <VBox spacing="6.0" GridPane.rowIndex="3">
                                                     <children>
-                                                        <Label text="PASSWORD" style="-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 11px;" />
-                                                        <HBox alignment="CENTER_LEFT" spacing="0.0" style="-fx-background-color: #2D2520; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-padding: 0 0 0 12px;">
-                                                            <PasswordField fx:id="txtUserPassword" promptText="Enter password..." style="-fx-background-color: transparent; -fx-text-fill: #F5F5F4; -fx-border-width: 0; -fx-padding: 8px 4px; -fx-font-size: 13px;" HBox.hgrow="ALWAYS" />
-                                                            <Label fx:id="btnTogglePassword" text="Show" style="-fx-font-size: 11px; -fx-text-fill: #A8A29E; -fx-padding: 8px 10px 8px 4px; -fx-cursor: hand; -fx-underline: true;" />
+                                                        <Label text="PASSWORD" styleClass="form-label" style="-fx-font-size: 11px;" />
+                                                        <HBox alignment="CENTER_LEFT" spacing="0.0" styleClass="pw-field-wrapper">
+                                                            <PasswordField fx:id="txtUserPassword" promptText="Enter password..." style="-fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 8px 4px; -fx-font-size: 13px;" HBox.hgrow="ALWAYS" />
+                                                            <Label fx:id="btnTogglePassword" text="Show" styleClass="pw-eye-label" />
                                                         </HBox>
                                                     </children>
                                                 </VBox>

@@ -68,6 +68,9 @@ public class StaffDashboardController {
     private Button btnLogout;
 
     @FXML
+    private Button btnThemeToggle;
+
+    @FXML
     private Label lblPassSlipsToday;
 
     @FXML
@@ -100,7 +103,7 @@ public class StaffDashboardController {
                 btnSidebarLogReturn, null,
                 btnSidebarSignatures, null,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarDashboard
+                btnSidebarDashboard, btnThemeToggle
         );
 
         if (btnManageEmployees != null) {

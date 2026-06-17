@@ -67,6 +67,9 @@ public class ReturnController {
     private Button btnLogout;
 
     @FXML
+    private Button btnThemeToggle;
+
+    @FXML
     private Button btnFetchActiveSlip;
 
     @FXML
@@ -164,7 +167,7 @@ public class ReturnController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarLogReturn
+                btnSidebarLogReturn, btnThemeToggle
         );
 
         if (btnManageEmployees != null) {

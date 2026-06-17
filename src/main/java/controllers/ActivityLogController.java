@@ -64,6 +64,9 @@ public class ActivityLogController {
     private Button btnNotificationsAlert;
 
     @FXML
+    private Button btnThemeToggle;
+
+    @FXML
     private Button btnManageEmployees;
 
     @FXML
@@ -120,7 +123,7 @@ public class ActivityLogController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarMonitoring
+                btnSidebarMonitoring, btnThemeToggle
         );
 
         if (btnManageEmployees != null) {

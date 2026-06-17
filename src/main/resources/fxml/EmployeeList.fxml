@@ -67,7 +67,8 @@
                 <StackPane HBox.hgrow="ALWAYS" />
                 <HBox spacing="12.0" alignment="CENTER">
                     <children>
-                        <Button fx:id="btnBackToEmployees" text="&#x25C0;  Back" style="-fx-background-color: #3D3229; -fx-text-fill: #D6CCC2; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 8px; -fx-padding: 8px 16px; -fx-border-color: #57534E; -fx-border-width: 1px; -fx-cursor: hand;" />
+                        <Button fx:id="btnBackToEmployees" text="&#x25C0;  Back" styleClass="btn-neutral" style="-fx-padding: 8px 16px;" />
+                        <Button fx:id="btnThemeToggle" mnemonicParsing="false" text="☀" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
                         <Button fx:id="btnNotificationsAlert" mnemonicParsing="false" text="&#x1F514;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
                     </children>
                 </HBox>
@@ -134,10 +135,10 @@
                                                 <Button fx:id="btnBatchDelete" mnemonicParsing="false" text="&#x1F5D1; Delete Selected" style="-fx-background-color: #DC2626; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 6px; -fx-padding: 6px 14px; -fx-cursor: hand;" visible="false" managed="false" />
                                                 <Button fx:id="btnExportCsv" mnemonicParsing="false" text="Export CSV" styleClass="btn-ghost" />
                                                 <Button fx:id="btnExportExcel" mnemonicParsing="false" text="Export Excel" styleClass="btn-ghost" />
-                                                <HBox alignment="CENTER_LEFT" style="-fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 20px; -fx-background-color: #2D2520; -fx-padding: 4px 15px; -fx-pref-width: 220px;">
+                                                <HBox alignment="CENTER_LEFT" styleClass="search-bar">
                                                     <children>
-                                                        <Label style="-fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="&#x1F50D; " />
-                                                        <TextField fx:id="txtSearchEmployee" promptText="Search Employee" style="-fx-background-color: transparent; -fx-padding: 2px 0; -fx-font-size: 13px; -fx-text-fill: #F5F5F4; -fx-prompt-text-fill: #78716C;" HBox.hgrow="ALWAYS" />
+                                                        <Label styleClass="search-icon" text="&#x1F50D; " />
+                                                        <TextField fx:id="txtSearchEmployee" promptText="Search Employee" styleClass="search-input" HBox.hgrow="ALWAYS" />
                                                     </children>
                                                 </HBox>
                                                 <Button fx:id="btnFilterAll" mnemonicParsing="false" text="All" styleClass="btn-ghost" />

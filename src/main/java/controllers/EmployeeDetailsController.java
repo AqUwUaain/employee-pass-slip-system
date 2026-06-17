@@ -53,6 +53,9 @@ public class EmployeeDetailsController {
     private Button btnNotificationsAlert;
 
     @FXML
+    private Button btnThemeToggle;
+
+    @FXML
     private Button btnBackToDirectory;
 
     @FXML
@@ -106,7 +109,7 @@ public class EmployeeDetailsController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarEmployeeDirectory
+                btnSidebarEmployeeDirectory, btnThemeToggle
         );
 
         if (btnManageEmployees != null) {

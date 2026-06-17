@@ -68,7 +68,13 @@ public class DashboardController {
     private Button btnLogout;
 
     @FXML
+    private Button btnThemeToggle;
+
+    @FXML
     private VBox cardCreatePassSlip;
+
+    @FXML
+    private Label lblCreateEntryIcon;
 
     @FXML
     private Label lblDailyCounter;
@@ -123,7 +129,7 @@ public class DashboardController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarDashboard
+                btnSidebarDashboard, btnThemeToggle
         );
 
         currentYearMonth = YearMonth.now();
@@ -152,6 +158,11 @@ public class DashboardController {
                         "/fxml/PassSlip.fxml"
                 )
         );
+
+        if (lblCreateEntryIcon != null) {
+            boolean isDark = utils.ThemeManager.isDark();
+            lblCreateEntryIcon.setStyle("-fx-font-size: 42px;" + (isDark ? "" : " -fx-text-fill: #FFFFFF;"));
+        }
 
         btnPrevMonth.setOnMouseClicked(event -> {
             currentYearMonth = currentYearMonth.minusMonths(1);
@@ -256,10 +267,13 @@ public class DashboardController {
             
             // Add Filter UI to fixed filter box (outside scroll)
             String[] filters = {"All", "Today", "This Week", "This Month"};
+            boolean isDarkTheme = utils.ThemeManager.isDark();
             for (String f : filters) {
                 Label fl = new Label(f);
                 boolean isActive = f.equals(currentFilter);
-                fl.setStyle("-fx-text-fill: " + (isActive ? "#D4A853" : "#78716C") + "; -fx-cursor: hand; -fx-font-size: 11px;" + (isActive ? "-fx-font-weight: bold;" : ""));
+                String activeColor = isDarkTheme ? "#D4A853" : "#800517";
+                String inactiveColor = isDarkTheme ? "#78716C" : "#8A8272";
+                fl.setStyle("-fx-text-fill: " + (isActive ? activeColor : inactiveColor) + "; -fx-cursor: hand; -fx-font-size: 11px;" + (isActive ? "-fx-font-weight: bold;" : ""));
                 fl.setOnMouseClicked(e -> {
                     loadActivities(f);
                 });
@@ -271,31 +285,49 @@ public class DashboardController {
                 emptyBox.setAlignment(Pos.CENTER);
                 emptyBox.setStyle("-fx-padding: 40 0;");
                 Label noAct = new Label("No activities found");
-                noAct.setStyle("-fx-text-fill: #78716C; -fx-font-size: 13px;");
+                noAct.setStyle("-fx-text-fill: " + (isDarkTheme ? "#78716C" : "#8A8272") + "; -fx-font-size: 13px;");
                 emptyBox.getChildren().add(noAct);
                 vboxActivityTracker.getChildren().add(emptyBox);
             } else {
                 int count = 0;
                 for (ActivityLog log : filteredLogs) {
                     if (count >= 20) break; 
-                    
+
+                    boolean isDark = utils.ThemeManager.isDark();
+                    boolean isOdd = count % 2 == 0;
+
+                    String rowBg, rowText, dotColor, timeColor, hoverBg;
+                    if (isDark) {
+                        rowBg = "transparent";
+                        rowText = "#D6CCC2";
+                        dotColor = "#D4A853";
+                        timeColor = "#A8A29E";
+                        hoverBg = "rgba(212,168,83,0.05)";
+                    } else {
+                        rowBg = isOdd ? "#F1E9CE" : "#800517";
+                        rowText = isOdd ? "#800517" : "#FFFFFF";
+                        dotColor = isOdd ? "#800517" : "#FFFFFF";
+                        timeColor = isOdd ? "#8A8272" : "rgba(255,255,255,0.7)";
+                        hoverBg = isOdd ? "rgba(128,5,23,0.08)" : "rgba(255,255,255,0.1)";
+                    }
+
                     HBox row = new HBox(10);
                     row.setAlignment(Pos.CENTER_LEFT);
-                    row.setStyle("-fx-padding: 8px 14px; -fx-background-radius: 8px;");
-                    row.setOnMouseEntered(e -> row.setStyle("-fx-padding: 8px 14px; -fx-background-color: rgba(212,168,83,0.05); -fx-background-radius: 8px;"));
-                    row.setOnMouseExited(e -> row.setStyle("-fx-padding: 8px 14px; -fx-background-radius: 8px;"));
+                    row.setStyle("-fx-padding: 8px 14px; -fx-background-color: " + rowBg + "; -fx-background-radius: 8px;");
+                    row.setOnMouseEntered(e -> row.setStyle("-fx-padding: 8px 14px; -fx-background-color: " + hoverBg + "; -fx-background-radius: 8px;"));
+                    row.setOnMouseExited(e -> row.setStyle("-fx-padding: 8px 14px; -fx-background-color: " + rowBg + "; -fx-background-radius: 8px;"));
 
                     Label dot = new Label("●");
-                    dot.setStyle("-fx-text-fill: #D4A853; -fx-font-size: 10px;");
+                    dot.setStyle("-fx-text-fill: " + dotColor + "; -fx-font-size: 10px;");
 
                     Label actionLabel = new Label(log.getAction());
-                    actionLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #D6CCC2; -fx-padding: 0 0 0 10px;");
+                    actionLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: " + rowText + "; -fx-padding: 0 0 0 10px;");
                     
                     StackPane spacer = new StackPane();
                     HBox.setHgrow(spacer, Priority.ALWAYS);
 
                     Label timeLabel = new Label(getRelativeTime(log.getTimestamp()));
-                    timeLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #A8A29E;");
+                    timeLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: " + timeColor + ";");
 
                     row.getChildren().addAll(dot, actionLabel, spacer, timeLabel);
                     vboxActivityTracker.getChildren().add(row);

@@ -124,6 +124,9 @@ public class ReportsController {
     private Button btnLogout;
 
     @FXML
+    private Button btnThemeToggle;
+
+    @FXML
     private Button btnManageEmployees;
 
     @FXML
@@ -141,7 +144,7 @@ public class ReportsController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, null,
-                btnSidebarReports
+                btnSidebarReports, btnThemeToggle
         );
 
         if (btnManageEmployees != null) {

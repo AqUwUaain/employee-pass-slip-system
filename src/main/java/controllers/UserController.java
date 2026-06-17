@@ -21,6 +21,8 @@ import utils.PasswordUtils;
 import utils.ConfirmDialog;
 import utils.SidebarHelper;
 
+import utils.ThemeManager;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -62,6 +64,9 @@ public class UserController {
 
     @FXML
     private Button btnNotificationsAlert;
+
+    @FXML
+    private Button btnThemeToggle;
 
     @FXML
     private Label lblTotalUsers;
@@ -129,7 +134,7 @@ public class UserController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarUsers
+                btnSidebarUsers, btnThemeToggle
         );
 
         if (btnManageEmployees != null) {
@@ -437,6 +442,17 @@ public class UserController {
             return;
         }
 
+        boolean dark = ThemeManager.isDark();
+        String bgColor = dark ? "#1F1B1B" : "#FDF8EE";
+        String textColor = dark ? "#F5F5F4" : "#1C1917";
+        String mutedText = dark ? "#A8A29E" : "#6B6358";
+        String borderColor = dark ? "#D4A853" : "#800517";
+        String inputBg = dark ? "#2D2520" : "#FDF8EE";
+        String inputBorder = dark ? "#3D3229" : "#C0B89E";
+        String cancelBg = dark ? "#3D3229" : "#E8DFC8";
+        String confirmBg = dark ? "#D4A853" : "#800517";
+        String confirmText = dark ? "#1C0A04" : "#FFFFFF";
+
         javafx.scene.layout.BorderPane root = (javafx.scene.layout.BorderPane) tblSystemUsersView.getScene().getRoot();
         javafx.scene.Node originalCenter = root.getCenter();
 
@@ -451,9 +467,9 @@ public class UserController {
         dialog.setPrefHeight(450);
         dialog.setMaxHeight(450);
         dialog.setStyle(
-                "-fx-background-color: #1F1B1B; " +
+                "-fx-background-color: " + bgColor + "; " +
                 "-fx-background-radius: 12px; " +
-                "-fx-border-color: #D4A853; " +
+                "-fx-border-color: " + borderColor + "; " +
                 "-fx-border-width: 1px; " +
                 "-fx-border-radius: 12px; " +
                 "-fx-padding: 28px; " +
@@ -464,28 +480,28 @@ public class UserController {
         icon.setStyle("-fx-font-size: 32px;");
 
         Label title = new Label("Change Password");
-        title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;");
+        title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: " + textColor + ";");
 
         Label subtitle = new Label("for " + selectedUser.getUsername());
-        subtitle.setStyle("-fx-font-size: 12px; -fx-text-fill: #A8A29E;");
+        subtitle.setStyle("-fx-font-size: 12px; -fx-text-fill: " + mutedText + ";");
 
         Label oldPwLabel = new Label("CURRENT PASSWORD");
-        oldPwLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 11px;");
+        oldPwLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: " + mutedText + "; -fx-font-size: 11px;");
 
         HBox oldPwBox = createPasswordFieldWithEye("Enter current password...");
 
         Label newPwLabel = new Label("NEW PASSWORD");
-        newPwLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 11px;");
+        newPwLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: " + mutedText + "; -fx-font-size: 11px;");
 
         HBox newPwBox = createPasswordFieldWithEye("Enter new password...");
 
         Label confirmPwLabel = new Label("CONFIRM NEW PASSWORD");
-        confirmPwLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 11px;");
+        confirmPwLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: " + mutedText + "; -fx-font-size: 11px;");
 
         HBox confirmPwBox = createPasswordFieldWithEye("Re-enter new password...");
 
         Label rulesLabel = new Label("Min 5 chars, 1 uppercase, 1 number, 1 special (!@#%*)");
-        rulesLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #78716C; -fx-wrap-text: true;");
+        rulesLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: " + mutedText + "; -fx-wrap-text: true;");
         rulesLabel.setMaxWidth(360);
 
         Label msgLabel = new Label();
@@ -498,14 +514,14 @@ public class UserController {
 
         Button btnCancel = new Button("Cancel");
         btnCancel.setStyle(
-                "-fx-background-color: #3D3229; -fx-text-fill: #A8A29E; " +
+                "-fx-background-color: " + cancelBg + "; -fx-text-fill: " + mutedText + "; " +
                 "-fx-font-size: 13px; -fx-font-weight: bold; " +
                 "-fx-background-radius: 8px; -fx-padding: 8px 24px; -fx-cursor: hand;"
         );
 
         Button btnConfirm = new Button("Update Password");
         btnConfirm.setStyle(
-                "-fx-background-color: #D4A853; -fx-text-fill: #1C0A04; " +
+                "-fx-background-color: " + confirmBg + "; -fx-text-fill: " + confirmText + "; " +
                 "-fx-font-size: 13px; -fx-font-weight: bold; " +
                 "-fx-background-radius: 8px; -fx-padding: 8px 24px; -fx-cursor: hand;"
         );
@@ -615,6 +631,17 @@ public class UserController {
             return;
         }
 
+        boolean dark = ThemeManager.isDark();
+        String bgColor = dark ? "#1F1B1B" : "#FDF8EE";
+        String textColor = dark ? "#F5F5F4" : "#1C1917";
+        String mutedText = dark ? "#A8A29E" : "#6B6358";
+        String borderColor = dark ? "#D4A853" : "#800517";
+        String inputBg = dark ? "#2D2520" : "#FDF8EE";
+        String inputBorder = dark ? "#3D3229" : "#C0B89E";
+        String cancelBg = dark ? "#3D3229" : "#E8DFC8";
+        String confirmBg = dark ? "#D4A853" : "#800517";
+        String confirmText = dark ? "#1C0A04" : "#FFFFFF";
+
         javafx.scene.layout.BorderPane root = (javafx.scene.layout.BorderPane) tblSystemUsersView.getScene().getRoot();
         javafx.scene.Node originalCenter = root.getCenter();
 
@@ -629,9 +656,9 @@ public class UserController {
         dialog.setPrefHeight(380);
         dialog.setMaxHeight(380);
         dialog.setStyle(
-                "-fx-background-color: #1F1B1B; " +
+                "-fx-background-color: " + bgColor + "; " +
                 "-fx-background-radius: 12px; " +
-                "-fx-border-color: #D4A853; " +
+                "-fx-border-color: " + borderColor + "; " +
                 "-fx-border-width: 1px; " +
                 "-fx-border-radius: 12px; " +
                 "-fx-padding: 28px; " +
@@ -642,24 +669,24 @@ public class UserController {
         icon.setStyle("-fx-font-size: 32px;");
 
         Label title = new Label("Edit User");
-        title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;");
+        title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: " + textColor + ";");
 
         Label subtitle = new Label("Editing: " + selectedUser.getUsername());
-        subtitle.setStyle("-fx-font-size: 12px; -fx-text-fill: #A8A29E;");
+        subtitle.setStyle("-fx-font-size: 12px; -fx-text-fill: " + mutedText + ";");
 
         Label emailLabel = new Label("USERNAME (EMAIL)");
-        emailLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 11px;");
+        emailLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: " + mutedText + "; -fx-font-size: 11px;");
 
         TextField emailField = new TextField(selectedUser.getUsername());
-        emailField.setStyle("-fx-background-color: #2D2520; -fx-text-fill: #F5F5F4; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-padding: 8px 12px; -fx-font-size: 13px;");
+        emailField.setStyle("-fx-background-color: " + inputBg + "; -fx-text-fill: " + textColor + "; -fx-border-color: " + inputBorder + "; -fx-border-width: 1px; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-padding: 8px 12px; -fx-font-size: 13px;");
         emailField.setMaxWidth(Double.MAX_VALUE);
 
         Label roleLabel = new Label("ROLE");
-        roleLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 11px;");
+        roleLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: " + mutedText + "; -fx-font-size: 11px;");
 
         ComboBox<String> roleBox = new ComboBox<>(FXCollections.observableArrayList("ADMIN", "STAFF"));
         roleBox.setValue(selectedUser.getRole());
-        roleBox.setStyle("-fx-background-color: #2D2520; -fx-text-fill: #F5F5F4; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-padding: 8px 12px; -fx-font-size: 13px;");
+        roleBox.setStyle("-fx-background-color: " + inputBg + "; -fx-text-fill: " + textColor + "; -fx-border-color: " + inputBorder + "; -fx-border-width: 1px; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-padding: 8px 12px; -fx-font-size: 13px;");
         roleBox.setMaxWidth(Double.MAX_VALUE);
 
         Label msgLabel = new Label();
@@ -671,14 +698,14 @@ public class UserController {
 
         Button btnCancel = new Button("Cancel");
         btnCancel.setStyle(
-                "-fx-background-color: #3D3229; -fx-text-fill: #A8A29E; " +
+                "-fx-background-color: " + cancelBg + "; -fx-text-fill: " + mutedText + "; " +
                 "-fx-font-size: 13px; -fx-font-weight: bold; " +
                 "-fx-background-radius: 8px; -fx-padding: 8px 24px; -fx-cursor: hand;"
         );
 
         Button btnConfirm = new Button("Save Changes");
         btnConfirm.setStyle(
-                "-fx-background-color: #D4A853; -fx-text-fill: #1C0A04; " +
+                "-fx-background-color: " + confirmBg + "; -fx-text-fill: " + confirmText + "; " +
                 "-fx-font-size: 13px; -fx-font-weight: bold; " +
                 "-fx-background-radius: 8px; -fx-padding: 8px 24px; -fx-cursor: hand;"
         );
@@ -758,7 +785,7 @@ public class UserController {
     }
 
     private HBox createPasswordFieldWithEye(String promptText) {
-        String pwStyle = "-fx-background-color: transparent; -fx-text-fill: #F5F5F4; -fx-border-width: 0; -fx-padding: 8px 4px; -fx-font-size: 13px;";
+        String pwStyle = "-fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 8px 4px; -fx-font-size: 13px;";
 
         PasswordField pwField = new PasswordField();
         pwField.setPromptText(promptText);
@@ -766,11 +793,11 @@ public class UserController {
         pwField.setMaxWidth(Double.MAX_VALUE);
 
         Label eye = new Label("Show");
-        eye.setStyle("-fx-font-size: 11px; -fx-text-fill: #A8A29E; -fx-padding: 8px 10px 8px 4px; -fx-cursor: hand; -fx-underline: true;");
+        eye.getStyleClass().add("pw-eye-label");
 
         HBox box = new HBox();
         box.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        box.setStyle("-fx-background-color: #2D2520; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-padding: 0 0 0 12px;");
+        box.getStyleClass().add("pw-field-wrapper");
         box.getChildren().addAll(pwField, eye);
         HBox.setHgrow(pwField, javafx.scene.layout.Priority.ALWAYS);
 

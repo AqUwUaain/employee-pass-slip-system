@@ -62,6 +62,9 @@ public class MonitoringController {
     private Button btnLogout;
 
     @FXML
+    private Button btnThemeToggle;
+
+    @FXML
     private Button btnRefreshMonitoringFeed;
 
     @FXML
@@ -111,7 +114,7 @@ public class MonitoringController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, null,
-                btnSidebarMonitoring
+                btnSidebarMonitoring, btnThemeToggle
         );
 
         if (btnManageEmployees != null) {

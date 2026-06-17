@@ -10,12 +10,15 @@ public class Session {
 
     public static volatile int selectedEmployeeId;
 
+    public static volatile String currentFxmlPath;
+
     public static void clear() {
 
         currentUserId = 0;
         currentUsername = null;
         currentRole = null;
         selectedEmployeeId = 0;
+        currentFxmlPath = null;
 
     }
 

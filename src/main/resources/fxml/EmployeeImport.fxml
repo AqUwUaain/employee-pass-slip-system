@@ -65,6 +65,7 @@
                 <StackPane HBox.hgrow="ALWAYS" />
                 <HBox spacing="12.0" alignment="CENTER">
                     <children>
+                        <Button fx:id="btnThemeToggle" mnemonicParsing="false" text="☀" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
                         <Button fx:id="btnNotificationsAlert" mnemonicParsing="false" text="&#x1F514;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
                     </children>
                 </HBox>
@@ -83,7 +84,7 @@
                                     <children>
                                         <Button fx:id="btnChooseFile" text="&#x1F4C1;  Choose File" style="-fx-background-color: linear-gradient(to right, #C9951A, #D4A853); -fx-text-fill: #1C1917; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 11px 24px; -fx-cursor: hand;" />
                                         <Button fx:id="btnImportAll" text="&#x2795;  Import All" disable="true" style="-fx-background-color: #34D399; -fx-text-fill: #1C1917; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 11px 24px; -fx-cursor: hand;" />
-                                        <Button fx:id="btnBackToEmployees" text="&#x25C0;  Back" style="-fx-background-color: #3D3229; -fx-text-fill: #D6CCC2; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 11px 24px; -fx-border-color: #57534E; -fx-border-width: 1px; -fx-cursor: hand;" />
+                                        <Button fx:id="btnBackToEmployees" text="&#x25C0;  Back" styleClass="btn-neutral" />
                                         <StackPane HBox.hgrow="ALWAYS" />
                                         <Label fx:id="lblImportSummary" text="" style="-fx-text-fill: #A8A29E; -fx-font-size: 13px;" />
                                     </children>
@@ -94,8 +95,8 @@
                         <!-- Message label -->
                         <Label fx:id="lblMessage" text="" style="-fx-font-size: 13px; -fx-padding: 4px 0;" />
                         <!-- Preview table -->
-                        <Label text="PREVIEW" style="-fx-text-fill: rgba(255,255,255,0.4); -fx-font-size: 11px; -fx-font-weight: bold;" />
-                        <TableView fx:id="previewTable" prefHeight="350.0" VBox.vgrow="ALWAYS" style="-fx-background-color: #252220; -fx-border-color: #3D3229; -fx-border-radius: 8px; -fx-background-radius: 8px;">
+                        <Label text="PREVIEW" styleClass="sec-title" />
+                        <TableView fx:id="previewTable" prefHeight="350.0" VBox.vgrow="ALWAYS" styleClass="table-view">
                             <columns>
                                 <TableColumn fx:id="colPreviewRowNum" text="#" prefWidth="35" />
                                 <TableColumn fx:id="colPreviewFirstName" text="First Name" prefWidth="85" />
@@ -110,7 +111,7 @@
                                 <TableColumn fx:id="colPreviewEmergency" text="Emergency" prefWidth="85" />
                             </columns>
                             <placeholder>
-                                <Label text="Choose a file to see preview" style="-fx-text-fill: #78716C; -fx-font-size: 13px;" />
+                                <Label text="Choose a file to see preview" styleClass="msg-info" />
                             </placeholder>
                         </TableView>
                     </children>

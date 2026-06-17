@@ -96,6 +96,9 @@ public class EmployeeFormController {
     private Button btnNotificationsAlert;
 
     @FXML
+    private Button btnThemeToggle;
+
+    @FXML
     private Button btnManageEmployees;
 
     @FXML
@@ -110,7 +113,7 @@ public class EmployeeFormController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarAddEmployee
+                btnSidebarAddEmployee, btnThemeToggle
         );
 
         if (btnManageEmployees != null) {

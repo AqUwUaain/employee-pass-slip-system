@@ -64,6 +64,7 @@
                     </children>
                 </VBox>
                 <StackPane HBox.hgrow="ALWAYS" />
+                <Button fx:id="btnThemeToggle" mnemonicParsing="false" text="☀" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
                 <Button fx:id="btnRefreshMonitoringFeed" mnemonicParsing="false" text="&#x21BB; Refresh" styleClass="btn-maroon" />
             </children>
         </HBox>

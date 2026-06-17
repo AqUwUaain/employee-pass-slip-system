@@ -100,33 +100,33 @@
                                         <RowConstraints minHeight="40.0" />
                                     </rowConstraints>
                                     <children>
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Client # (Employee ID):" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                                        <TextField fx:id="txtSlipClientId" promptText="e.g., PUP-SR-2026" style="-fx-font-size: 13px; -fx-padding: 8px 12px; -fx-background-color: #2D2520; -fx-border-color: #3D3229; -fx-border-radius: 4px; -fx-text-fill: #F5F5F4;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                        <Label styleClass="form-label" style="-fx-font-size: 13px;" text="Client # (Employee ID):" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                        <TextField fx:id="txtSlipClientId" promptText="e.g., PUP-SR-2026" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Full Name:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                                        <TextField fx:id="txtSlipEmployeeName" promptText="Enter outbound employee name..." style="-fx-font-size: 13px; -fx-padding: 8px 12px; -fx-background-color: #2D2520; -fx-border-color: #3D3229; -fx-border-radius: 4px; -fx-text-fill: #F5F5F4;" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                                        <Label styleClass="form-label" style="-fx-font-size: 13px;" text="Full Name:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                                        <TextField fx:id="txtSlipEmployeeName" promptText="Enter outbound employee name..." GridPane.columnIndex="3" GridPane.rowIndex="0" />
 
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Date Designation:"  GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                                        <TextField fx:id="txtSlipCurrentDate" promptText="YYYY-MM-DD" style="-fx-font-size: 13px; -fx-padding: 8px 12px; -fx-background-color: #2D2520; -fx-border-color: #3D3229; -fx-border-radius: 4px; -fx-text-fill: #F5F5F4;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                        <Label styleClass="form-label" style="-fx-font-size: 13px;" text="Date Designation:"  GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                        <TextField fx:id="txtSlipCurrentDate" promptText="YYYY-MM-DD" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Department:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                        <ComboBox fx:id="cmbSlipDepartment" maxWidth="Infinity" promptText="Select Unit" style="-fx-font-size: 13px; -fx-padding: 4px; -fx-background-color: #2D2520; -fx-border-color: #3D3229; -fx-border-radius: 4px;" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                        <Label styleClass="form-label" style="-fx-font-size: 13px;" text="Department:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                        <ComboBox fx:id="cmbSlipDepartment" maxWidth="Infinity" promptText="Select Unit" styleClass="combo-box" GridPane.columnIndex="3" GridPane.rowIndex="1" />
 
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Purpose of Travel:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                                        <TextArea fx:id="txtSlipPurpose" promptText="State official destination or leave context details clearly here..." wrapText="true" style="-fx-font-size: 13px; -fx-background-color: #2D2520; -fx-border-color: #3D3229; -fx-border-radius: 4px; -fx-text-fill: #F5F5F4;" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
+                                        <Label styleClass="form-label" style="-fx-font-size: 13px;" text="Purpose of Travel:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                        <TextArea fx:id="txtSlipPurpose" promptText="State official destination or leave context details clearly here..." wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
 
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Time Out (Departure):" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                                        <TextField fx:id="txtSlipTimeOut" promptText="00:00 AM/PM" style="-fx-font-size: 13px; -fx-padding: 8px 12px; -fx-background-color: #2D2520; -fx-border-color: #3D3229; -fx-border-radius: 4px; -fx-text-fill: #F5F5F4;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                        <Label styleClass="form-label" style="-fx-font-size: 13px;" text="Time Out (Departure):" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                        <TextField fx:id="txtSlipTimeOut" promptText="00:00 AM/PM" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                                        <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Time In:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                        <TextField fx:id="txtSlipExpectedIn" promptText="00:00 AM/PM" style="-fx-font-size: 13px; -fx-padding: 8px 12px; -fx-background-color: #2D2520; -fx-border-color: #3D3229; -fx-border-radius: 4px; -fx-text-fill: #F5F5F4;" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                        <Label styleClass="form-label" style="-fx-font-size: 13px;" text="Time In:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                        <TextField fx:id="txtSlipExpectedIn" promptText="00:00 AM/PM" GridPane.columnIndex="3" GridPane.rowIndex="3" />
                                     </children>
                                 </GridPane>
 
-                                <HBox alignment="CENTER_RIGHT" spacing="15.0" style="-fx-padding: 15px 0 0 0; -fx-border-color: #3D3229 transparent transparent transparent; -fx-border-width: 1px 0 0 0;">
+                                <HBox alignment="CENTER_RIGHT" spacing="15.0" style="-fx-padding: 15px 0 0 0;">
                                     <children>
-                                        <Button fx:id="btnResetSlipForm" mnemonicParsing="false" prefHeight="38.0" prefWidth="110.0" style="-fx-background-color: #2D2520; -fx-text-fill: #A8A29E; -fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-font-size: 13px; -fx-background-radius: 4px; -fx-border-color: #3D3229; -fx-border-radius: 4px; -fx-cursor: hand;" text="Clear Fields" />
-                                        <Button fx:id="btnIssuePassSlip" mnemonicParsing="false" prefHeight="38.0" prefWidth="180.0" style="-fx-background-color: #7C0A02; -fx-text-fill: #ffffff; -fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-font-size: 13px; -fx-background-radius: 4px; -fx-cursor: hand;" text="ðŸŽŸï¸ Issue Outbound Pass" />
+                                        <Button fx:id="btnResetSlipForm" mnemonicParsing="false" prefHeight="38.0" prefWidth="110.0" styleClass="btn-neutral" text="Clear Fields" />
+                                        <Button fx:id="btnIssuePassSlip" mnemonicParsing="false" prefHeight="38.0" prefWidth="180.0" styleClass="btn-maroon" text="ðŸŽŸï¸ Issue Outbound Pass" />
                                     </children>
                                 </HBox>
 

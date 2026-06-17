@@ -20,7 +20,8 @@ public final class SidebarHelper {
             Button btnPasswordReset,
             Button btnLogout,
             Button btnNotifications,
-            Button activeButton
+            Button activeButton,
+            Button btnThemeToggle
     ) {
         if (btnDashboard != null)
             btnDashboard.setOnAction(e -> NavigationHelper.navigateToDashboard(btnDashboard));
@@ -72,12 +73,27 @@ public final class SidebarHelper {
 
         if (btnNotifications != null)
             btnNotifications.setOnAction(e -> NotificationHelper.toggle(btnNotifications));
+
+        if (btnThemeToggle != null) {
+            updateThemeToggleText(btnThemeToggle);
+            btnThemeToggle.setOnAction(e -> {
+                ThemeManager.toggle();
+                NavigationHelper.navigateTo(btnThemeToggle,
+                        NavigationHelper.getCurrentFxmlPath(btnThemeToggle));
+            });
+        }
     }
 
     private static void hideButton(Button btn) {
         if (btn != null) {
             btn.setVisible(false);
             btn.setManaged(false);
+        }
+    }
+
+    public static void updateThemeToggleText(Button btn) {
+        if (btn != null) {
+            btn.setText(ThemeManager.isDark() ? "\u2600" : "\u263E");
         }
     }
 }

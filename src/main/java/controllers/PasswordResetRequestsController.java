@@ -81,6 +81,9 @@ public class PasswordResetRequestsController {
     private Button btnNotificationsAlert;
 
     @FXML
+    private Button btnThemeToggle;
+
+    @FXML
     private Label messageLabel;
 
     @FXML
@@ -100,7 +103,7 @@ public class PasswordResetRequestsController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarPasswordReset
+                btnSidebarPasswordReset, btnThemeToggle
         );
 
         if (btnManageEmployees != null) {
