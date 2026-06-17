@@ -66,7 +66,13 @@ public class EmployeeFormController {
     private Button btnSidebarMonitoring;
 
     @FXML
-    private Button btnSidebarEmployees;
+    private Button btnSidebarEmployeeDirectory;
+
+    @FXML
+    private Button btnSidebarAddEmployee;
+
+    @FXML
+    private Button btnSidebarImportEmployee;
 
     @FXML
     private Button btnSidebarReports;
@@ -99,11 +105,12 @@ public class EmployeeFormController {
     private void initialize() {
         SidebarHelper.initialize(
                 btnSidebarDashboard, btnSidebarMonitoring,
-                btnSidebarEmployees, btnSidebarReports,
+                btnSidebarEmployeeDirectory, btnSidebarAddEmployee, btnSidebarImportEmployee,
+                btnSidebarReports,
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarEmployees
+                btnSidebarAddEmployee
         );
 
         if (btnManageEmployees != null) {

@@ -31,11 +31,11 @@
                     <children>
                         <Label text="MAIN MENU" styleClass="sidebar-section-label" />
                         <Button fx:id="btnSidebarDashboard" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Dashboard" styleClass="nav-item nav-active" />
-                        <Button fx:id="btnSidebarMonitoring" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Monitoring" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarMonitoring" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   System Logs" styleClass="nav-item" />
                         <Button fx:id="btnManageEmployees" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Manage Employees  ▾" styleClass="nav-item" />
                         <VBox fx:id="manageEmployeesSubMenu" styleClass="nav-sub-menu" managed="false" visible="false">
                             <children>
-                                <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Log Return" styleClass="nav-sub-item" />
+                                <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Log Return &amp; Monitoring" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarSignatures" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Signatures" styleClass="nav-sub-item" />
                             </children>
                         </VBox>
@@ -57,7 +57,7 @@
                 <VBox spacing="2.0">
                     <children>
                         <Label text="Staff Dashboard" styleClass="pg-title" />
-                        <Label text="Manage pass slips, returns, and monitoring." styleClass="pg-sub" />
+                        <Label text="Manage pass slips and returns." styleClass="pg-sub" />
                     </children>
                 </VBox>
                 <StackPane HBox.hgrow="ALWAYS" />
@@ -96,17 +96,6 @@
                                         <Label text="Log Return" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
                                         <Label text="Record employee re-entry after pass slip." wrapText="true" textAlignment="CENTER" maxWidth="220.0" style="-fx-font-size: 12px; -fx-text-fill: #A8A29E; -fx-line-spacing: 3px;" />
                                         <Button fx:id="btnOpenReturn" mnemonicParsing="false" prefHeight="38.0" prefWidth="170.0" text="Open Return" styleClass="btn-maroon">
-                                            <VBox.margin><Insets top="4.0" /></VBox.margin>
-                                        </Button>
-                                    </children>
-                                </VBox>
-                                <!-- Monitoring -->
-                                <VBox alignment="CENTER" prefHeight="260.0" prefWidth="280.0" spacing="16.0" styleClass="card" style="-fx-padding: 32px;">
-                                    <children>
-                                        <Label text="&#x1F4CA;" style="-fx-font-size: 48px; -fx-text-fill: #FCA5A5;" />
-                                        <Label text="Monitoring" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
-                                        <Label text="Review pass slip status and monitoring summaries." wrapText="true" textAlignment="CENTER" maxWidth="220.0" style="-fx-font-size: 12px; -fx-text-fill: #A8A29E; -fx-line-spacing: 3px;" />
-                                        <Button fx:id="btnOpenMonitoring" mnemonicParsing="false" prefHeight="38.0" prefWidth="170.0" text="Open Monitoring" styleClass="btn-maroon">
                                             <VBox.margin><Insets top="4.0" /></VBox.margin>
                                         </Button>
                                     </children>

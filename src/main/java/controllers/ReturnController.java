@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class ReturnController {
@@ -36,7 +37,13 @@ public class ReturnController {
     private Button btnSidebarMonitoring;
 
     @FXML
-    private Button btnSidebarEmployees;
+    private Button btnSidebarEmployeeDirectory;
+
+    @FXML
+    private Button btnSidebarAddEmployee;
+
+    @FXML
+    private Button btnSidebarImportEmployee;
 
     @FXML
     private Button btnSidebarReports;
@@ -126,6 +133,12 @@ public class ReturnController {
     private TableColumn<PassSlip, String> colMonitorDepartment;
 
     @FXML
+    private TableColumn<PassSlip, String> colMonitorExpectedReturn;
+
+    @FXML
+    private TableColumn<PassSlip, String> colMonitorTimeIn;
+
+    @FXML
     private TableColumn<PassSlip, String> colMonitorStatus;
 
     @FXML
@@ -146,7 +159,8 @@ public class ReturnController {
 
         SidebarHelper.initialize(
                 btnSidebarDashboard, btnSidebarMonitoring,
-                btnSidebarEmployees, btnSidebarReports,
+                btnSidebarEmployeeDirectory, btnSidebarAddEmployee, btnSidebarImportEmployee,
+                btnSidebarReports,
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, btnNotificationsAlert,
@@ -203,12 +217,12 @@ public class ReturnController {
 
     }
 
-    public static boolean recordReturn(int passSlipId) {
+    public static boolean recordReturn(int passSlipId, LocalDateTime customTimeIn) {
 
         try (Connection connection = DatabaseConnection.connect()) {
 
             String getQuery = """
-                    SELECT time_out, employee_id
+                    SELECT time_out, estimated_return, employee_id
                     FROM pass_slips
                     WHERE id = ?
                     """;
@@ -227,7 +241,12 @@ public class ReturnController {
 
                 int employeeId = resultSet.getInt("employee_id");
 
-                LocalDateTime timeIn = LocalDateTime.now(PhilTime.ZONE);
+                LocalDateTime estimatedReturn = null;
+                if (resultSet.getTimestamp("estimated_return") != null) {
+                    estimatedReturn = resultSet.getTimestamp("estimated_return").toLocalDateTime();
+                }
+
+                LocalDateTime timeIn = customTimeIn != null ? customTimeIn : LocalDateTime.now(PhilTime.ZONE);
 
                 Duration duration = Duration.between(timeOut, timeIn);
                 long totalMinutes = duration.toMinutes();
@@ -236,9 +255,18 @@ public class ReturnController {
 
                 String durationText = hours + " hrs " + minutes + " mins";
 
+                String status = "RETURNED";
+                if (estimatedReturn != null) {
+                    if (timeIn.isBefore(estimatedReturn)) {
+                        status = "RETURNED EARLY";
+                    } else if (timeIn.isAfter(estimatedReturn)) {
+                        status = "LATE";
+                    }
+                }
+
                 String updateQuery = """
                         UPDATE pass_slips
-                        SET time_in = ?, duration = ?, duration_minutes = ?, status = 'RETURNED'
+                        SET time_in = ?, duration = ?, duration_minutes = ?, status = ?
                         WHERE id = ?
                         """;
 
@@ -248,7 +276,8 @@ public class ReturnController {
                 updateStatement.setTimestamp(1, java.sql.Timestamp.valueOf(timeIn));
                 updateStatement.setString(2, durationText);
                 updateStatement.setLong(3, totalMinutes);
-                updateStatement.setInt(4, passSlipId);
+                updateStatement.setString(4, status);
+                updateStatement.setInt(5, passSlipId);
 
                 int updated = updateStatement.executeUpdate();
 
@@ -340,10 +369,30 @@ public class ReturnController {
             return;
         }
 
-        boolean success = recordReturn(activePassSlipId);
+        LocalDateTime customTimeIn = null;
+        String timeInText = txtReturnTimeInStamp.getText().trim();
+        if (!timeInText.isEmpty()) {
+            try {
+                DateTimeFormatter parser = DateTimeFormatter.ofPattern("hh:mm a");
+                LocalTime parsedTime = LocalTime.parse(timeInText.toUpperCase(), parser);
+                customTimeIn = LocalDateTime.now(PhilTime.ZONE).withHour(parsedTime.getHour()).withMinute(parsedTime.getMinute()).withSecond(0).withNano(0);
+            } catch (Exception e) {
+                lblReturnStatusMessage.setText("Invalid time format. Use HH:MM AM/PM.");
+                return;
+            }
+        }
+
+        String statusBefore = getPassSlipStatus(activePassSlipId);
+        boolean success = recordReturn(activePassSlipId, customTimeIn);
 
         if (success) {
-            lblReturnStatusMessage.setText("Return recorded successfully.");
+            String statusAfter = getPassSlipStatus(activePassSlipId);
+            String msg = "Return recorded successfully.";
+            if (statusAfter != null) {
+                msg = "Return recorded — " + statusAfter + ".";
+            }
+            lblReturnStatusMessage.setText(msg);
+            lblReturnStatusMessage.setStyle("-fx-text-fill: #34D399; -fx-font-size: 13px; -fx-font-weight: bold;");
             txtReturnSearchId.clear();
             txtReturnEmployeeName.clear();
             txtReturnTimeInStamp.clear();
@@ -351,10 +400,22 @@ public class ReturnController {
             activeEmployeeId = 0;
             loadSummaryAsync();
             loadOutstandingSlipsAsync();
+            loadMonitoringDataAsync();
         } else {
             lblReturnStatusMessage.setText("Unable to record return.");
+            lblReturnStatusMessage.setStyle("-fx-text-fill: #EF4444; -fx-font-size: 13px;");
         }
 
+    }
+
+    private String getPassSlipStatus(int passSlipId) {
+        try (Connection connection = DatabaseConnection.connect()) {
+            PreparedStatement ps = connection.prepareStatement("SELECT status FROM pass_slips WHERE id = ?");
+            ps.setInt(1, passSlipId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getString("status");
+        } catch (Exception ignored) {}
+        return null;
     }
 
     private void setupMonitoringTable() {
@@ -380,9 +441,47 @@ public class ReturnController {
                 )
         );
 
+        colMonitorExpectedReturn.setCellValueFactory(
+                cellData -> {
+                    PassSlip ps = cellData.getValue();
+                    String expected = ps.getEstimatedReturn() != null ? ps.getEstimatedReturn().format(formatter) : "";
+                    return new ReadOnlyStringWrapper(expected);
+                }
+        );
+
+        colMonitorTimeIn.setCellValueFactory(
+                cellData -> {
+                    PassSlip ps = cellData.getValue();
+                    String timeIn = ps.getTimeIn() != null ? ps.getTimeIn().format(formatter) : "";
+                    return new ReadOnlyStringWrapper(timeIn);
+                }
+        );
+
         colMonitorStatus.setCellValueFactory(
                 cellData -> new ReadOnlyStringWrapper(cellData.getValue().getStatus())
         );
+
+        colMonitorStatus.setCellFactory(col -> new javafx.scene.control.TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item);
+                    String color = switch (item) {
+                        case "OUT" -> "#FBBF24";
+                        case "RETURNED" -> "#34D399";
+                        case "RETURNED EARLY" -> "#60A5FA";
+                        case "LATE" -> "#F97316";
+                        case "EXPIRED" -> "#EF4444";
+                        default -> "#A8A29E";
+                    };
+                    setStyle("-fx-text-fill: " + color + "; -fx-font-weight: bold;");
+                }
+            }
+        });
 
         monitoringTableView.setRowFactory(tv -> {
             javafx.scene.control.TableRow<PassSlip> row = new javafx.scene.control.TableRow<>();
@@ -404,6 +503,25 @@ public class ReturnController {
                             .then((javafx.scene.control.ContextMenu) null)
                             .otherwise(contextMenu)
             );
+
+            row.itemProperty().addListener((obs, oldItem, newItem) -> {
+                if (newItem != null && newItem.getStatus() != null) {
+                    String status = newItem.getStatus();
+                    String color;
+                    switch (status) {
+                        case "OUT" -> color = "#FBBF24";
+                        case "RETURNED" -> color = "#34D399";
+                        case "RETURNED EARLY" -> color = "#60A5FA";
+                        case "LATE" -> color = "#F97316";
+                        case "EXPIRED" -> color = "#EF4444";
+                        default -> color = "#A8A29E";
+                    }
+                    row.setStyle("-fx-text-fill: " + color + ";");
+                } else {
+                    row.setStyle("");
+                }
+            });
+
             return row;
         });
     }

@@ -34,7 +34,13 @@ public class ActivityLogController {
     private Button btnSidebarMonitoring;
 
     @FXML
-    private Button btnSidebarEmployees;
+    private Button btnSidebarEmployeeDirectory;
+
+    @FXML
+    private Button btnSidebarAddEmployee;
+
+    @FXML
+    private Button btnSidebarImportEmployee;
 
     @FXML
     private Button btnSidebarReports;
@@ -109,7 +115,8 @@ public class ActivityLogController {
 
         SidebarHelper.initialize(
                 btnSidebarDashboard, btnSidebarMonitoring,
-                btnSidebarEmployees, btnSidebarReports,
+                btnSidebarEmployeeDirectory, btnSidebarAddEmployee, btnSidebarImportEmployee,
+                btnSidebarReports,
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, btnNotificationsAlert,

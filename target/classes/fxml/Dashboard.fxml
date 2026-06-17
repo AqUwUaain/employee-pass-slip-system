@@ -34,13 +34,15 @@
                     <children>
                         <Label text="MAIN MENU" styleClass="sidebar-section-label" />
                         <Button fx:id="btnSidebarDashboard" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Dashboard" styleClass="nav-item nav-active" />
-                        <Button fx:id="btnSidebarMonitoring" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Monitoring" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarMonitoring" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   System Logs" styleClass="nav-item" />
                         <Button fx:id="btnManageEmployees" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Manage Employees  ▾" styleClass="nav-item" />
                         <VBox fx:id="manageEmployeesSubMenu" styleClass="nav-sub-menu" managed="false" visible="false">
                             <children>
-                                <Button fx:id="btnSidebarEmployees" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Employees" styleClass="nav-sub-item" />
+                                <Button fx:id="btnSidebarEmployeeDirectory" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Employee Directory" styleClass="nav-sub-item" />
+                                <Button fx:id="btnSidebarAddEmployee" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Add New Employee" styleClass="nav-sub-item" />
+                                <Button fx:id="btnSidebarImportEmployee" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Import Employees" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarReports" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Reports" styleClass="nav-sub-item" />
-                                <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Log Return" styleClass="nav-sub-item" />
+                                <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Log Return &amp; Monitoring" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarUsers" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Users" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarSignatures" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Signatures" styleClass="nav-sub-item" />
                             </children>
@@ -145,6 +147,7 @@
                                                 <Button fx:id="btnViewAllActivity" text="View All →" styleClass="link-button" />
                                             </children>
                                         </HBox>
+                                        <HBox fx:id="activityFilterBox" alignment="CENTER_LEFT" spacing="10.0" style="-fx-padding: 0 0 0 14px;" />
                                         <ScrollPane fitToWidth="true" prefHeight="350.0" VBox.vgrow="ALWAYS" styleClass="content-scroll-pane">
                                             <content>
                                                 <VBox fx:id="vboxActivityTracker" spacing="4.0" styleClass="activity-list">

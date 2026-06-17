@@ -10,7 +10,9 @@ public final class SidebarHelper {
     public static void initialize(
             Button btnDashboard,
             Button btnMonitoring,
-            Button btnEmployees,
+            Button btnEmployeeDirectory,
+            Button btnAddEmployee,
+            Button btnImportEmployee,
             Button btnReports,
             Button btnLogReturn,
             Button btnUsers,
@@ -26,8 +28,17 @@ public final class SidebarHelper {
         if (btnMonitoring != null)
             btnMonitoring.setOnAction(e -> NavigationHelper.navigateTo(btnMonitoring, "/fxml/Monitoring.fxml"));
 
-        if (btnEmployees != null)
-            btnEmployees.setOnAction(e -> NavigationHelper.navigateTo(btnEmployees, "/fxml/EmployeeController.fxml"));
+        if (btnEmployeeDirectory != null)
+            btnEmployeeDirectory.setOnAction(e -> NavigationHelper.navigateTo(btnEmployeeDirectory, "/fxml/EmployeeList.fxml"));
+
+        if (btnAddEmployee != null)
+            btnAddEmployee.setOnAction(e -> {
+                Session.selectedEmployeeId = 0;
+                NavigationHelper.navigateTo(btnAddEmployee, "/fxml/EmployeeForm.fxml");
+            });
+
+        if (btnImportEmployee != null)
+            btnImportEmployee.setOnAction(e -> NavigationHelper.navigateTo(btnImportEmployee, "/fxml/EmployeeImport.fxml"));
 
         if (btnReports != null)
             btnReports.setOnAction(e -> NavigationHelper.navigateTo(btnReports, "/fxml/Reports.fxml"));
@@ -44,8 +55,14 @@ public final class SidebarHelper {
         if (btnPasswordReset != null)
             btnPasswordReset.setOnAction(e -> NavigationHelper.navigateTo(btnPasswordReset, "/fxml/PasswordResetRequests.fxml"));
 
-        NavigationHelper.hideAdminSidebarItems(btnEmployees, btnReports, btnUsers, btnPasswordReset);
+        NavigationHelper.hideAdminSidebarItems(btnEmployeeDirectory, btnReports, btnUsers, btnPasswordReset);
         NavigationHelper.hideMonitoringForStaff(btnMonitoring);
+
+        if ("STAFF".equalsIgnoreCase(Session.currentRole)) {
+            hideButton(btnEmployeeDirectory);
+            hideButton(btnAddEmployee);
+            hideButton(btnImportEmployee);
+        }
 
         if (activeButton != null)
             NavigationHelper.setActiveButton(activeButton);
@@ -55,5 +72,12 @@ public final class SidebarHelper {
 
         if (btnNotifications != null)
             btnNotifications.setOnAction(e -> NotificationHelper.toggle(btnNotifications));
+    }
+
+    private static void hideButton(Button btn) {
+        if (btn != null) {
+            btn.setVisible(false);
+            btn.setManaged(false);
+        }
     }
 }

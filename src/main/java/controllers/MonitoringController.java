@@ -35,7 +35,13 @@ public class MonitoringController {
     private Button btnSidebarMonitoring;
 
     @FXML
-    private Button btnSidebarEmployees;
+    private Button btnSidebarEmployeeDirectory;
+
+    @FXML
+    private Button btnSidebarAddEmployee;
+
+    @FXML
+    private Button btnSidebarImportEmployee;
 
     @FXML
     private Button btnSidebarReports;
@@ -100,7 +106,8 @@ public class MonitoringController {
     private void initialize() {
         SidebarHelper.initialize(
                 btnSidebarDashboard, btnSidebarMonitoring,
-                btnSidebarEmployees, btnSidebarReports,
+                btnSidebarEmployeeDirectory, btnSidebarAddEmployee, btnSidebarImportEmployee,
+                btnSidebarReports,
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, null,
@@ -354,11 +361,11 @@ public class MonitoringController {
                 if (estimatedReturnTimestamp != null) {
                     LocalDateTime estimatedReturn =
                             estimatedReturnTimestamp.toLocalDateTime();
-                    shouldExpire = now.isAfter(estimatedReturn);
+                    shouldExpire = now.isAfter(estimatedReturn.plusHours(1));
                 } else {
                     long hours =
                             Duration.between(timeOut, now).toHours();
-                    shouldExpire = hours >= 1;
+                    shouldExpire = hours >= 2;
                 }
 
                 if (shouldExpire) {

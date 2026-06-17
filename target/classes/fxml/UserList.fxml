@@ -60,7 +60,7 @@
                 <VBox spacing="10.0" style="-fx-padding: 0 12px;" VBox.vgrow="ALWAYS">
                     <children>
                         <Button fx:id="btnSidebarDashboard" alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-padding: 12px 15px; -fx-background-radius: 5px; -fx-cursor: hand;" text="Dashboard" />
-                        <Button fx:id="btnSidebarMonitoring" alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-padding: 12px 15px; -fx-background-radius: 5px; -fx-cursor: hand;" text="Monitoring and Logs" />
+                        <Button fx:id="btnSidebarMonitoring" alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-padding: 12px 15px; -fx-background-radius: 5px; -fx-cursor: hand;" text="System Logs" />
                         <Button fx:id="btnSidebarEmployees" alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-padding: 12px 15px; -fx-background-radius: 5px; -fx-cursor: hand;" text="Employee Management" />
                         <Button fx:id="btnSidebarReports" alignment="BASELINE_LEFT" maxWidth="Infinity" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: #ffffff; -fx-font-size: 15px; -fx-padding: 12px 15px; -fx-background-radius: 5px; -fx-cursor: hand;" text="Report Generation &amp; History" />
                     </children>

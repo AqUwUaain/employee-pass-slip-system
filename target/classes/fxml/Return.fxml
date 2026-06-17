@@ -34,13 +34,15 @@
                     <children>
                         <Label text="MAIN MENU" style="-fx-text-fill: rgba(255,255,255,0.25); -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 0 8px 8px 8px;" />
                         <Button fx:id="btnSidebarDashboard" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Dashboard" styleClass="nav-item" />
-                        <Button fx:id="btnSidebarMonitoring" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Monitoring" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarMonitoring" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   System Logs" styleClass="nav-item" />
                         <Button fx:id="btnManageEmployees" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Manage Employees  ▾" styleClass="nav-item" />
                         <VBox fx:id="manageEmployeesSubMenu" styleClass="nav-sub-menu" managed="false" visible="false">
                             <children>
-                                <Button fx:id="btnSidebarEmployees" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Employees" styleClass="nav-sub-item" />
+                                <Button fx:id="btnSidebarEmployeeDirectory" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Employee Directory" styleClass="nav-sub-item" />
+                                <Button fx:id="btnSidebarAddEmployee" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Add New Employee" styleClass="nav-sub-item" />
+                                <Button fx:id="btnSidebarImportEmployee" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Import Employees" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarReports" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Reports" styleClass="nav-sub-item" />
-                                <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Log Return" styleClass="nav-sub-item nav-sub-active" />
+                                <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Log Return &amp; Monitoring" styleClass="nav-sub-item nav-sub-active" />
                                 <Button fx:id="btnSidebarUsers" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Users" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarSignatures" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Signatures" styleClass="nav-sub-item" />
                             </children>
@@ -61,7 +63,7 @@
             <children>
                 <VBox spacing="2.0">
                     <children>
-                        <Label text="Log Return" styleClass="pg-title" />
+                        <Label text="Log Return &amp; Monitoring" styleClass="pg-title" />
                     </children>
                 </VBox>
                 <StackPane HBox.hgrow="ALWAYS" />
@@ -183,13 +185,15 @@
                                         <Button fx:id="btnRefreshMonitoring" mnemonicParsing="false" text="&#x21BB; Refresh" styleClass="btn-maroon" />
                                     </children>
                                 </HBox>
-                                <TableView fx:id="monitoringTableView" prefHeight="800.0" VBox.vgrow="ALWAYS">
+                                <TableView fx:id="monitoringTableView" prefHeight="350.0" VBox.vgrow="ALWAYS">
                                     <columns>
-                                        <TableColumn fx:id="colMonitorTimestamp" prefWidth="150.0" text="Timestamp" />
-                                        <TableColumn fx:id="colMonitorEmployeeID" prefWidth="100.0" text="Employee ID" />
-                                        <TableColumn fx:id="colMonitorFullName" prefWidth="200.0" text="Personnel Name" />
-                                        <TableColumn fx:id="colMonitorDepartment" prefWidth="150.0" text="Department" />
-                                        <TableColumn fx:id="colMonitorStatus" prefWidth="100.0" text="Status" />
+                                        <TableColumn fx:id="colMonitorTimestamp" prefWidth="140.0" text="Time Out" />
+                                        <TableColumn fx:id="colMonitorEmployeeID" prefWidth="90.0" text="Employee ID" />
+                                        <TableColumn fx:id="colMonitorFullName" prefWidth="170.0" text="Personnel Name" />
+                                        <TableColumn fx:id="colMonitorDepartment" prefWidth="140.0" text="Department" />
+                                        <TableColumn fx:id="colMonitorExpectedReturn" prefWidth="130.0" text="Expected In" />
+                                        <TableColumn fx:id="colMonitorTimeIn" prefWidth="130.0" text="Time In" />
+                                        <TableColumn fx:id="colMonitorStatus" prefWidth="110.0" text="Status" />
                                     </columns>
                                     <columnResizePolicy>
                                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

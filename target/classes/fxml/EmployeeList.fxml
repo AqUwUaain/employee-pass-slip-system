@@ -31,13 +31,15 @@
                     <children>
                         <Label text="MAIN MENU" style="-fx-text-fill: rgba(255,255,255,0.25); -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 0 8px 8px 8px;" />
                         <Button fx:id="btnSidebarDashboard" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Dashboard" styleClass="nav-item" />
-                        <Button fx:id="btnSidebarMonitoring" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Monitoring" styleClass="nav-item" />
+                        <Button fx:id="btnSidebarMonitoring" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   System Logs" styleClass="nav-item" />
                         <Button fx:id="btnManageEmployees" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Manage Employees  ▾" styleClass="nav-item" />
                         <VBox fx:id="manageEmployeesSubMenu" styleClass="nav-sub-menu" managed="false" visible="false">
                             <children>
-                                <Button fx:id="btnSidebarEmployees" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Employees" styleClass="nav-sub-item nav-sub-active" />
+                                <Button fx:id="btnSidebarEmployeeDirectory" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Employee Directory" styleClass="nav-sub-item nav-sub-active" />
+                                <Button fx:id="btnSidebarAddEmployee" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Add New Employee" styleClass="nav-sub-item" />
+                                <Button fx:id="btnSidebarImportEmployee" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Import Employees" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarReports" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Reports" styleClass="nav-sub-item" />
-                                <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Log Return" styleClass="nav-sub-item" />
+                                <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Log Return &amp; Monitoring" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarUsers" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Users" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarSignatures" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Signatures" styleClass="nav-sub-item" />
                             </children>
@@ -65,6 +67,7 @@
                 <StackPane HBox.hgrow="ALWAYS" />
                 <HBox spacing="12.0" alignment="CENTER">
                     <children>
+                        <Button fx:id="btnBackToEmployees" text="&#x25C0;  Back" style="-fx-background-color: #3D3229; -fx-text-fill: #D6CCC2; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 8px; -fx-padding: 8px 16px; -fx-border-color: #57534E; -fx-border-width: 1px; -fx-cursor: hand;" />
                         <Button fx:id="btnNotificationsAlert" mnemonicParsing="false" text="&#x1F514;" prefHeight="38.0" prefWidth="38.0" styleClass="icon-circle" />
                     </children>
                 </HBox>

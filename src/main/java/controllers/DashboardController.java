@@ -41,7 +41,13 @@ public class DashboardController {
     private Button btnSidebarMonitoring;
 
     @FXML
-    private Button btnSidebarEmployees;
+    private Button btnSidebarEmployeeDirectory;
+
+    @FXML
+    private Button btnSidebarAddEmployee;
+
+    @FXML
+    private Button btnSidebarImportEmployee;
 
     @FXML
     private Button btnSidebarReports;
@@ -77,6 +83,9 @@ public class DashboardController {
     private VBox vboxActivityTracker;
 
     @FXML
+    private HBox activityFilterBox;
+
+    @FXML
     private Button btnViewAllActivity;
 
     @FXML
@@ -109,7 +118,8 @@ public class DashboardController {
     private void initialize() {
         SidebarHelper.initialize(
                 btnSidebarDashboard, btnSidebarMonitoring,
-                btnSidebarEmployees, btnSidebarReports,
+                btnSidebarEmployeeDirectory, btnSidebarAddEmployee, btnSidebarImportEmployee,
+                btnSidebarReports,
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, btnNotificationsAlert,
@@ -242,12 +252,9 @@ public class DashboardController {
 
         Platform.runLater(() -> {
             vboxActivityTracker.getChildren().clear();
+            activityFilterBox.getChildren().clear();
             
-            // Add Filter UI
-            HBox filterBox = new HBox(10);
-            filterBox.setAlignment(Pos.CENTER_LEFT);
-            filterBox.setStyle("-fx-padding: 0 0 10 14;");
-            
+            // Add Filter UI to fixed filter box (outside scroll)
             String[] filters = {"All", "Today", "This Week", "This Month"};
             for (String f : filters) {
                 Label fl = new Label(f);
@@ -256,9 +263,8 @@ public class DashboardController {
                 fl.setOnMouseClicked(e -> {
                     loadActivities(f);
                 });
-                filterBox.getChildren().add(fl);
+                activityFilterBox.getChildren().add(fl);
             }
-            vboxActivityTracker.getChildren().add(filterBox);
 
             if (filteredLogs.isEmpty()) {
                 VBox emptyBox = new VBox();

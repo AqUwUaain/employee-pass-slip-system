@@ -32,19 +32,34 @@ public class StaffDashboardController {
     private Button btnSidebarMonitoring;
 
     @FXML
+    private Button btnSidebarEmployeeDirectory;
+
+    @FXML
+    private Button btnSidebarAddEmployee;
+
+    @FXML
+    private Button btnSidebarImportEmployee;
+
+    @FXML
+    private Button btnSidebarReports;
+
+    @FXML
     private Button btnSidebarLogReturn;
 
     @FXML
+    private Button btnSidebarUsers;
+
+    @FXML
     private Button btnSidebarSignatures;
+
+    @FXML
+    private Button btnSidebarPasswordReset;
 
     @FXML
     private Button btnOpenPassSlip;
 
     @FXML
     private Button btnOpenReturn;
-
-    @FXML
-    private Button btnOpenMonitoring;
 
     @FXML
     private Button btnNotificationsAlert;
@@ -80,7 +95,8 @@ public class StaffDashboardController {
 
         SidebarHelper.initialize(
                 btnSidebarDashboard, btnSidebarMonitoring,
-                null, null,
+                null, null, null,
+                null,
                 btnSidebarLogReturn, null,
                 btnSidebarSignatures, null,
                 btnLogout, btnNotificationsAlert,
@@ -106,13 +122,6 @@ public class StaffDashboardController {
                 event -> NavigationHelper.navigateTo(
                         btnOpenReturn,
                         "/fxml/Return.fxml"
-                )
-        );
-
-        btnOpenMonitoring.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnOpenMonitoring,
-                        "/fxml/Monitoring.fxml"
                 )
         );
 

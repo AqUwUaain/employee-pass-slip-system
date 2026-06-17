@@ -43,7 +43,13 @@ public class EmployeeListController {
     private Button btnSidebarMonitoring;
 
     @FXML
-    private Button btnSidebarEmployees;
+    private Button btnSidebarEmployeeDirectory;
+
+    @FXML
+    private Button btnSidebarAddEmployee;
+
+    @FXML
+    private Button btnSidebarImportEmployee;
 
     @FXML
     private Button btnSidebarReports;
@@ -130,6 +136,9 @@ public class EmployeeListController {
     private Button btnManageEmployees;
 
     @FXML
+    private Button btnBackToEmployees;
+
+    @FXML
     private VBox manageEmployeesSubMenu;
 
     private FilteredList<Employee> filteredEmployees;
@@ -139,11 +148,12 @@ public class EmployeeListController {
     private void initialize() {
         SidebarHelper.initialize(
                 btnSidebarDashboard, btnSidebarMonitoring,
-                btnSidebarEmployees, btnSidebarReports,
+                btnSidebarEmployeeDirectory, btnSidebarAddEmployee, btnSidebarImportEmployee,
+                btnSidebarReports,
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarEmployees
+                btnSidebarEmployeeDirectory
         );
 
         if (btnManageEmployees != null) {
@@ -158,6 +168,9 @@ public class EmployeeListController {
             manageEmployeesSubMenu.setVisible(true);
             manageEmployeesSubMenu.setManaged(true);
         }
+
+        if (btnBackToEmployees != null)
+            btnBackToEmployees.setOnAction(e -> NavigationHelper.navigateTo(btnBackToEmployees, "/fxml/EmployeeController.fxml"));
 
         cardCreateEmployee.setOnMouseClicked(
                 event -> {

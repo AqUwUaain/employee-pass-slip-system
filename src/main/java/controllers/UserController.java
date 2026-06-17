@@ -34,7 +34,13 @@ public class UserController {
     private Button btnSidebarMonitoring;
 
     @FXML
-    private Button btnSidebarEmployees;
+    private Button btnSidebarEmployeeDirectory;
+
+    @FXML
+    private Button btnSidebarAddEmployee;
+
+    @FXML
+    private Button btnSidebarImportEmployee;
 
     @FXML
     private Button btnSidebarReports;
@@ -115,7 +121,8 @@ public class UserController {
     private void initialize() {
         SidebarHelper.initialize(
                 btnSidebarDashboard, btnSidebarMonitoring,
-                btnSidebarEmployees, btnSidebarReports,
+                btnSidebarEmployeeDirectory, btnSidebarAddEmployee, btnSidebarImportEmployee,
+                btnSidebarReports,
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, btnNotificationsAlert,
@@ -267,6 +274,7 @@ public class UserController {
 
             if (resultSet.next()) {
                 messageLabel.setText("USERNAME ALREADY EXISTS");
+                messageLabel.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
                 return;
             }
 

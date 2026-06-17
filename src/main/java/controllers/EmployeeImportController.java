@@ -38,7 +38,9 @@ public class EmployeeImportController {
 
     @FXML private Button btnSidebarDashboard;
     @FXML private Button btnSidebarMonitoring;
-    @FXML private Button btnSidebarEmployees;
+    @FXML private Button btnSidebarEmployeeDirectory;
+    @FXML private Button btnSidebarAddEmployee;
+    @FXML private Button btnSidebarImportEmployee;
     @FXML private Button btnSidebarReports;
     @FXML private Button btnSidebarLogReturn;
     @FXML private Button btnSidebarUsers;
@@ -74,11 +76,12 @@ public class EmployeeImportController {
     private void initialize() {
         SidebarHelper.initialize(
                 btnSidebarDashboard, btnSidebarMonitoring,
-                btnSidebarEmployees, btnSidebarReports,
+                btnSidebarEmployeeDirectory, btnSidebarAddEmployee, btnSidebarImportEmployee,
+                btnSidebarReports,
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarPasswordReset,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarEmployees
+                btnSidebarImportEmployee
         );
 
         if (btnManageEmployees != null) {
