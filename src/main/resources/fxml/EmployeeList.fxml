@@ -129,6 +129,8 @@
                                             <children>
                                                 <CheckBox fx:id="chkSelectAll" text="Select All" style="-fx-text-fill: #A8A29E; -fx-font-size: 12px;" />
                                                 <Button fx:id="btnBatchDelete" mnemonicParsing="false" text="&#x1F5D1; Delete Selected" style="-fx-background-color: #DC2626; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 6px; -fx-padding: 6px 14px; -fx-cursor: hand;" visible="false" managed="false" />
+                                                <Button fx:id="btnExportCsv" mnemonicParsing="false" text="Export CSV" styleClass="btn-ghost" />
+                                                <Button fx:id="btnExportExcel" mnemonicParsing="false" text="Export Excel" styleClass="btn-ghost" />
                                                 <HBox alignment="CENTER_LEFT" style="-fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 20px; -fx-background-color: #2D2520; -fx-padding: 4px 15px; -fx-pref-width: 220px;">
                                                     <children>
                                                         <Label style="-fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="&#x1F50D; " />

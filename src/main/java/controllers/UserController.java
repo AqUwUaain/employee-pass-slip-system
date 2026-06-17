@@ -18,6 +18,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import utils.NavigationHelper;
 import utils.PasswordUtils;
+import utils.ConfirmDialog;
+import utils.SidebarHelper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -89,6 +91,9 @@ public class UserController {
     private Button btnChangePassword;
 
     @FXML
+    private Button btnEditUser;
+
+    @FXML
     private TableView<models.User> tblSystemUsersView;
 
     @FXML
@@ -108,14 +113,13 @@ public class UserController {
 
     @FXML
     private void initialize() {
-        NavigationHelper.setActiveButton(btnSidebarUsers);
-
-        btnSidebarDashboard.setOnAction(
-                event -> NavigationHelper.navigateToDashboard(btnSidebarDashboard)
-        );
-
-        btnSidebarMonitoring.setOnAction(
-                event -> NavigationHelper.navigateTo(btnSidebarMonitoring, "/fxml/Monitoring.fxml")
+        SidebarHelper.initialize(
+                btnSidebarDashboard, btnSidebarMonitoring,
+                btnSidebarEmployees, btnSidebarReports,
+                btnSidebarLogReturn, btnSidebarUsers,
+                btnSidebarSignatures, btnSidebarPasswordReset,
+                btnLogout, btnNotificationsAlert,
+                btnSidebarUsers
         );
 
         if (btnManageEmployees != null) {
@@ -130,39 +134,6 @@ public class UserController {
             manageEmployeesSubMenu.setVisible(true);
             manageEmployeesSubMenu.setManaged(true);
         }
-
-        btnSidebarEmployees.setOnAction(
-                event -> NavigationHelper.navigateTo(btnSidebarEmployees, "/fxml/EmployeeController.fxml")
-        );
-
-        btnSidebarReports.setOnAction(
-                event -> NavigationHelper.navigateTo(btnSidebarReports, "/fxml/Reports.fxml")
-        );
-
-        if (btnSidebarUsers != null)
-            btnSidebarUsers.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarUsers, "/fxml/User.fxml"));
-
-        if (btnSidebarSignatures != null) btnSidebarSignatures.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarSignatures, "/fxml/SignatureManager.fxml"));
-
-        if (btnSidebarLogReturn != null)
-            btnSidebarLogReturn.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarLogReturn, "/fxml/Return.fxml"));
-        if (btnSidebarPasswordReset != null)
-            btnSidebarPasswordReset.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarPasswordReset, "/fxml/PasswordResetRequests.fxml"));
-
-        NavigationHelper.hideAdminSidebarItems(
-            btnSidebarEmployees,
-            btnSidebarReports,
-            btnSidebarUsers,
-            btnSidebarPasswordReset
-        );
-
-        NavigationHelper.hideMonitoringForStaff(btnSidebarMonitoring);
-
-        if (btnLogout != null)
-            btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
-
-        if (btnNotificationsAlert != null)
-            btnNotificationsAlert.setOnAction(e -> utils.NotificationHelper.toggle(btnNotificationsAlert));
 
         cmbUserRole.setItems(
                 FXCollections.observableArrayList("ADMIN", "STAFF")
@@ -201,6 +172,9 @@ public class UserController {
         btnRevokeAccess.setOnAction(event -> revokeSelectedUser());
 
         btnChangePassword.setOnAction(event -> showChangePasswordDialog());
+
+        if (btnEditUser != null)
+            btnEditUser.setOnAction(event -> showEditUserDialog());
 
         refreshUsers();
 
@@ -248,8 +222,26 @@ public class UserController {
             return;
         }
 
-        if (password.length() < 4) {
-            messageLabel.setText("PASSWORD TOO SHORT");
+        if (password.length() < 5) {
+            messageLabel.setText("PASSWORD MUST BE AT LEAST 5 CHARACTERS");
+            messageLabel.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
+            return;
+        }
+
+        if (!password.matches(".*[A-Z].*")) {
+            messageLabel.setText("PASSWORD MUST CONTAIN AT LEAST 1 UPPERCASE LETTER");
+            messageLabel.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
+            return;
+        }
+
+        if (!password.matches(".*[0-9].*")) {
+            messageLabel.setText("PASSWORD MUST CONTAIN AT LEAST 1 NUMBER");
+            messageLabel.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
+            return;
+        }
+
+        if (!password.matches(".*[!@#%*].*")) {
+            messageLabel.setText("PASSWORD MUST CONTAIN AT LEAST 1 SPECIAL CHARACTER (!@#%*)");
             messageLabel.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
             return;
         }
@@ -362,6 +354,14 @@ public class UserController {
             lblUserMessage.setText("Select a user to revoke.");
             return;
         }
+
+        boolean confirmed = ConfirmDialog.show(
+                tblSystemUsersView,
+                "Delete User",
+                "Are you sure you want to delete user \"" + selectedUser.getUsername() + "\"?\nThis action cannot be undone."
+        );
+
+        if (!confirmed) return;
 
         boolean deleted =
                 DeleteUserController.deleteUser(
@@ -566,6 +566,161 @@ public class UserController {
         });
 
         Platform.runLater(oldPwField::requestFocus);
+    }
+
+    private void showEditUserDialog() {
+        models.User selectedUser =
+                tblSystemUsersView.getSelectionModel().getSelectedItem();
+
+        if (selectedUser == null) {
+            lblUserMessage.setText("Select a user to edit.");
+            lblUserMessage.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
+            return;
+        }
+
+        javafx.scene.layout.BorderPane root = (javafx.scene.layout.BorderPane) tblSystemUsersView.getScene().getRoot();
+        javafx.scene.Node originalCenter = root.getCenter();
+
+        StackPane overlay = new StackPane();
+        overlay.setStyle("-fx-background-color: rgba(0,0,0,0.6);");
+        overlay.setAlignment(Pos.CENTER);
+
+        VBox dialog = new VBox(12);
+        dialog.setAlignment(Pos.CENTER);
+        dialog.setPrefWidth(420);
+        dialog.setMaxWidth(420);
+        dialog.setPrefHeight(380);
+        dialog.setMaxHeight(380);
+        dialog.setStyle(
+                "-fx-background-color: #1F1B1B; " +
+                "-fx-background-radius: 12px; " +
+                "-fx-border-color: #D4A853; " +
+                "-fx-border-width: 1px; " +
+                "-fx-border-radius: 12px; " +
+                "-fx-padding: 28px; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 25, 0.25, 0, 6);"
+        );
+
+        Label icon = new Label("\u270F");
+        icon.setStyle("-fx-font-size: 32px;");
+
+        Label title = new Label("Edit User");
+        title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;");
+
+        Label subtitle = new Label("Editing: " + selectedUser.getUsername());
+        subtitle.setStyle("-fx-font-size: 12px; -fx-text-fill: #A8A29E;");
+
+        Label emailLabel = new Label("USERNAME (EMAIL)");
+        emailLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 11px;");
+
+        TextField emailField = new TextField(selectedUser.getUsername());
+        emailField.setStyle("-fx-background-color: #2D2520; -fx-text-fill: #F5F5F4; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-padding: 8px 12px; -fx-font-size: 13px;");
+        emailField.setMaxWidth(Double.MAX_VALUE);
+
+        Label roleLabel = new Label("ROLE");
+        roleLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 11px;");
+
+        ComboBox<String> roleBox = new ComboBox<>(FXCollections.observableArrayList("ADMIN", "STAFF"));
+        roleBox.setValue(selectedUser.getRole());
+        roleBox.setStyle("-fx-background-color: #2D2520; -fx-text-fill: #F5F5F4; -fx-border-color: #3D3229; -fx-border-width: 1px; -fx-border-radius: 6px; -fx-background-radius: 6px; -fx-padding: 8px 12px; -fx-font-size: 13px;");
+        roleBox.setMaxWidth(Double.MAX_VALUE);
+
+        Label msgLabel = new Label();
+        msgLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #FCA5A5; -fx-text-alignment: center; -fx-wrap-text: true;");
+        msgLabel.setMaxWidth(360);
+
+        HBox buttons = new HBox(12);
+        buttons.setAlignment(Pos.CENTER);
+
+        Button btnCancel = new Button("Cancel");
+        btnCancel.setStyle(
+                "-fx-background-color: #3D3229; -fx-text-fill: #A8A29E; " +
+                "-fx-font-size: 13px; -fx-font-weight: bold; " +
+                "-fx-background-radius: 8px; -fx-padding: 8px 24px; -fx-cursor: hand;"
+        );
+
+        Button btnConfirm = new Button("Save Changes");
+        btnConfirm.setStyle(
+                "-fx-background-color: #D4A853; -fx-text-fill: #1C0A04; " +
+                "-fx-font-size: 13px; -fx-font-weight: bold; " +
+                "-fx-background-radius: 8px; -fx-padding: 8px 24px; -fx-cursor: hand;"
+        );
+
+        buttons.getChildren().addAll(btnCancel, btnConfirm);
+
+        dialog.getChildren().addAll(icon, title, subtitle, emailLabel, emailField, roleLabel, roleBox, msgLabel, buttons);
+        overlay.getChildren().add(dialog);
+        root.setCenter(overlay);
+
+        btnCancel.setOnAction(e -> root.setCenter(originalCenter));
+
+        btnConfirm.setOnAction(e -> {
+            String newUsername = emailField.getText().trim();
+            String newRole = roleBox.getValue();
+
+            if (newUsername.isEmpty()) {
+                msgLabel.setText("Username is required.");
+                return;
+            }
+
+            if (!newUsername.contains("@") || !newUsername.toLowerCase().endsWith("@pup.edu.ph")) {
+                msgLabel.setText("Email must end with @pup.edu.ph");
+                return;
+            }
+
+            if (newRole == null) {
+                msgLabel.setText("Select a role.");
+                return;
+            }
+
+            try {
+                java.sql.Connection connection = DatabaseConnection.connect();
+
+                if (!newUsername.equals(selectedUser.getUsername())) {
+                    java.sql.PreparedStatement checkStmt = connection.prepareStatement(
+                            "SELECT id FROM users WHERE username = ? AND id != ?"
+                    );
+                    checkStmt.setString(1, newUsername);
+                    checkStmt.setInt(2, selectedUser.getId());
+                    java.sql.ResultSet rs = checkStmt.executeQuery();
+                    if (rs.next()) {
+                        msgLabel.setText("Username already exists.");
+                        rs.close();
+                        checkStmt.close();
+                        connection.close();
+                        return;
+                    }
+                    rs.close();
+                    checkStmt.close();
+                }
+
+                java.sql.PreparedStatement updateStmt = connection.prepareStatement(
+                        "UPDATE users SET username = ?, role = ? WHERE id = ?"
+                );
+                updateStmt.setString(1, newUsername);
+                updateStmt.setString(2, newRole);
+                updateStmt.setInt(3, selectedUser.getId());
+                int updated = updateStmt.executeUpdate();
+                updateStmt.close();
+                connection.close();
+
+                if (updated > 0) {
+                    root.setCenter(originalCenter);
+                    lblUserMessage.setText("User updated successfully.");
+                    lblUserMessage.setStyle("-fx-text-fill: #34D399; -fx-font-weight: bold;");
+                    refreshUsers();
+                    ActivityLogController.logActivity(
+                            "Updated user: " + selectedUser.getUsername() + " → " + newUsername + " (" + newRole + ")", 0);
+                } else {
+                    msgLabel.setText("Failed to update user.");
+                }
+            } catch (Exception ex) {
+                msgLabel.setText("Database error.");
+                ex.printStackTrace();
+            }
+        });
+
+        Platform.runLater(emailField::requestFocus);
     }
 
 }

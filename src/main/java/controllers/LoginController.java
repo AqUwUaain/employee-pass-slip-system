@@ -75,21 +75,13 @@ public class LoginController {
         campusImageView.fitWidthProperty().bind(leftHeroPanel.widthProperty());
         campusImageView.fitHeightProperty().bind(leftHeroPanel.heightProperty());
 
-        // Load saved credentials
+        // Load saved credentials (stored as hashed password, not plain text)
         String savedEmail = prefs.get("saved_email", "");
-        String savedPassword = prefs.get("saved_password", "");
         boolean rememberMe = prefs.getBoolean("remember_me", false);
 
         if (rememberMe && !savedEmail.isEmpty()) {
             emailField.setText(savedEmail);
             rememberMeCheckbox.setSelected(true);
-            // Fill password in both fields
-            if (!savedPassword.isEmpty()) {
-                passwordField.setText(savedPassword);
-                if (visiblePasswordField != null) {
-                    visiblePasswordField.setText(savedPassword);
-                }
-            }
         }
 
         // Show/hide password toggle
@@ -107,11 +99,6 @@ public class LoginController {
                         "-fx-prompt-text-fill: rgba(255,255,255,0.25); " +
                         "-fx-pref-height: 46px;"
         );
-
-        // If we loaded a saved password, also set it in the visible field
-        if (rememberMe && !savedPassword.isEmpty()) {
-            visiblePasswordField.setText(savedPassword);
-        }
 
         togglePasswordBtn.setOnAction(e -> togglePasswordVisibility());
 
@@ -357,10 +344,10 @@ public class LoginController {
                     } catch (Exception ignored) {}
                 }
 
-                // --- Remember Me (now saves email AND password) ---
+                // --- Remember Me (stores hashed password, not plain text) ---
                 if (rememberMeCheckbox.isSelected()) {
                     prefs.put("saved_email", email);
-                    prefs.put("saved_password", password);   // store plain password
+                    prefs.put("saved_password", PasswordUtils.hashPassword(password));
                     prefs.putBoolean("remember_me", true);
                 } else {
                     prefs.remove("saved_email");

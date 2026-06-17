@@ -16,15 +16,23 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import models.Employee;
 import utils.NavigationHelper;
 import utils.Session;
+import utils.ConfirmDialog;
+import utils.SidebarHelper;
 
+import java.io.File;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class EmployeeListController {
 
@@ -110,6 +118,12 @@ public class EmployeeListController {
     private Button btnBatchDelete;
 
     @FXML
+    private Button btnExportCsv;
+
+    @FXML
+    private Button btnExportExcel;
+
+    @FXML
     private TableColumn<Employee, Boolean> colSelect;
 
     @FXML
@@ -123,19 +137,13 @@ public class EmployeeListController {
 
     @FXML
     private void initialize() {
-        NavigationHelper.setActiveButton(btnSidebarEmployees);
-
-        btnSidebarDashboard.setOnAction(
-                event -> NavigationHelper.navigateToDashboard(
-                        btnSidebarDashboard
-                )
-        );
-
-        btnSidebarMonitoring.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnSidebarMonitoring,
-                        "/fxml/Monitoring.fxml"
-                )
+        SidebarHelper.initialize(
+                btnSidebarDashboard, btnSidebarMonitoring,
+                btnSidebarEmployees, btnSidebarReports,
+                btnSidebarLogReturn, btnSidebarUsers,
+                btnSidebarSignatures, btnSidebarPasswordReset,
+                btnLogout, btnNotificationsAlert,
+                btnSidebarEmployees
         );
 
         if (btnManageEmployees != null) {
@@ -151,43 +159,6 @@ public class EmployeeListController {
             manageEmployeesSubMenu.setManaged(true);
         }
 
-        btnSidebarEmployees.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnSidebarEmployees,
-                        "/fxml/EmployeeController.fxml"
-                )
-        );
-
-        btnSidebarReports.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnSidebarReports,
-                        "/fxml/Reports.fxml"
-                )
-        );
-
-        if (btnSidebarUsers != null)
-            btnSidebarUsers.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarUsers, "/fxml/User.fxml"));
-
-        if (btnSidebarSignatures != null) btnSidebarSignatures.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarSignatures, "/fxml/SignatureManager.fxml"));
-
-        if (btnSidebarLogReturn != null)
-            btnSidebarLogReturn.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarLogReturn, "/fxml/Return.fxml"));
-        if (btnSidebarPasswordReset != null)
-            btnSidebarPasswordReset.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarPasswordReset, "/fxml/PasswordResetRequests.fxml"));
-
-        NavigationHelper.hideAdminSidebarItems(
-            btnSidebarEmployees,
-            btnSidebarReports,
-            btnSidebarUsers,
-            btnSidebarPasswordReset
-        );
-
-        NavigationHelper.hideMonitoringForStaff(btnSidebarMonitoring);
-
-        if (btnLogout != null)
-            btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
-        if (btnNotificationsAlert != null)
-            btnNotificationsAlert.setOnAction(e -> utils.NotificationHelper.toggle(btnNotificationsAlert));
         cardCreateEmployee.setOnMouseClicked(
                 event -> {
                     Session.selectedEmployeeId = 0;
@@ -197,6 +168,11 @@ public class EmployeeListController {
                     );
                 }
         );
+
+        if (btnExportCsv != null)
+            btnExportCsv.setOnAction(event -> exportCsv());
+        if (btnExportExcel != null)
+            btnExportExcel.setOnAction(event -> exportExcel());
 
         colEmployeeName.setCellValueFactory(
                 cellData -> new ReadOnlyStringWrapper(
@@ -439,6 +415,14 @@ public class EmployeeListController {
     private void batchDeleteEmployees() {
         if (selectedEmployees.isEmpty()) return;
 
+        boolean confirmed = ConfirmDialog.show(
+                employeeTableView,
+                "Delete Employees",
+                "Are you sure you want to delete " + selectedEmployees.size() + " employee(s)?\nThis will also remove all their pass slips and activity logs."
+        );
+
+        if (!confirmed) return;
+
         int count = selectedEmployees.size();
 
         try {
@@ -481,6 +465,123 @@ public class EmployeeListController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void exportCsv() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export Employees as CSV");
+        fileChooser.setInitialFileName("employees.csv");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("CSV Files", "*.csv")
+        );
+
+        File file = fileChooser.showSaveDialog(btnExportCsv.getScene().getWindow());
+        if (file == null) return;
+
+        try (PrintWriter writer = new PrintWriter(file)) {
+            writer.println("ID,First Name,Last Name,Department,Position,Contact,Join Date,Manager,Email,Address,Emergency Contact");
+
+            for (Employee emp : filteredEmployees) {
+                writer.println(
+                        emp.getId() + ","
+                                + "\"" + safe(emp.getFirstName()) + "\","
+                                + "\"" + safe(emp.getLastName()) + "\","
+                                + "\"" + safe(emp.getDepartment()) + "\","
+                                + "\"" + safe(emp.getPosition()) + "\","
+                                + "\"" + safe(emp.getContact()) + "\","
+                                + (emp.getJoinDate() != null ? emp.getJoinDate() : "") + ","
+                                + "\"" + safe(emp.getManager()) + "\","
+                                + "\"" + safe(emp.getEmail()) + "\","
+                                + "\"" + safe(emp.getAddress()) + "\","
+                                + "\"" + safe(emp.getEmergencyContact()) + "\""
+                );
+            }
+
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+            alert.setTitle("Export Successful");
+            alert.setHeaderText(null);
+            alert.setContentText("CSV exported to:\n" + file.getAbsolutePath());
+            alert.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+            alert.setTitle("Export Failed");
+            alert.setHeaderText(null);
+            alert.setContentText("Failed to export CSV.");
+            alert.showAndWait();
+        }
+    }
+
+    private void exportExcel() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export Employees as Excel");
+        fileChooser.setInitialFileName("employees.xlsx");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Excel Files", "*.xlsx")
+        );
+
+        File file = fileChooser.showSaveDialog(btnExportExcel.getScene().getWindow());
+        if (file == null) return;
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Employees");
+
+            Row headerRow = sheet.createRow(0);
+            String[] headers = {"ID", "First Name", "Last Name", "Department", "Position", "Contact", "Join Date", "Manager", "Email", "Address", "Emergency Contact"};
+            CellStyle headerStyle = workbook.createCellStyle();
+            Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            headerStyle.setFont(headerFont);
+
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerStyle);
+            }
+
+            int rowNum = 1;
+            for (Employee emp : filteredEmployees) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(emp.getId());
+                row.createCell(1).setCellValue(emp.getFirstName() != null ? emp.getFirstName() : "");
+                row.createCell(2).setCellValue(emp.getLastName() != null ? emp.getLastName() : "");
+                row.createCell(3).setCellValue(emp.getDepartment() != null ? emp.getDepartment() : "");
+                row.createCell(4).setCellValue(emp.getPosition() != null ? emp.getPosition() : "");
+                row.createCell(5).setCellValue(emp.getContact() != null ? emp.getContact() : "");
+                row.createCell(6).setCellValue(emp.getJoinDate() != null ? emp.getJoinDate().toString() : "");
+                row.createCell(7).setCellValue(emp.getManager() != null ? emp.getManager() : "");
+                row.createCell(8).setCellValue(emp.getEmail() != null ? emp.getEmail() : "");
+                row.createCell(9).setCellValue(emp.getAddress() != null ? emp.getAddress() : "");
+                row.createCell(10).setCellValue(emp.getEmergencyContact() != null ? emp.getEmergencyContact() : "");
+            }
+
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            java.io.FileOutputStream fileOut = new java.io.FileOutputStream(file);
+            workbook.write(fileOut);
+            fileOut.close();
+
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+            alert.setTitle("Export Successful");
+            alert.setHeaderText(null);
+            alert.setContentText("Excel exported to:\n" + file.getAbsolutePath());
+            alert.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+            alert.setTitle("Export Failed");
+            alert.setHeaderText(null);
+            alert.setContentText("Failed to export Excel.");
+            alert.showAndWait();
+        }
+    }
+
+    private String safe(String s) {
+        return s != null ? s.replace("\"", "\"\"") : "";
     }
 
 }

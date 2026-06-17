@@ -14,6 +14,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import utils.NavigationHelper;
 import utils.NotificationHelper;
+import utils.SidebarHelper;
 import utils.TimerService;
 
 import java.sql.Connection;
@@ -77,20 +78,13 @@ public class StaffDashboardController {
     @FXML
     private void initialize() {
 
-        NavigationHelper.setActiveButton(btnSidebarDashboard);
-
-        btnSidebarDashboard.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnSidebarDashboard,
-                        "/fxml/StaffDashboard.fxml"
-                )
-        );
-
-        btnSidebarMonitoring.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnSidebarMonitoring,
-                        "/fxml/Monitoring.fxml"
-                )
+        SidebarHelper.initialize(
+                btnSidebarDashboard, btnSidebarMonitoring,
+                null, null,
+                btnSidebarLogReturn, null,
+                btnSidebarSignatures, null,
+                btnLogout, btnNotificationsAlert,
+                btnSidebarDashboard
         );
 
         if (btnManageEmployees != null) {
@@ -100,29 +94,6 @@ public class StaffDashboardController {
                 manageEmployeesSubMenu.setManaged(!isVisible);
             });
         }
-
-        if (btnSidebarLogReturn != null)
-            btnSidebarLogReturn.setOnAction(
-                    event -> NavigationHelper.navigateTo(
-                            btnSidebarLogReturn,
-                            "/fxml/Return.fxml"
-                    )
-            );
-
-        if (btnSidebarSignatures != null)
-            btnSidebarSignatures.setOnAction(
-                    event -> NavigationHelper.navigateTo(
-                            btnSidebarSignatures,
-                            "/fxml/SignatureManager.fxml"
-                    )
-            );
-
-        NavigationHelper.hideMonitoringForStaff(btnSidebarMonitoring);
-
-        if (btnLogout != null)
-            btnLogout.setOnAction(
-                    event -> NavigationHelper.logout(btnLogout)
-            );
 
         btnOpenPassSlip.setOnAction(
                 event -> NavigationHelper.navigateTo(
@@ -144,11 +115,6 @@ public class StaffDashboardController {
                         "/fxml/Monitoring.fxml"
                 )
         );
-
-        if (btnNotificationsAlert != null)
-            btnNotificationsAlert.setOnAction(
-                    event -> NotificationHelper.toggle(btnNotificationsAlert)
-            );
 
         loadTodayActivity();
         loadLiveTimer();

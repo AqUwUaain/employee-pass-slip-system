@@ -59,22 +59,26 @@ public class ResetPasswordController {
             return;
         }
 
-        if (newPassword.length() < 8) {
-            resetMessageLabel.setText("Password must be at least 8 characters.");
+        if (newPassword.length() < 5) {
+            resetMessageLabel.setText("Password must be at least 5 characters.");
             resetMessageLabel.setStyle("-fx-text-fill: #FCA5A5;");
             return;
         }
 
-        String specialChars = "!@#$%^&*()_+-=[]{}|;:'\",.<>?/`~";
-        boolean hasSpecial = false;
-        for (char c : newPassword.toCharArray()) {
-            if (specialChars.indexOf(c) >= 0) {
-                hasSpecial = true;
-                break;
-            }
+        if (!newPassword.matches(".*[A-Z].*")) {
+            resetMessageLabel.setText("Password must contain at least 1 uppercase letter.");
+            resetMessageLabel.setStyle("-fx-text-fill: #FCA5A5;");
+            return;
         }
-        if (!hasSpecial) {
-            resetMessageLabel.setText("Password must contain at least 1 special character.");
+
+        if (!newPassword.matches(".*[0-9].*")) {
+            resetMessageLabel.setText("Password must contain at least 1 number.");
+            resetMessageLabel.setStyle("-fx-text-fill: #FCA5A5;");
+            return;
+        }
+
+        if (!newPassword.matches(".*[!@#%*].*")) {
+            resetMessageLabel.setText("Password must contain at least 1 special character (!@#%*).");
             resetMessageLabel.setStyle("-fx-text-fill: #FCA5A5;");
             return;
         }

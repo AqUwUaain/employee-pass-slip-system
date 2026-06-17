@@ -171,6 +171,7 @@
                                         </TableView>
                                         <HBox alignment="CENTER_RIGHT" spacing="10.0">
                                             <children>
+                                                <Button fx:id="btnEditUser" mnemonicParsing="false" prefHeight="36.0" text="Edit User" styleClass="btn-ghost" />
                                                 <Button fx:id="btnChangePassword" mnemonicParsing="false" prefHeight="36.0" text="&#x1F512; Change Password" styleClass="btn-gold" />
                                                 <Button fx:id="btnRevokeAccess" mnemonicParsing="false" prefHeight="36.0" text="&#x274C; Revoke Account" styleClass="btn-danger" />
                                             </children>

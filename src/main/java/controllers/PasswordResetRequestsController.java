@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 import models.PasswordResetRequest;
 import utils.NavigationHelper;
 import utils.PhilTime;
+import utils.SidebarHelper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -86,7 +87,22 @@ public class PasswordResetRequestsController {
 
     @FXML
     private void initialize() {
-        NavigationHelper.setActiveButton(btnSidebarPasswordReset);
+        SidebarHelper.initialize(
+                btnSidebarDashboard, btnSidebarMonitoring,
+                btnSidebarEmployees, btnSidebarReports,
+                btnSidebarLogReturn, btnSidebarUsers,
+                btnSidebarSignatures, btnSidebarPasswordReset,
+                btnLogout, btnNotificationsAlert,
+                btnSidebarPasswordReset
+        );
+
+        if (btnManageEmployees != null) {
+            btnManageEmployees.setOnAction(event -> {
+                boolean isVisible = manageEmployeesSubMenu.isVisible();
+                manageEmployeesSubMenu.setVisible(!isVisible);
+                manageEmployeesSubMenu.setManaged(!isVisible);
+            });
+        }
 
         colId.setCellValueFactory(cellData -> new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getId()));
         colEmail.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getEmail()));
@@ -99,47 +115,6 @@ public class PasswordResetRequestsController {
 
         btnApprove.setOnAction(e -> updateRequestStatus("APPROVED"));
         btnReject.setOnAction(e -> updateRequestStatus("REJECTED"));
-
-        if (btnSidebarDashboard != null)
-            btnSidebarDashboard.setOnAction(e -> NavigationHelper.navigateToDashboard(btnSidebarDashboard));
-        if (btnSidebarMonitoring != null)
-            btnSidebarMonitoring.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarMonitoring, "/fxml/Monitoring.fxml"));
-
-        if (btnManageEmployees != null) {
-            btnManageEmployees.setOnAction(event -> {
-                boolean isVisible = manageEmployeesSubMenu.isVisible();
-                manageEmployeesSubMenu.setVisible(!isVisible);
-                manageEmployeesSubMenu.setManaged(!isVisible);
-            });
-        }
-
-        if (btnSidebarEmployees != null)
-            btnSidebarEmployees.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarEmployees, "/fxml/EmployeeController.fxml"));
-        if (btnSidebarReports != null)
-            btnSidebarReports.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarReports, "/fxml/Reports.fxml"));
-        if (btnSidebarUsers != null)
-            btnSidebarUsers.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarUsers, "/fxml/User.fxml"));
-
-        if (btnSidebarSignatures != null) btnSidebarSignatures.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarSignatures, "/fxml/SignatureManager.fxml"));
-
-        if (btnSidebarLogReturn != null)
-            btnSidebarLogReturn.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarLogReturn, "/fxml/Return.fxml"));
-        if (btnSidebarPasswordReset != null)
-            btnSidebarPasswordReset.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarPasswordReset, "/fxml/PasswordResetRequests.fxml"));
-
-        NavigationHelper.hideAdminSidebarItems(
-            btnSidebarEmployees,
-            btnSidebarReports,
-            btnSidebarUsers,
-            btnSidebarPasswordReset
-        );
-
-        NavigationHelper.hideMonitoringForStaff(btnSidebarMonitoring);
-
-        if (btnLogout != null)
-            btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
-        if (btnNotificationsAlert != null)
-            btnNotificationsAlert.setOnAction(e -> utils.NotificationHelper.toggle(btnNotificationsAlert));
 
         refreshRequests();
     }

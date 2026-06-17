@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import models.PassSlip;
 import utils.NavigationHelper;
 import utils.PhilTime;
+import utils.SidebarHelper;
 import utils.TimerService;
 
 import java.sql.Connection;
@@ -143,12 +144,13 @@ public class ReturnController {
     @FXML
     private void initialize() {
 
-        btnSidebarDashboard.setOnAction(
-                event -> NavigationHelper.navigateToDashboard(btnSidebarDashboard)
-        );
-
-        btnSidebarMonitoring.setOnAction(
-                event -> NavigationHelper.navigateTo(btnSidebarMonitoring, "/fxml/Monitoring.fxml")
+        SidebarHelper.initialize(
+                btnSidebarDashboard, btnSidebarMonitoring,
+                btnSidebarEmployees, btnSidebarReports,
+                btnSidebarLogReturn, btnSidebarUsers,
+                btnSidebarSignatures, btnSidebarPasswordReset,
+                btnLogout, btnNotificationsAlert,
+                btnSidebarLogReturn
         );
 
         if (btnManageEmployees != null) {
@@ -163,47 +165,6 @@ public class ReturnController {
             manageEmployeesSubMenu.setVisible(true);
             manageEmployeesSubMenu.setManaged(true);
         }
-
-        btnSidebarEmployees.setOnAction(
-                event -> NavigationHelper.navigateTo(btnSidebarEmployees, "/fxml/EmployeeController.fxml")
-        );
-
-        btnSidebarReports.setOnAction(
-                event -> NavigationHelper.navigateTo(btnSidebarReports, "/fxml/Reports.fxml")
-        );
-
-        if (btnSidebarLogReturn != null)
-            btnSidebarLogReturn.setOnAction(
-                    event -> NavigationHelper.navigateTo(btnSidebarLogReturn, "/fxml/Return.fxml")
-            );
-
-        if (btnSidebarUsers != null)
-            btnSidebarUsers.setOnAction(
-                    event -> NavigationHelper.navigateTo(btnSidebarUsers, "/fxml/User.fxml")
-            );
-
-        if (btnSidebarSignatures != null) btnSidebarSignatures.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarSignatures, "/fxml/SignatureManager.fxml"));
-
-        if (btnSidebarPasswordReset != null)
-            btnSidebarPasswordReset.setOnAction(
-                    event -> NavigationHelper.navigateTo(btnSidebarPasswordReset, "/fxml/PasswordResetRequests.fxml")
-            );
-
-        NavigationHelper.hideAdminSidebarItems(
-            btnSidebarEmployees,
-            btnSidebarReports,
-            btnSidebarUsers,
-            btnSidebarPasswordReset
-        );
-
-        NavigationHelper.hideMonitoringForStaff(btnSidebarMonitoring);
-
-        NavigationHelper.setActiveButton(btnSidebarLogReturn);
-
-        if (btnLogout != null)
-            btnLogout.setOnAction(e -> NavigationHelper.logout(btnLogout));
-        if (btnNotificationsAlert != null)
-            btnNotificationsAlert.setOnAction(e -> utils.NotificationHelper.toggle(btnNotificationsAlert));
 
         btnFetchActiveSlip.setOnAction(event -> fetchActiveSlip());
 

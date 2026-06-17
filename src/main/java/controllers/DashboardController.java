@@ -14,6 +14,7 @@ import models.ActivityLog;
 import utils.NavigationHelper;
 import utils.NotificationHelper;
 import utils.PhilTime;
+import utils.SidebarHelper;
 import utils.TimerService;
 
 import java.sql.Connection;
@@ -106,23 +107,17 @@ public class DashboardController {
 
     @FXML
     private void initialize() {
-        NavigationHelper.setActiveButton(btnSidebarDashboard);
+        SidebarHelper.initialize(
+                btnSidebarDashboard, btnSidebarMonitoring,
+                btnSidebarEmployees, btnSidebarReports,
+                btnSidebarLogReturn, btnSidebarUsers,
+                btnSidebarSignatures, btnSidebarPasswordReset,
+                btnLogout, btnNotificationsAlert,
+                btnSidebarDashboard
+        );
+
         currentYearMonth = YearMonth.now();
         selectedDate = LocalDate.now();
-
-        btnSidebarDashboard.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnSidebarDashboard,
-                        "/fxml/Dashboard.fxml"
-                )
-        );
-
-        btnSidebarMonitoring.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnSidebarMonitoring,
-                        "/fxml/Monitoring.fxml"
-                )
-        );
 
         if (btnManageEmployees != null) {
             btnManageEmployees.setOnAction(event -> {
@@ -131,64 +126,6 @@ public class DashboardController {
                 manageEmployeesSubMenu.setManaged(!isVisible);
             });
         }
-
-        btnSidebarEmployees.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnSidebarEmployees,
-                        "/fxml/EmployeeController.fxml"
-                )
-        );
-
-        btnSidebarReports.setOnAction(
-                event -> NavigationHelper.navigateTo(
-                        btnSidebarReports,
-                        "/fxml/Reports.fxml"
-                )
-        );
-
-        if (btnSidebarLogReturn != null)
-            btnSidebarLogReturn.setOnAction(
-                    event -> NavigationHelper.navigateTo(
-                            btnSidebarLogReturn,
-                            "/fxml/Return.fxml"
-                    )
-            );
-
-        if (btnSidebarUsers != null)
-            btnSidebarUsers.setOnAction(
-                    event -> NavigationHelper.navigateTo(
-                            btnSidebarUsers,
-                            "/fxml/User.fxml"
-                    )
-            );
-
-        if (btnSidebarSignatures != null) btnSidebarSignatures.setOnAction(e -> NavigationHelper.navigateTo(btnSidebarSignatures, "/fxml/SignatureManager.fxml"));
-
-        if (btnSidebarPasswordReset != null)
-            btnSidebarPasswordReset.setOnAction(
-                    event -> NavigationHelper.navigateTo(
-                            btnSidebarPasswordReset,
-                            "/fxml/PasswordResetRequests.fxml"
-                    )
-            );
-
-        NavigationHelper.hideAdminSidebarItems(
-            btnSidebarEmployees,
-            btnSidebarReports,
-            btnSidebarUsers,
-            btnSidebarPasswordReset
-        );
-
-        NavigationHelper.hideMonitoringForStaff(btnSidebarMonitoring);
-
-        if (btnLogout != null)
-            btnLogout.setOnAction(
-                    event -> NavigationHelper.logout(btnLogout)
-            );
-
-        btnNotificationsAlert.setOnAction(
-                event -> NotificationHelper.toggle(btnNotificationsAlert)
-        );
 
         if (btnViewAllActivity != null) {
             btnViewAllActivity.setOnAction(

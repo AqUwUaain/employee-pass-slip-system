@@ -32,7 +32,12 @@ public class DatabaseMigration {
                     "ALTER TABLE password_reset_requests ADD COLUMN IF NOT EXISTS used BOOLEAN DEFAULT FALSE",
                     "CREATE TABLE IF NOT EXISTS signatures (id SERIAL PRIMARY KEY, user_id INT NOT NULL, signature_name VARCHAR(255) NOT NULL, image_data BYTEA NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
                     "CREATE UNIQUE INDEX IF NOT EXISTS idx_signatures_user_id ON signatures (user_id)",
-                    "ALTER TABLE pass_slips ADD COLUMN IF NOT EXISTS estimated_return TIMESTAMP DEFAULT NULL"
+                    "ALTER TABLE pass_slips ADD COLUMN IF NOT EXISTS estimated_return TIMESTAMP DEFAULT NULL",
+                    // Foreign key constraints
+                    "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_pass_slips_employee') THEN ALTER TABLE pass_slips ADD CONSTRAINT fk_pass_slips_employee FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE CASCADE; END IF; END $$",
+                    "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_activity_logs_user') THEN ALTER TABLE activity_logs ADD CONSTRAINT fk_activity_logs_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL; END IF; END $$",
+                    "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_activity_logs_employee') THEN ALTER TABLE activity_logs ADD CONSTRAINT fk_activity_logs_employee FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE SET NULL; END IF; END $$",
+                    "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_signatures_user') THEN ALTER TABLE signatures ADD CONSTRAINT fk_signatures_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE; END IF; END $$"
             };
 
             for (String sql : migrations) {
