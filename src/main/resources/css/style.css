@@ -592,6 +592,16 @@ Button.nav-sub-active:hover {
     -fx-text-fill: #A8A29E;
 }
 
+.dialog-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+}
+.dialog-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: rgba(255,255,255,0.7);
+}
+
 /* NOTIFICATION POPUP */
 .notification-popup {
     -fx-background-color: #252220;

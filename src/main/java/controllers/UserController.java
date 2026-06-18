@@ -125,6 +125,9 @@ public class UserController {
     @FXML
     private VBox manageEmployeesSubMenu;
 
+    private javafx.scene.Node savedCenterContent;
+    private boolean dialogOpen = false;
+
     @FXML
     private void initialize() {
         SidebarHelper.initialize(
@@ -174,14 +177,29 @@ public class UserController {
 
         btnClearUserForm.setOnAction(event -> clearForm());
 
+        final double[] createLockedHeight = {-1};
         btnTogglePassword.setOnMouseClicked(event -> {
+            if (createLockedHeight[0] < 0) {
+                PasswordField current = (PasswordField) btnTogglePassword.getParent().getChildrenUnmodifiable().stream()
+                        .filter(c -> c instanceof PasswordField).findFirst().orElse(null);
+                createLockedHeight[0] = current != null ? current.getHeight() : 36;
+            }
+            double lockedHeight = createLockedHeight[0];
             if (btnTogglePassword.getText().equals("Show")) {
-                TextField visible = new TextField(txtUserPassword.getText());
+                PasswordField current = (PasswordField) btnTogglePassword.getParent().getChildrenUnmodifiable().stream()
+                        .filter(c -> c instanceof PasswordField).findFirst().orElse(null);
+                if (current == null) return;
+
+                TextField visible = new TextField(current.getText());
                 visible.setStyle("-fx-background-color: transparent; -fx-text-fill: #F5F5F4; -fx-border-width: 0; -fx-padding: 8px 4px; -fx-font-size: 13px;");
                 visible.setPromptText("Enter password...");
                 visible.setMaxWidth(Double.MAX_VALUE);
-                HBox parent = (HBox) txtUserPassword.getParent();
-                int idx = parent.getChildren().indexOf(txtUserPassword);
+                visible.setMinHeight(lockedHeight);
+                visible.setPrefHeight(lockedHeight);
+                visible.setMaxHeight(lockedHeight);
+                HBox parent = (HBox) current.getParent();
+                HBox.setHgrow(visible, javafx.scene.layout.Priority.ALWAYS);
+                int idx = parent.getChildren().indexOf(current);
                 parent.getChildren().set(idx, visible);
                 txtUserPassword = null;
                 btnTogglePassword.setText("Hide");
@@ -196,7 +214,11 @@ public class UserController {
                     hidden.setPromptText("Enter password...");
                     hidden.setStyle("-fx-background-color: transparent; -fx-text-fill: #F5F5F4; -fx-border-width: 0; -fx-padding: 8px 4px; -fx-font-size: 13px;");
                     hidden.setMaxWidth(Double.MAX_VALUE);
+                    hidden.setMinHeight(lockedHeight);
+                    hidden.setPrefHeight(lockedHeight);
+                    hidden.setMaxHeight(lockedHeight);
                     HBox parent = (HBox) visible.getParent();
+                    HBox.setHgrow(hidden, javafx.scene.layout.Priority.ALWAYS);
                     int idx = parent.getChildren().indexOf(visible);
                     parent.getChildren().set(idx, hidden);
                     txtUserPassword = hidden;
@@ -432,6 +454,7 @@ public class UserController {
     }
 
     private void showChangePasswordDialog() {
+        if (dialogOpen) return;
 
         models.User selectedUser =
                 tblSystemUsersView.getSelectionModel().getSelectedItem();
@@ -441,6 +464,8 @@ public class UserController {
             lblUserMessage.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
             return;
         }
+
+        dialogOpen = true;
 
         boolean dark = ThemeManager.isDark();
         String bgColor = dark ? "#1F1B1B" : "#FDF8EE";
@@ -454,7 +479,9 @@ public class UserController {
         String confirmText = dark ? "#1C0A04" : "#FFFFFF";
 
         javafx.scene.layout.BorderPane root = (javafx.scene.layout.BorderPane) tblSystemUsersView.getScene().getRoot();
-        javafx.scene.Node originalCenter = root.getCenter();
+        if (savedCenterContent == null) {
+            savedCenterContent = root.getCenter();
+        }
 
         StackPane overlay = new StackPane();
         overlay.setStyle("-fx-background-color: rgba(0,0,0,0.6);");
@@ -532,7 +559,10 @@ public class UserController {
         overlay.getChildren().add(dialog);
         root.setCenter(overlay);
 
-        btnCancel.setOnAction(e -> root.setCenter(originalCenter));
+        btnCancel.setOnAction(e -> {
+            dialogOpen = false;
+            root.setCenter(savedCenterContent);
+        });
 
         btnConfirm.setOnAction(e -> {
             String oldPw = getPasswordFromBox(oldPwBox).trim();
@@ -604,7 +634,8 @@ public class UserController {
                 updateStmt.close();
 
                 if (updated > 0) {
-                    root.setCenter(originalCenter);
+                    dialogOpen = false;
+                    root.setCenter(savedCenterContent);
                     lblUserMessage.setText("Password updated for " + selectedUser.getUsername());
                     lblUserMessage.setStyle("-fx-text-fill: #34D399; -fx-font-weight: bold;");
                     ActivityLogController.logActivity(
@@ -643,7 +674,9 @@ public class UserController {
         String confirmText = dark ? "#1C0A04" : "#FFFFFF";
 
         javafx.scene.layout.BorderPane root = (javafx.scene.layout.BorderPane) tblSystemUsersView.getScene().getRoot();
-        javafx.scene.Node originalCenter = root.getCenter();
+        if (savedCenterContent == null) {
+            savedCenterContent = root.getCenter();
+        }
 
         StackPane overlay = new StackPane();
         overlay.setStyle("-fx-background-color: rgba(0,0,0,0.6);");
@@ -716,7 +749,7 @@ public class UserController {
         overlay.getChildren().add(dialog);
         root.setCenter(overlay);
 
-        btnCancel.setOnAction(e -> root.setCenter(originalCenter));
+        btnCancel.setOnAction(e -> root.setCenter(savedCenterContent));
 
         btnConfirm.setOnAction(e -> {
             String newUsername = emailField.getText().trim();
@@ -766,7 +799,7 @@ public class UserController {
                 updateStmt.close();
 
                 if (updated > 0) {
-                    root.setCenter(originalCenter);
+                    root.setCenter(savedCenterContent);
                     lblUserMessage.setText("User updated successfully.");
                     lblUserMessage.setStyle("-fx-text-fill: #34D399; -fx-font-weight: bold;");
                     refreshUsers();
@@ -801,13 +834,26 @@ public class UserController {
         box.getChildren().addAll(pwField, eye);
         HBox.setHgrow(pwField, javafx.scene.layout.Priority.ALWAYS);
 
+        final double[] lockedHeight = {-1};
+
         eye.setOnMouseClicked(e -> {
+            if (lockedHeight[0] < 0) {
+                lockedHeight[0] = box.getHeight();
+                if (lockedHeight[0] <= 0) lockedHeight[0] = 36;
+            }
             if (eye.getText().equals("Show")) {
-                TextField visible = new TextField(pwField.getText());
+                PasswordField current = (PasswordField) box.getChildren().stream()
+                        .filter(c -> c instanceof PasswordField).findFirst().orElse(null);
+                if (current == null) return;
+                TextField visible = new TextField(current.getText());
                 visible.setStyle(pwStyle);
                 visible.setPromptText(promptText);
                 visible.setMaxWidth(Double.MAX_VALUE);
-                int idx = box.getChildren().indexOf(pwField);
+                visible.setMinHeight(lockedHeight[0]);
+                visible.setPrefHeight(lockedHeight[0]);
+                visible.setMaxHeight(lockedHeight[0]);
+                HBox.setHgrow(visible, javafx.scene.layout.Priority.ALWAYS);
+                int idx = box.getChildren().indexOf(current);
                 box.getChildren().set(idx, visible);
                 eye.setText("Hide");
                 visible.requestFocus();
@@ -820,6 +866,10 @@ public class UserController {
                     hidden.setPromptText(promptText);
                     hidden.setStyle(pwStyle);
                     hidden.setMaxWidth(Double.MAX_VALUE);
+                    hidden.setMinHeight(lockedHeight[0]);
+                    hidden.setPrefHeight(lockedHeight[0]);
+                    hidden.setMaxHeight(lockedHeight[0]);
+                    HBox.setHgrow(hidden, javafx.scene.layout.Priority.ALWAYS);
                     int idx = box.getChildren().indexOf(visible);
                     box.getChildren().set(idx, hidden);
                     eye.setText("Show");
