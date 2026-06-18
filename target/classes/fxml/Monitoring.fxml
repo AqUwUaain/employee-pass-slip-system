@@ -55,7 +55,7 @@
         </VBox>
     </left>
     <top>
-        <HBox alignment="CENTER_LEFT" prefHeight="62.0" styleClass="header-clean" BorderPane.alignment="CENTER">
+        <HBox alignment="CENTER_LEFT" spacing="10.0" prefHeight="62.0" styleClass="header-clean" BorderPane.alignment="CENTER">
             <children>
                 <VBox spacing="2.0">
                     <children>

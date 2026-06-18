@@ -46,14 +46,14 @@
                     <children>
 
                         <!-- VERTICAL LEFT BAR SIDE TITLE: PASS SLIP -->
-                        <VBox alignment="CENTER" prefWidth="65.0" styleClass="pass-slip-section" style="-fx-padding: 10px 0;">
+                        <VBox alignment="CENTER" prefWidth="65.0" styleClass="pass-slip-left-panel" style="-fx-padding: 10px 0;">
                             <children>
                                 <Label rotate="-90.0" styleClass="pass-slip-title" text="PASS SLIP" />
                             </children>
                         </VBox>
 
                         <!-- RIGHT COLUMN CONTAINER COMPRISING INTERNAL SLIP SCHEMATIC METRICS -->
-                        <VBox HBox.hgrow="ALWAYS">
+                        <VBox HBox.hgrow="ALWAYS" styleClass="pass-slip-left-border">
                             <children>
 
                                 <!-- ROW SECTION 1: CALENDAR CHRONOLOGY MATRIX HEADER BLOCK -->
