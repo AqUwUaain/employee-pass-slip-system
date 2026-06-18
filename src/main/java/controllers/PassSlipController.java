@@ -21,6 +21,7 @@ import utils.ActivityLogger;
 
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Cell;
@@ -466,8 +467,10 @@ public class PassSlipController {
 
         PdfWriter writer = new PdfWriter(file);
         PdfDocument pdfDoc = new PdfDocument(writer);
-        Document document = new Document(pdfDoc);
-        document.setMargins(20, 20, 20, 20);
+        com.itextpdf.kernel.geom.PageSize customSize = new com.itextpdf.kernel.geom.PageSize(595, 450);
+        pdfDoc.addNewPage(customSize);
+        Document document = new Document(pdfDoc, customSize);
+        document.setMargins(15, 15, 15, 15);
         document.setBackgroundColor(white);
 
         Table headerTable = new Table(UnitValue.createPercentArray(new float[]{12, 88}))
@@ -590,8 +593,10 @@ public class PassSlipController {
 
                 PdfWriter writer = new PdfWriter(file);
                 PdfDocument pdfDoc = new PdfDocument(writer);
-                Document document = new Document(pdfDoc);
-                document.setMargins(20, 20, 20, 20);
+                com.itextpdf.kernel.geom.PageSize customSize = new com.itextpdf.kernel.geom.PageSize(595, 450);
+                pdfDoc.addNewPage(customSize);
+                Document document = new Document(pdfDoc, customSize);
+                document.setMargins(15, 15, 15, 15);
 
                 document.setBackgroundColor(white);
 
@@ -688,7 +693,6 @@ public class PassSlipController {
                 headerTable.addCell(mainCell);
 
                 document.add(headerTable);
-
                 document.close();
 
                 lblSlipStatusMessage.setText("PDF SAVED SUCCESSFULLY");

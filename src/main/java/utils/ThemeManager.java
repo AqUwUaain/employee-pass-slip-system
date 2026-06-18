@@ -30,6 +30,10 @@ public final class ThemeManager {
         return isDark ? DARK_CSS : LIGHT_CSS;
     }
 
+    public static String getDarkCssPath() {
+        return DARK_CSS;
+    }
+
     public static String getActiveStyle() {
         return "";
     }

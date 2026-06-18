@@ -137,7 +137,7 @@ public class LoginController {
     }
 
     private void applyLightMode() {
-        rightFormPanel.setStyle("-fx-background-color: #800517;");
+        rightFormPanel.setStyle("-fx-background-color: #1C0A04;");
 
         for (javafx.scene.Node node : rightFormPanel.lookupAll(".label")) {
             if (node instanceof Label label) {

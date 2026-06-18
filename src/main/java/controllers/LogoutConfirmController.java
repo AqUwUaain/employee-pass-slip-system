@@ -39,8 +39,10 @@ public class LogoutConfirmController {
     private void initialize() {
         boolean isDark = ThemeManager.isDark();
 
-        if (!isDark) {
-            logoutDialogRoot.setStyle("-fx-background-color: #800517; -fx-background-radius: 20px; -fx-padding: 40px;");
+        if (isDark) {
+            logoutDialogRoot.setStyle("-fx-background-color: #2D2520; -fx-background-radius: 20px; -fx-padding: 40px; -fx-border-color: #3D3229; -fx-border-radius: 20px; -fx-border-width: 1px;");
+        } else {
+            logoutDialogRoot.setStyle("-fx-background-color: #FDF8EE; -fx-background-radius: 20px; -fx-padding: 40px; -fx-border-color: #C0B89E; -fx-border-radius: 20px; -fx-border-width: 1px;");
         }
 
         cancelBtn.setOnAction(e -> {
@@ -54,10 +56,10 @@ public class LogoutConfirmController {
         });
 
         if (dialogTitle != null) {
-            dialogTitle.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: " + (isDark ? "#D4A853;" : "#FFFFFF;"));
+            dialogTitle.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: " + (isDark ? "#D4A853;" : "#1C1917;"));
         }
         if (dialogSubtitle != null) {
-            dialogSubtitle.setStyle("-fx-font-size: 14px; -fx-text-fill: " + (isDark ? "#A8A29E;" : "rgba(255,255,255,0.75);"));
+            dialogSubtitle.setStyle("-fx-font-size: 14px; -fx-text-fill: " + (isDark ? "#A8A29E;" : "#6B6358;"));
         }
     }
 }

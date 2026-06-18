@@ -135,11 +135,11 @@
                                         <RowConstraints minHeight="35.0" />
                                     </rowConstraints>
                                     <children>
-                                        <Label style="-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 12px;" text="Scan or Enter Client ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                        <Label styleClass="form-label" style="-fx-font-size: 12px;" text="Scan or Enter Client ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                                         <TextField fx:id="txtReturnSearchId" promptText="Enter XXXX ID reference..." styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.columnSpan="2" />
-                                        <Label style="-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 12px;" text="Identified Personnel Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                        <Label styleClass="form-label" style="-fx-font-size: 12px;" text="Identified Personnel Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                                         <TextField fx:id="txtReturnEmployeeName" editable="false" promptText="Personnel match display name" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.columnSpan="2" />
-                                        <Label style="-fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 12px;" text="Verify Return Time In:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                        <Label styleClass="form-label" style="-fx-font-size: 12px;" text="Verify Return Time In:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                                         <TextField fx:id="txtReturnTimeInStamp" promptText="e.g., 04:30 PM" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                         <Button fx:id="btnConfirmReturnLog" mnemonicParsing="false" maxWidth="Infinity" styleClass="btn-maroon" text="&#x1F4E5; Process Re-entry" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                     </children>

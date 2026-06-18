@@ -20,7 +20,7 @@ public class  Main extends Application {
 
         Scene scene = new Scene(root);
 
-        scene.getStylesheets().add(ThemeManager.getCssPath());
+        scene.getStylesheets().add(ThemeManager.getDarkCssPath());
 
         stage.setScene(scene);
         stage.setTitle("Employee Pass Slip System");

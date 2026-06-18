@@ -4,6 +4,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -149,15 +151,13 @@
                                             </children>
                                         </HBox>
                                         <HBox fx:id="activityFilterBox" alignment="CENTER_LEFT" spacing="10.0" style="-fx-padding: 0 0 0 14px;" />
-                                        <ScrollPane fx:id="scrollActivityTracker" fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="content-scroll-pane">
-                                            <content>
-                                                <VBox fx:id="vboxActivityTracker" spacing="4.0" styleClass="activity-list">
-                                                    <children>
-                                                        <!-- Placeholder removed, loaded dynamically -->
-                                                    </children>
-                                                </VBox>
-                                            </content>
-                                        </ScrollPane>
+                                        <TableView fx:id="activityTableView" VBox.vgrow="ALWAYS" styleClass="dashboard-activity-table">
+                                            <columns>
+                                                <TableColumn fx:id="colActivityAction" minWidth="120.0" text="ACTION" />
+                                                <TableColumn fx:id="colActivityDescription" minWidth="160.0" text="DESCRIPTION" />
+                                                <TableColumn fx:id="colActivityTime" minWidth="80.0" text="TIME" />
+                                            </columns>
+                                        </TableView>
                                     </children>
                                 </VBox>
                                 <!-- Calendar -->

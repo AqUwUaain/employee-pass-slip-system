@@ -725,6 +725,57 @@ Button.nav-sub-active:hover { -fx-background-color: rgba(255,255,255,0.24); -fx-
 
 .activity-list { -fx-background-color: #F1E9CE; -fx-background-radius: 12px; -fx-padding: 6px; }
 
+/* Dashboard Activity Table - Light */
+.dashboard-activity-table {
+    -fx-background-color: #F1E9CE;
+    -fx-background-radius: 12px;
+    -fx-border-color: #C0B89E;
+    -fx-border-width: 1px;
+    -fx-padding: 0;
+    -fx-font-size: 12px;
+}
+
+.dashboard-activity-table .filler { -fx-background-color: transparent; }
+
+.dashboard-activity-table .column-header-background { -fx-background-color: #800517; }
+
+.dashboard-activity-table .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #6B0413 transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 10px 14px;
+}
+
+.dashboard-activity-table .column-header .label {
+    -fx-font-weight: bold;
+    -fx-font-size: 10px;
+    -fx-text-fill: #FFFFFF;
+}
+
+.dashboard-activity-table .table-row-cell {
+    -fx-background-color: #FDF8EE;
+    -fx-padding: 0;
+    -fx-border-color: transparent transparent #E8DFC8 transparent;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.dashboard-activity-table .table-row-cell:odd { -fx-background-color: #F1E9CE; }
+.dashboard-activity-table .table-row-cell:hover { -fx-background-color: #E8DFC8 !important; }
+.dashboard-activity-table .table-row-cell:hover .table-cell { -fx-text-fill: #1C1917 !important; }
+.dashboard-activity-table .table-row-cell:selected { -fx-background-color: rgba(128,5,23,0.15) !important; }
+.dashboard-activity-table .table-row-cell:selected .table-cell { -fx-text-fill: #800517; -fx-font-weight: bold; }
+
+.dashboard-activity-table .table-cell {
+    -fx-padding: 10px 14px;
+    -fx-font-size: 12px;
+    -fx-text-fill: #44403C;
+}
+
+.dashboard-activity-table .placeholder .label {
+    -fx-text-fill: #8A8272;
+    -fx-font-size: 13px;
+}
+
 .link-button { -fx-text-fill: #800517; -fx-font-size: 12px; -fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 4px 8px; }
 
 .stat-header-label { -fx-text-fill: #FFFFFF; -fx-font-size: 10px; -fx-font-weight: bold; }

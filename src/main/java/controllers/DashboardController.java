@@ -3,11 +3,16 @@ package controllers;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
 import models.ActivityLog;
@@ -86,7 +91,16 @@ public class DashboardController {
     private Label lblLiveTimer;
 
     @FXML
-    private VBox vboxActivityTracker;
+    private TableView<ActivityLog> activityTableView;
+
+    @FXML
+    private TableColumn<ActivityLog, String> colActivityAction;
+
+    @FXML
+    private TableColumn<ActivityLog, String> colActivityDescription;
+
+    @FXML
+    private TableColumn<ActivityLog, String> colActivityTime;
 
     @FXML
     private HBox activityFilterBox;
@@ -120,6 +134,7 @@ public class DashboardController {
 
     private YearMonth currentYearMonth;
     private LocalDate selectedDate;
+    private LocalDate lastRefreshDate;
     private Timeline autoRefreshTimeline;
     private String currentFilter = "Today";
 
@@ -187,9 +202,39 @@ public class DashboardController {
             event.consume();
         });
 
+        setupActivityTable();
+
         loadDashboardData();
         startAutoRefresh();
         startLiveTimerRefresh();
+    }
+
+    private void setupActivityTable() {
+        activityTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+
+        colActivityAction.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(
+                        cellData.getValue().getAction() != null
+                                ? cellData.getValue().getAction() : ""
+                )
+        );
+
+        colActivityDescription.setCellValueFactory(
+                cellData -> {
+                    String desc = cellData.getValue().getDescription();
+                    return new ReadOnlyStringWrapper(
+                            (desc != null && !desc.trim().isEmpty()) ? desc : "\u2014"
+                    );
+                }
+        );
+
+        colActivityTime.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(
+                        getRelativeTime(cellData.getValue().getTimestamp())
+                )
+        );
+
+        activityTableView.setPlaceholder(new Label("No activities found"));
     }
 
     private void loadDashboardData() {
@@ -204,9 +249,19 @@ public class DashboardController {
     }
 
     private void startAutoRefresh() {
+        lastRefreshDate = LocalDate.now(PhilTime.ZONE);
         autoRefreshTimeline = new Timeline(new KeyFrame(Duration.seconds(10), event -> {
             loadSummaryCountsAsync();
             loadLiveTimer();
+
+            LocalDate today = LocalDate.now(PhilTime.ZONE);
+            if (!today.equals(lastRefreshDate)) {
+                lastRefreshDate = today;
+                currentFilter = "Today";
+                selectedDate = null;
+                loadCalendar();
+            }
+
             if (selectedDate != null && currentFilter.equals("DateSelection")) {
                 loadCalendarEvents(selectedDate);
             } else {
@@ -238,7 +293,12 @@ public class DashboardController {
         }
         
         // Use a limit when getting all logs to avoid loading thousands
-        List<ActivityLog> allLogs = ReportsController.getLogs(filter.equals("All") || filter.equals("DateSelection") ? 100 : 0);
+        List<ActivityLog> allLogs;
+        if ("DateSelection".equals(filter) && selectedDate != null) {
+            allLogs = new ArrayList<>(ReportsController.getLogsForDate(selectedDate));
+        } else {
+            allLogs = ReportsController.getLogs("All".equals(filter) ? 100 : 0);
+        }
         List<ActivityLog> filteredLogs = new ArrayList<>();
 
         LocalDateTime now = LocalDateTime.now(PhilTime.ZONE);
@@ -265,7 +325,6 @@ public class DashboardController {
         }
 
         Platform.runLater(() -> {
-            vboxActivityTracker.getChildren().clear();
             activityFilterBox.getChildren().clear();
             
             // Add Filter UI to fixed filter box (outside scroll)
@@ -295,60 +354,11 @@ public class DashboardController {
                 }
             }
 
-            if (filteredLogs.isEmpty()) {
-                VBox emptyBox = new VBox();
-                emptyBox.setAlignment(Pos.CENTER);
-                emptyBox.setStyle("-fx-padding: 40 0;");
-                Label noAct = new Label("No activities found");
-                noAct.setStyle("-fx-text-fill: " + (isDarkTheme ? "#78716C" : "#8A8272") + "; -fx-font-size: 13px;");
-                emptyBox.getChildren().add(noAct);
-                vboxActivityTracker.getChildren().add(emptyBox);
-            } else {
-                int count = 0;
-                for (ActivityLog log : filteredLogs) {
-                    if (count >= 20) break; 
-
-                    boolean isDark = utils.ThemeManager.isDark();
-                    boolean isOdd = count % 2 == 0;
-
-                    String rowBg, rowText, dotColor, timeColor, hoverBg;
-                    if (isDark) {
-                        rowBg = "transparent";
-                        rowText = "#D6CCC2";
-                        dotColor = "#D4A853";
-                        timeColor = "#A8A29E";
-                        hoverBg = "rgba(212,168,83,0.05)";
-                    } else {
-                        rowBg = isOdd ? "#F1E9CE" : "#800517";
-                        rowText = isOdd ? "#800517" : "#FFFFFF";
-                        dotColor = isOdd ? "#800517" : "#FFFFFF";
-                        timeColor = isOdd ? "#8A8272" : "rgba(255,255,255,0.7)";
-                        hoverBg = isOdd ? "rgba(128,5,23,0.08)" : "#6B0413";
-                    }
-
-                    HBox row = new HBox(10);
-                    row.setAlignment(Pos.CENTER_LEFT);
-                    row.setStyle("-fx-padding: 8px 14px; -fx-background-color: " + rowBg + "; -fx-background-radius: 8px;");
-                    row.setOnMouseEntered(e -> row.setStyle("-fx-padding: 8px 14px; -fx-background-color: " + hoverBg + "; -fx-background-radius: 8px;"));
-                    row.setOnMouseExited(e -> row.setStyle("-fx-padding: 8px 14px; -fx-background-color: " + rowBg + "; -fx-background-radius: 8px;"));
-
-                    Label dot = new Label("●");
-                    dot.setStyle("-fx-text-fill: " + dotColor + "; -fx-font-size: 10px;");
-
-                    Label actionLabel = new Label(log.getAction());
-                    actionLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: " + rowText + "; -fx-padding: 0 0 0 10px;");
-                    
-                    StackPane spacer = new StackPane();
-                    HBox.setHgrow(spacer, Priority.ALWAYS);
-
-                    Label timeLabel = new Label(getRelativeTime(log.getTimestamp()));
-                    timeLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: " + timeColor + ";");
-
-                    row.getChildren().addAll(dot, actionLabel, spacer, timeLabel);
-                    vboxActivityTracker.getChildren().add(row);
-                    count++;
-                }
-            }
+            // Populate TableView
+            ObservableList<ActivityLog> tableData = FXCollections.observableArrayList(
+                    filteredLogs.size() > 20 ? filteredLogs.subList(0, 20) : filteredLogs
+            );
+            activityTableView.setItems(tableData);
         });
     }
 

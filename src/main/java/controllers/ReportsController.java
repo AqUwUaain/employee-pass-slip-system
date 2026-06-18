@@ -420,6 +420,33 @@ public class ReportsController {
         return logs;
     }
 
+    public static ObservableList<ActivityLog> getLogsForDate(java.time.LocalDate date) {
+        ObservableList<ActivityLog> logs = FXCollections.observableArrayList();
+        try (Connection connection = DatabaseConnection.connect()) {
+            if (connection == null) return logs;
+            String query = "SELECT * FROM activity_logs WHERE timestamp::date = ? ORDER BY timestamp DESC";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setDate(1, java.sql.Date.valueOf(date));
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        logs.add(new ActivityLog(
+                                resultSet.getInt("id"),
+                                resultSet.getString("action"),
+                                resultSet.getString("description"),
+                                resultSet.getInt("user_id"),
+                                resultSet.getString("username"),
+                                resultSet.getTimestamp("timestamp").toLocalDateTime(),
+                                resultSet.getInt("employee_id")
+                        ));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return logs;
+    }
+
     public static ObservableList<ActivityLog> getLogsForUser(int userId, int limit) {
 
         ObservableList<ActivityLog> logs =
