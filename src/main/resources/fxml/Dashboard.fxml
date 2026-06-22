@@ -105,6 +105,21 @@
                                         </VBox>
                                     </children>
                                 </VBox>
+                                <!-- Pending Slips -->
+                                <VBox fx:id="cardPendingSlips" alignment="CENTER" minHeight="170.0" HBox.hgrow="ALWAYS" styleClass="stat-light" style="-fx-cursor: hand;" pickOnBounds="true">
+                                    <children>
+                                        <VBox alignment="CENTER_LEFT" styleClass="stat-header" prefWidth="210.0">
+                                            <children><Label text="PENDING SLIPS" styleClass="stat-header-label" /></children>
+                                        </VBox>
+                                        <VBox alignment="CENTER" spacing="4.0" VBox.vgrow="ALWAYS">
+                                            <children>
+                                                <Label fx:id="lblPendingCounter" text="0" styleClass="stat-value" />
+                                                <Label text="awaiting approval" styleClass="stat-label" />
+                                            </children>
+                                            <padding><Insets bottom="10.0" /></padding>
+                                        </VBox>
+                                    </children>
+                                </VBox>
                                 <!-- Daily Counter -->
                                 <VBox alignment="CENTER" minHeight="170.0" HBox.hgrow="ALWAYS" styleClass="stat-dark">
                                     <children>

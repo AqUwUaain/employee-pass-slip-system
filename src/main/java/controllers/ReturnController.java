@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -16,6 +17,7 @@ import javafx.scene.layout.VBox;
 import models.PassSlip;
 import utils.NavigationHelper;
 import utils.PhilTime;
+import utils.Session;
 import utils.SidebarHelper;
 import utils.TimerService;
 
@@ -97,6 +99,9 @@ public class ReturnController {
     private Button btnRefreshMonitoring;
 
     @FXML
+    private ComboBox<String> cmbStatusFilter;
+
+    @FXML
     private TableView<PassSlip> monitoringTableView;
 
     @FXML
@@ -173,6 +178,14 @@ public class ReturnController {
         );
 
         btnRefreshMonitoring.setOnAction(event -> loadMonitoringDataAsync());
+
+        cmbStatusFilter.setItems(FXCollections.observableArrayList(
+                "ALL", "OUT", "RETURNED", "RETURNED EARLY", "LATE", "OVERDUE", "PENDING", "REJECTED"
+        ));
+        cmbStatusFilter.setPromptText("All Statuses");
+        cmbStatusFilter.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> filterMonitoringData(txtMonitoringSearch.getText())
+        );
 
         txtMonitoringSearch.textProperty().addListener(
                 (observable, oldValue, newValue) -> filterMonitoringData(newValue)
@@ -480,9 +493,16 @@ public class ReturnController {
                         case "RETURNED EARLY" -> color = "#60A5FA";
                         case "LATE" -> color = "#F97316";
                         case "OVERDUE" -> color = "#EF4444";
+                        case "PENDING" -> color = "#D97706";
+                        case "REJECTED" -> color = "#EF4444";
                         default -> color = "#A8A29E";
                     }
                     row.setStyle("-fx-text-fill: " + color + ";");
+
+                    boolean isStaff = "STAFF".equalsIgnoreCase(Session.currentRole);
+                    approveItem.setDisable(isStaff && "PENDING".equals(status));
+                    rejectItem.setDisable(isStaff && "PENDING".equals(status));
+                    returnItem.setDisable(isStaff && "PENDING".equals(status));
                 } else {
                     row.setStyle("");
                 }
@@ -607,19 +627,21 @@ public class ReturnController {
     }
 
     private void filterMonitoringData(String keyword) {
-        if (keyword == null || keyword.isBlank()) {
-            monitoringTableView.setItems(monitoringData);
-            return;
-        }
-
         ObservableList<PassSlip> filtered = FXCollections.observableArrayList();
+        String statusFilter = cmbStatusFilter.getValue();
 
         for (PassSlip ps : monitoringData) {
-            if (ps.getEmployeeName().toLowerCase().contains(keyword.toLowerCase())
+            boolean matchesStatus = (statusFilter == null || statusFilter.isBlank()
+                    || statusFilter.equals("ALL")
+                    || ps.getStatus().equalsIgnoreCase(statusFilter));
+            boolean matchesKeyword = (keyword == null || keyword.isBlank() ||
+                    ps.getEmployeeName().toLowerCase().contains(keyword.toLowerCase())
                     || ps.getStatus().toLowerCase().contains(keyword.toLowerCase())
                     || String.valueOf(ps.getEmployeeId()).contains(keyword)
                     || (ps.getDepartment() != null
-                        && ps.getDepartment().toLowerCase().contains(keyword.toLowerCase()))) {
+                        && ps.getDepartment().toLowerCase().contains(keyword.toLowerCase())));
+
+            if (matchesStatus && matchesKeyword) {
                 filtered.add(ps);
             }
         }

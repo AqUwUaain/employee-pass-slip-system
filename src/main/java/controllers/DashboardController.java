@@ -79,6 +79,9 @@ public class DashboardController {
     private VBox cardCreatePassSlip;
 
     @FXML
+    private VBox cardPendingSlips;
+
+    @FXML
     private Label lblCreateEntryIcon;
 
     @FXML
@@ -86,6 +89,9 @@ public class DashboardController {
 
     @FXML
     private Label lblMonthlyCounter;
+
+    @FXML
+    private Label lblPendingCounter;
 
     @FXML
     private Label lblLiveTimer;
@@ -176,6 +182,18 @@ public class DashboardController {
                         "/fxml/PassSlip.fxml"
                 )
         );
+
+        if (cardPendingSlips != null) {
+            cardPendingSlips.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_CLICKED,
+                    event -> NavigationHelper.navigateTo(
+                            cardPendingSlips,
+                            "/fxml/PendingSlips.fxml"
+                    )
+            );
+            boolean isAdmin = utils.Session.isAdmin();
+            cardPendingSlips.setVisible(isAdmin);
+            cardPendingSlips.setManaged(isAdmin);
+        }
 
         if (lblCreateEntryIcon != null) {
             boolean isDark = utils.ThemeManager.isDark();
@@ -488,6 +506,21 @@ public class DashboardController {
                     Platform.runLater(() -> lblMonthlyCounter.setText(
                             String.valueOf(finalMonthlyCount)
                     ));
+
+                    PreparedStatement pendingStatement = connection.prepareStatement(
+                            "SELECT COUNT(*) FROM pass_slips WHERE status = 'PENDING'"
+                    );
+                    ResultSet pendingResult = pendingStatement.executeQuery();
+                    int pendingCount = 0;
+                    if (pendingResult.next()) {
+                        pendingCount = pendingResult.getInt(1);
+                    }
+                    int finalPendingCount = pendingCount;
+                    Platform.runLater(() -> {
+                        if (lblPendingCounter != null) {
+                            lblPendingCounter.setText(String.valueOf(finalPendingCount));
+                        }
+                    });
 
                 } catch (Exception e) {
                     Platform.runLater(() -> {

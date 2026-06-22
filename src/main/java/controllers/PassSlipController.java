@@ -96,6 +96,12 @@ public class PassSlipController {
     @FXML
     private void initialize() {
 
+        boolean isStaff = "STAFF".equalsIgnoreCase(Session.currentRole);
+        if (isStaff) {
+            btnSaveSlipAction.setText("\uD83D\uDCE8 Request");
+            btnSaveSlipAction.setStyle("-fx-background-color: #800517;");
+        }
+
         LocalDateTime now = LocalDateTime.now(PhilTime.ZONE);
 
         txtSlipYear.setText(String.valueOf(now.getYear()));
@@ -159,14 +165,29 @@ public class PassSlipController {
         );
 
         btnSaveSlipAction.setOnAction(event -> {
+            String status = isStaff ? "PENDING" : "OUT";
+            String btnLabel = isStaff ? "REQUEST" : "PASS SLIP ISSUED";
+            String failLabel = isStaff ? "REQUEST FAILED" : "FAILED TO ISSUE PASS SLIP";
             issuePassSlip(
                     txtSlipClientId.getText(),
                     txtSlipPurpose.getText(),
                     lblSlipStatusMessage,
-                    selectedEstimatedReturn
+                    selectedEstimatedReturn,
+                    status
             );
-            if ("PASS SLIP ISSUED".equals(lblSlipStatusMessage.getText())) {
-                autoPrintSlip();
+            if (btnLabel.equals(lblSlipStatusMessage.getText())) {
+                if (isStaff) {
+                    javafx.application.Platform.runLater(() -> {
+                        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+                        alert.setTitle("Request Sent");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Your pass slip request has been sent for admin approval.");
+                        alert.showAndWait();
+                        NavigationHelper.navigateToDashboard(btnSaveSlipAction);
+                    });
+                } else {
+                    autoPrintSlip();
+                }
             }
         });
 
@@ -332,7 +353,8 @@ public class PassSlipController {
             String employeeId,
             String reason,
             Label messageLabel,
-            LocalDateTime estimatedReturn
+            LocalDateTime estimatedReturn,
+            String slipStatus
 
     ) {
 
@@ -358,7 +380,7 @@ public class PassSlipController {
 
         try (Connection connection = DatabaseConnection.connect()) {
 
-            String checkQuery = "SELECT COUNT(*) FROM pass_slips WHERE employee_id = ? AND status = 'OUT'";
+            String checkQuery = "SELECT COUNT(*) FROM pass_slips WHERE employee_id = ? AND status IN ('OUT', 'PENDING')";
             PreparedStatement checkStmt = connection.prepareStatement(checkQuery);
             checkStmt.setInt(1, Integer.parseInt(employeeId));
             ResultSet checkRs = checkStmt.executeQuery();
@@ -391,25 +413,31 @@ public class PassSlipController {
             } else {
                 statement.setNull(4, java.sql.Types.TIMESTAMP);
             }
-            statement.setString(5, "OUT");
+            statement.setString(5, slipStatus);
 
             int inserted = statement.executeUpdate();
 
             if (inserted > 0) {
 
-                // Track in timer service for admin live timer
                 String empName = getEmployeeNameById(
                         Integer.parseInt(employeeId),
                         connection
                 );
-                TimerService.markOut(Integer.parseInt(employeeId), empName);
 
-                ActivityLogController.logActivity(
-                        "Issued Pass Slip for Employee ID: " + employeeId,
-                        Integer.parseInt(employeeId)
-                );
-
-                messageLabel.setText("PASS SLIP ISSUED");
+                if ("OUT".equals(slipStatus)) {
+                    TimerService.markOut(Integer.parseInt(employeeId), empName);
+                    ActivityLogController.logActivity(
+                            "Issued Pass Slip for Employee ID: " + employeeId,
+                            Integer.parseInt(employeeId)
+                    );
+                    messageLabel.setText("PASS SLIP ISSUED");
+                } else {
+                    ActivityLogController.logActivity(
+                            "Requested Pass Slip for Employee ID: " + employeeId,
+                            Integer.parseInt(employeeId)
+                    );
+                    messageLabel.setText("REQUEST");
+                }
 
             } else {
                 messageLabel.setText("FAILED TO ISSUE PASS SLIP");
