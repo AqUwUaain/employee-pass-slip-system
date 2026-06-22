@@ -49,12 +49,14 @@
 
 /* Maroon Secondary */
 .btn-maroon {
-    -fx-background-color: #800517;
+    -fx-background-color: #5C0801;
     -fx-text-fill: #FFFFFF;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
     -fx-background-radius: 12px;
     -fx-padding: 11px 28px;
+    -fx-border-color: #3D0501;
+    -fx-border-width: 1px;
 }
 .btn-maroon:hover { -fx-background-color: #9B1B30; }
 .btn-maroon:pressed { -fx-background-color: #5C0801; }
@@ -67,8 +69,10 @@
     -fx-font-weight: bold;
     -fx-background-radius: 12px;
     -fx-padding: 11px 28px;
-    -fx-border-color: #D1C9B0;
-    -fx-border-width: 1px;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 .btn-neutral:hover { -fx-background-color: #D6CDB4; }
 
@@ -543,6 +547,11 @@ Button.nav-sub-active:hover { -fx-background-color: rgba(255,255,255,0.24); -fx-
     -fx-border-radius: 6px;
     -fx-background-radius: 6px;
     -fx-padding: 0 0 0 12px;
+}
+.pw-field-wrapper .password-field,
+.pw-field-wrapper .text-field {
+    -fx-text-fill: #1C1917;
+    -fx-prompt-text-fill: #8A8272;
 }
 .pw-eye-label {
     -fx-font-size: 11px;

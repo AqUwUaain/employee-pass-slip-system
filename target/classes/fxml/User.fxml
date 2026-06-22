@@ -49,7 +49,7 @@
                             </children>
                         </VBox>
                         <Button fx:id="btnSidebarPasswordReset" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Reset Requests" styleClass="nav-item" />
-                        <Label text="ACCOUNT" style="-fx-text-fill: rgba(255,255,255,0.25); -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 16px 8px 8px 8px;" />
+                        <Label text="ACCOUNT" styleClass="sidebar-section-label" />
                         <Button fx:id="btnLogout" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Logout" styleClass="nav-item" />
                     </children>
                 </VBox>
@@ -93,8 +93,8 @@
                                         </VBox>
                                         <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
                                             <children>
-                                                <Label fx:id="lblTotalUsers" text="0" style="-fx-text-fill: white; -fx-font-size: 38px; -fx-font-weight: bold;" />
-                                                <Label text="Authorized Staff" style="-fx-text-fill: rgba(212,168,83,0.7); -fx-font-size: 11px;" />
+                                                <Label fx:id="lblTotalUsers" text="0" styleClass="stat-value" style="-fx-font-size: 38px;" />
+                                                <Label text="Authorized Staff" styleClass="stat-label" />
                                             </children>
                                         </VBox>
                                     </children>
@@ -106,8 +106,8 @@
                                         </VBox>
                                         <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
                                             <children>
-                                                <Label fx:id="lblActiveSessions" text="0 Active" style="-fx-text-fill: white; -fx-font-size: 38px; -fx-font-weight: bold;" />
-                                                <Label text="Handlers Online" style="-fx-text-fill: rgba(212,168,83,0.8); -fx-font-size: 11px;" />
+                                                <Label fx:id="lblActiveSessions" text="0 Active" styleClass="stat-value" style="-fx-font-size: 38px;" />
+                                                <Label text="Handlers Online" styleClass="stat-label" />
                                             </children>
                                         </VBox>
                                     </children>

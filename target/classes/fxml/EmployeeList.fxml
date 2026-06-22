@@ -29,7 +29,7 @@
                 </VBox>
                 <VBox spacing="4.0" VBox.vgrow="ALWAYS" style="-fx-padding: 0 14px;">
                     <children>
-                        <Label text="MAIN MENU" style="-fx-text-fill: rgba(255,255,255,0.25); -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 0 8px 8px 8px;" />
+                        <Label text="MAIN MENU" styleClass="sidebar-section-label" />
                         <Button fx:id="btnSidebarDashboard" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Dashboard" styleClass="nav-item" />
                         <Button fx:id="btnSidebarMonitoring" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   System Logs" styleClass="nav-item" />
                         <Button fx:id="btnSidebarLogReturn" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Log Return &amp; Monitoring" styleClass="nav-item" />
@@ -45,12 +45,12 @@
                             </children>
                         </VBox>
                         <Button fx:id="btnSidebarPasswordReset" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Reset Requests" styleClass="nav-item" />
-                        <Label text="ACCOUNT" style="-fx-text-fill: rgba(255,255,255,0.25); -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 16px 8px 8px 8px;" />
+                        <Label text="ACCOUNT" styleClass="sidebar-section-label" />
                         <Button fx:id="btnLogout" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Logout" styleClass="nav-item" />
                     </children>
                 </VBox>
                 <VBox alignment="CENTER" style="-fx-padding: 16px;">
-                    <Label text="2026 PUP — SRC" style="-fx-text-fill: rgba(255,255,255,0.2); -fx-font-size: 10px;" />
+                    <Label text="2026 PUP — SRC" styleClass="sidebar-footer-label" />
                 </VBox>
             </children>
         </VBox>
@@ -102,8 +102,8 @@
                                         </VBox>
                                         <VBox alignment="CENTER" spacing="4.0" VBox.vgrow="ALWAYS">
                                             <children>
-                                                <Label fx:id="lblTotalEmployees" text="0" style="-fx-text-fill: white; -fx-font-size: 38px; -fx-font-weight: bold;" />
-                                                <Label text="Registered" style="-fx-text-fill: rgba(212,168,83,0.8); -fx-font-size: 11px;" />
+                                                <Label fx:id="lblTotalEmployees" text="0" styleClass="stat-value" style="-fx-font-size: 38px;" />
+                                                <Label text="Registered" styleClass="stat-label" />
                                             </children>
                                         </VBox>
                                     </children>
@@ -115,8 +115,8 @@
                                         </VBox>
                                         <VBox alignment="CENTER" spacing="4.0" VBox.vgrow="ALWAYS">
                                             <children>
-                                                <Label fx:id="lblTotalDepartments" text="0" style="-fx-text-fill: white; -fx-font-size: 38px; -fx-font-weight: bold;" />
-                                                <Label text="Active" style="-fx-text-fill: rgba(212,168,83,0.8); -fx-font-size: 11px;" />
+                                                <Label fx:id="lblTotalDepartments" text="0" styleClass="stat-value" style="-fx-font-size: 38px;" />
+                                                <Label text="Active" styleClass="stat-label" />
                                             </children>
                                         </VBox>
                                     </children>

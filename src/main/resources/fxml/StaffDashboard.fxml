@@ -83,8 +83,8 @@
                                 <VBox alignment="CENTER" prefHeight="260.0" prefWidth="280.0" spacing="16.0" styleClass="stat-dark" style="-fx-padding: 32px;">
                                     <children>
                                         <Label text="&#x1F3AB;" style="-fx-font-size: 48px;" />
-                                        <Label text="Issue Pass Slip" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
-                                        <Label text="Create outbound pass slips for employees." wrapText="true" textAlignment="CENTER" maxWidth="220.0" style="-fx-text-fill: rgba(255,255,255,0.55); -fx-font-size: 12px; -fx-line-spacing: 3px;" />
+                                        <Label text="Issue Pass Slip" styleClass="stat-value" style="-fx-font-size: 20px;" />
+                                        <Label text="Create outbound pass slips for employees." wrapText="true" textAlignment="CENTER" maxWidth="220.0" styleClass="stat-label" style="-fx-font-size: 12px; -fx-line-spacing: 3px;" />
                                         <Button fx:id="btnOpenPassSlip" mnemonicParsing="false" prefHeight="38.0" prefWidth="170.0" text="Open Pass Slip" styleClass="btn-gold">
                                             <VBox.margin><Insets top="4.0" /></VBox.margin>
                                         </Button>
@@ -94,8 +94,8 @@
                                 <VBox alignment="CENTER" prefHeight="260.0" prefWidth="280.0" spacing="16.0" styleClass="card" style="-fx-padding: 32px;">
                                     <children>
                                         <Label text="&#x21A9;" style="-fx-font-size: 48px; -fx-text-fill: #FCA5A5;" />
-                                        <Label text="Log Return" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
-                                        <Label text="Record employee re-entry after pass slip." wrapText="true" textAlignment="CENTER" maxWidth="220.0" style="-fx-font-size: 12px; -fx-text-fill: #A8A29E; -fx-line-spacing: 3px;" />
+                                        <Label text="Log Return" styleClass="sec-title" style="-fx-font-size: 20px;" />
+                                        <Label text="Record employee re-entry after pass slip." wrapText="true" textAlignment="CENTER" maxWidth="220.0" styleClass="pg-sub" style="-fx-font-size: 12px; -fx-line-spacing: 3px;" />
                                         <Button fx:id="btnOpenReturn" mnemonicParsing="false" prefHeight="38.0" prefWidth="170.0" text="Open Return" styleClass="btn-maroon">
                                             <VBox.margin><Insets top="4.0" /></VBox.margin>
                                         </Button>
@@ -106,25 +106,25 @@
                         <!-- Today's Activity -->
                         <VBox alignment="CENTER_LEFT" spacing="8.0" styleClass="card" style="-fx-padding: 18px 24px;">
                             <children>
-                                <Label text="Today's Activity" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #D4A853;" />
+                                <Label text="Today's Activity" styleClass="sec-title" style="-fx-font-size: 13px;" />
                                 <HBox spacing="24.0" style="-fx-padding: 6px 0 0 0;">
                                     <children>
                                         <VBox spacing="2.0">
                                             <children>
-                                                <Label fx:id="lblPassSlipsToday" text="0" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
-                                                <Label text="Pass Slips Issued Today" style="-fx-font-size: 11px; -fx-text-fill: #A8A29E;" />
+                                                <Label fx:id="lblPassSlipsToday" text="0" styleClass="pg-title" style="-fx-font-size: 20px;" />
+                                                <Label text="Pass Slips Issued Today" styleClass="pg-sub" style="-fx-font-size: 11px;" />
                                             </children>
                                         </VBox>
                                         <VBox spacing="2.0">
                                             <children>
-                                                <Label fx:id="lblReturnsToday" text="0" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
-                                                <Label text="Returns Processed Today" style="-fx-font-size: 11px; -fx-text-fill: #A8A29E;" />
+                                                <Label fx:id="lblReturnsToday" text="0" styleClass="pg-title" style="-fx-font-size: 20px;" />
+                                                <Label text="Returns Processed Today" styleClass="pg-sub" style="-fx-font-size: 11px;" />
                                             </children>
                                         </VBox>
                                         <VBox spacing="2.0">
                                             <children>
-                                                <Label fx:id="lblCurrentlyOut" text="0" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #F5F5F4;" />
-                                                <Label text="Employees Currently Out" style="-fx-font-size: 11px; -fx-text-fill: #A8A29E;" />
+                                                <Label fx:id="lblCurrentlyOut" text="0" styleClass="pg-title" style="-fx-font-size: 20px;" />
+                                                <Label text="Employees Currently Out" styleClass="pg-sub" style="-fx-font-size: 11px;" />
                                             </children>
                                         </VBox>
                                     </children>

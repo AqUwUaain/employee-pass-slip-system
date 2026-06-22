@@ -65,8 +65,10 @@
     -fx-font-weight: bold;
     -fx-background-radius: 12px;
     -fx-padding: 11px 28px;
-    -fx-border-color: #57534E;
-    -fx-border-width: 1px;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 .btn-neutral:hover { -fx-background-color: #4A3F35; }
 
@@ -590,6 +592,16 @@ Button.nav-sub-active:hover {
 .modal-box.logout-dialog .dialog-subtitle {
     -fx-font-size: 14px;
     -fx-text-fill: #A8A29E;
+}
+
+.dialog-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+}
+.dialog-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: rgba(255,255,255,0.7);
 }
 
 /* NOTIFICATION POPUP */

@@ -147,28 +147,28 @@
                                     </rowConstraints>
                                     <children>
                                         <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Employee ID Number:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                                        <Label fx:id="lblValEmployeeId" style="-fx-font-family: 'Arial'; -fx-text-fill: #F5F5F4; -fx-font-size: 14px; -fx-font-weight: bold;" text="" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                        <Label fx:id="lblValEmployeeId" styleClass="form-label" style="-fx-font-family: 'Arial'; -fx-font-size: 14px; -fx-font-weight: bold;" text="" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                                         <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Email Address Reference:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                                        <Label fx:id="lblValEmail" style="-fx-font-family: 'Arial'; -fx-text-fill: #F5F5F4; -fx-font-size: 14px;" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                        <Label fx:id="lblValEmail" styleClass="form-label" style="-fx-font-family: 'Arial'; -fx-font-size: 14px;" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
                                         <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Contact Mobile Phone:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                                        <Label fx:id="lblValMobile" style="-fx-font-family: 'Arial'; -fx-text-fill: #F5F5F4; -fx-font-size: 14px;" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                        <Label fx:id="lblValMobile" styleClass="form-label" style="-fx-font-family: 'Arial'; -fx-font-size: 14px;" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
                                         <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Assigned Shift Schedule:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                                        <Label fx:id="lblValShiftSchedule" style="-fx-font-family: 'Arial'; -fx-text-fill: #F5F5F4; -fx-font-size: 14px;" text="" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                        <Label fx:id="lblValShiftSchedule" styleClass="form-label" style="-fx-font-family: 'Arial'; -fx-font-size: 14px;" text="" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                                         <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="System Registry Status:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
                                         <Label fx:id="lblValRegistryStatus" style="-fx-font-family: 'Arial'; -fx-text-fill: #38a169; -fx-font-size: 14px; -fx-font-weight: bold;" text="Active Personnel Record" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
                                         <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Assigned Manager:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-                                        <Label fx:id="lblValManager" style="-fx-font-family: 'Arial'; -fx-text-fill: #F5F5F4; -fx-font-size: 14px;" text="" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                        <Label fx:id="lblValManager" styleClass="form-label" style="-fx-font-family: 'Arial'; -fx-font-size: 14px;" text="" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
                                         <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Home Address:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-                                        <Label fx:id="lblValAddress" style="-fx-font-family: 'Arial'; -fx-text-fill: #F5F5F4; -fx-font-size: 14px;" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                        <Label fx:id="lblValAddress" styleClass="form-label" style="-fx-font-family: 'Arial'; -fx-font-size: 14px;" text="" GridPane.columnIndex="1" GridPane.rowIndex="6" />
 
                                         <Label style="-fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-text-fill: #A8A29E; -fx-font-size: 13px;" text="Emergency Contact:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
-                                        <Label fx:id="lblValEmergencyContact" style="-fx-font-family: 'Arial'; -fx-text-fill: #F5F5F4; -fx-font-size: 14px;" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                        <Label fx:id="lblValEmergencyContact" styleClass="form-label" style="-fx-font-family: 'Arial'; -fx-font-size: 14px;" text="" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                     </children>
                                 </GridPane>
                             </children>

@@ -191,7 +191,7 @@ public class UserController {
                 if (current == null) return;
 
                 TextField visible = new TextField(current.getText());
-                visible.setStyle("-fx-background-color: transparent; -fx-text-fill: #F5F5F4; -fx-border-width: 0; -fx-padding: 8px 4px; -fx-font-size: 13px;");
+                visible.setStyle("-fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 8px 4px; -fx-font-size: 13px;");
                 visible.setPromptText("Enter password...");
                 visible.setMaxWidth(Double.MAX_VALUE);
                 visible.setMinHeight(lockedHeight);
@@ -212,7 +212,7 @@ public class UserController {
                     PasswordField hidden = new PasswordField();
                     hidden.setText(visible.getText());
                     hidden.setPromptText("Enter password...");
-                    hidden.setStyle("-fx-background-color: transparent; -fx-text-fill: #F5F5F4; -fx-border-width: 0; -fx-padding: 8px 4px; -fx-font-size: 13px;");
+                    hidden.setStyle("-fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 8px 4px; -fx-font-size: 13px;");
                     hidden.setMaxWidth(Double.MAX_VALUE);
                     hidden.setMinHeight(lockedHeight);
                     hidden.setPrefHeight(lockedHeight);

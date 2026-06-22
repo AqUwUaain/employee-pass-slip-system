@@ -358,6 +358,22 @@ public class PassSlipController {
 
         try (Connection connection = DatabaseConnection.connect()) {
 
+            String checkQuery = "SELECT COUNT(*) FROM pass_slips WHERE employee_id = ? AND status = 'OUT'";
+            PreparedStatement checkStmt = connection.prepareStatement(checkQuery);
+            checkStmt.setInt(1, Integer.parseInt(employeeId));
+            ResultSet checkRs = checkStmt.executeQuery();
+            if (checkRs.next() && checkRs.getInt(1) > 0) {
+                javafx.application.Platform.runLater(() -> {
+                    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
+                    alert.setTitle("Employee Currently Out");
+                    alert.setHeaderText(null);
+                    alert.setContentText("This employee is already out on a pass slip.\nPlease wait for the employee to return before issuing a new slip.");
+                    alert.showAndWait();
+                });
+                messageLabel.setText("EMPLOYEE IS CURRENTLY OUT");
+                return;
+            }
+
             String query = """
                     INSERT INTO pass_slips
                     (employee_id, reason, time_out, estimated_return, status)
@@ -467,10 +483,10 @@ public class PassSlipController {
 
         PdfWriter writer = new PdfWriter(file);
         PdfDocument pdfDoc = new PdfDocument(writer);
-        com.itextpdf.kernel.geom.PageSize customSize = new com.itextpdf.kernel.geom.PageSize(595, 450);
+        com.itextpdf.kernel.geom.PageSize customSize = new com.itextpdf.kernel.geom.PageSize(595, 265);
         pdfDoc.addNewPage(customSize);
         Document document = new Document(pdfDoc, customSize);
-        document.setMargins(15, 15, 15, 15);
+        document.setMargins(5, 5, 5, 5);
         document.setBackgroundColor(white);
 
         Table headerTable = new Table(UnitValue.createPercentArray(new float[]{12, 88}))
@@ -532,7 +548,10 @@ public class PassSlipController {
         timeRow.addCell(createLabelCell("TIME OUT:", medGray, white));
         timeRow.addCell(createValueCell(txtSlipTimeOut.getText(), darkText, lightGray));
         timeRow.addCell(createLabelCell("TIME IN:", medGray, white));
-        timeRow.addCell(createValueCell("Pending", darkText, lightGray));
+        String expectedTimeIn = selectedEstimatedReturn != null
+                ? selectedEstimatedReturn.format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"))
+                : "Pending";
+        timeRow.addCell(createValueCell(expectedTimeIn, darkText, lightGray));
         mainCell.add(timeRow);
 
         Table signeeRow = new Table(UnitValue.createPercentArray(new float[]{20, 80}))
@@ -620,7 +639,7 @@ public class PassSlipController {
                 headerTable.addCell(sideCell);
 
                 Cell mainCell = new Cell(1, 1);
-                mainCell.setPadding(8);
+        mainCell.setPadding(5);
                 mainCell.setBorder(new SolidBorder(medGray, 1));
 
                 Table infoRow = new Table(UnitValue.createPercentArray(new float[]{20, 30, 25, 25}))
