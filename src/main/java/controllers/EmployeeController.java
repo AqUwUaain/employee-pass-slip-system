@@ -46,7 +46,7 @@ public class EmployeeController {
     private Button btnSidebarSignatures;
 
     @FXML
-    private Button btnSidebarPasswordReset;
+    private Button btnSidebarRequests;
 
     @FXML
     private Button btnLogout;
@@ -79,7 +79,7 @@ public class EmployeeController {
                 btnSidebarEmployeeDirectory, btnSidebarAddEmployee, btnSidebarImportEmployee,
                 btnSidebarReports,
                 btnSidebarLogReturn, btnSidebarUsers,
-                btnSidebarSignatures, btnSidebarPasswordReset,
+                btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, btnNotificationsAlert,
                 btnSidebarEmployeeDirectory, btnThemeToggle
         );

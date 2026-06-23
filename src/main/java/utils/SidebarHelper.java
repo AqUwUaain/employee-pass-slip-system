@@ -17,7 +17,7 @@ public final class SidebarHelper {
             Button btnLogReturn,
             Button btnUsers,
             Button btnSignatures,
-            Button btnPasswordReset,
+            Button btnRequests,
             Button btnLogout,
             Button btnNotifications,
             Button activeButton,
@@ -53,10 +53,10 @@ public final class SidebarHelper {
         if (btnSignatures != null)
             btnSignatures.setOnAction(e -> NavigationHelper.navigateTo(btnSignatures, "/fxml/SignatureManager.fxml"));
 
-        if (btnPasswordReset != null)
-            btnPasswordReset.setOnAction(e -> NavigationHelper.navigateTo(btnPasswordReset, "/fxml/PasswordResetRequests.fxml"));
+        if (btnRequests != null)
+            btnRequests.setOnAction(e -> NavigationHelper.navigateTo(btnRequests, "/fxml/Requests.fxml"));
 
-        NavigationHelper.hideAdminSidebarItems(btnEmployeeDirectory, btnReports, btnUsers, btnPasswordReset);
+        NavigationHelper.hideAdminSidebarItems(btnEmployeeDirectory, btnReports, btnUsers, btnRequests);
         NavigationHelper.hideMonitoringForStaff(btnMonitoring);
 
         if ("STAFF".equalsIgnoreCase(Session.currentRole)) {

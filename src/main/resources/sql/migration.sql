@@ -25,3 +25,22 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_signatures_user_id ON signatures (user_id)
 
 -- Estimated return time for pass slips
 ALTER TABLE pass_slips ADD COLUMN IF NOT EXISTS estimated_return TIMESTAMP DEFAULT NULL;
+
+-- Actual time out (when employee really departed, may differ from slip creation time)
+ALTER TABLE pass_slips ADD COLUMN IF NOT EXISTS actual_time_out TIMESTAMP DEFAULT NULL;
+
+-- Staff/requester signature stored per pass slip
+ALTER TABLE pass_slips ADD COLUMN IF NOT EXISTS requester_signature BYTEA DEFAULT NULL;
+
+-- Signature requests table for staff approval workflow
+CREATE TABLE IF NOT EXISTS signature_requests (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    signature_name VARCHAR(255) NOT NULL,
+    image_data BYTEA NOT NULL,
+    status VARCHAR(20) DEFAULT 'PENDING',
+    reviewed_by INT DEFAULT NULL,
+    reviewed_at TIMESTAMP DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+ALTER TABLE signature_requests ADD CONSTRAINT fk_sig_requests_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

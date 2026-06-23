@@ -56,7 +56,7 @@ public class MonitoringController {
     private Button btnSidebarSignatures;
 
     @FXML
-    private Button btnSidebarPasswordReset;
+    private Button btnSidebarRequests;
 
     @FXML
     private Button btnLogout;
@@ -112,7 +112,7 @@ public class MonitoringController {
                 btnSidebarEmployeeDirectory, btnSidebarAddEmployee, btnSidebarImportEmployee,
                 btnSidebarReports,
                 btnSidebarLogReturn, btnSidebarUsers,
-                btnSidebarSignatures, btnSidebarPasswordReset,
+                btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, null,
                 btnSidebarMonitoring, btnThemeToggle
         );
@@ -351,6 +351,21 @@ public class MonitoringController {
                         timeOutTimestamp.toLocalDateTime();
 
                 LocalDateTime now = LocalDateTime.now(PhilTime.ZONE);
+
+                LocalDateTime cutoff = timeOut.toLocalDate().atTime(21, 0);
+
+                if (now.isAfter(cutoff)) {
+                    String updateQuery = """
+                            UPDATE pass_slips
+                            SET status = 'OVERDUE'
+                            WHERE id = ?
+                            """;
+                    PreparedStatement updateStatement =
+                            connection.prepareStatement(updateQuery);
+                    updateStatement.setInt(1, passSlipId);
+                    updateStatement.executeUpdate();
+                    continue;
+                }
 
                 Timestamp estimatedReturnTimestamp =
                         resultSet.getTimestamp("estimated_return");

@@ -55,7 +55,7 @@ public class ActivityLogController {
     private Button btnSidebarSignatures;
 
     @FXML
-    private Button btnSidebarPasswordReset;
+    private Button btnSidebarRequests;
 
     @FXML
     private Button btnLogout;
@@ -121,7 +121,7 @@ public class ActivityLogController {
                 btnSidebarEmployeeDirectory, btnSidebarAddEmployee, btnSidebarImportEmployee,
                 btnSidebarReports,
                 btnSidebarLogReturn, btnSidebarUsers,
-                btnSidebarSignatures, btnSidebarPasswordReset,
+                btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, btnNotificationsAlert,
                 btnSidebarMonitoring, btnThemeToggle
         );
@@ -227,6 +227,7 @@ public class ActivityLogController {
                         e.department,
                         ps.reason,
                         ps.time_out,
+                        ps.actual_time_out,
                         ps.time_in,
                         ps.estimated_return,
                         ps.duration,
@@ -244,6 +245,9 @@ public class ActivityLogController {
                 LocalDateTime timeOut = resultSet.getTimestamp("time_out") != null
                         ? resultSet.getTimestamp("time_out").toLocalDateTime() : null;
 
+                LocalDateTime actualTimeOut = resultSet.getTimestamp("actual_time_out") != null
+                        ? resultSet.getTimestamp("actual_time_out").toLocalDateTime() : null;
+
                 LocalDateTime timeIn = resultSet.getTimestamp("time_in") != null
                         ? resultSet.getTimestamp("time_in").toLocalDateTime() : null;
 
@@ -257,6 +261,7 @@ public class ActivityLogController {
                         resultSet.getString("department"),
                         resultSet.getString("reason"),
                         timeOut,
+                        actualTimeOut,
                         timeIn,
                         estimatedReturn,
                         resultSet.getLong("duration_minutes"),

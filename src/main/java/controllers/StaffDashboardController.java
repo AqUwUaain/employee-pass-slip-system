@@ -53,7 +53,7 @@ public class StaffDashboardController {
     private Button btnSidebarSignatures;
 
     @FXML
-    private Button btnSidebarPasswordReset;
+    private Button btnSidebarRequests;
 
     @FXML
     private Button btnOpenPassSlip;
@@ -101,7 +101,7 @@ public class StaffDashboardController {
                 null, null, null,
                 null,
                 btnSidebarLogReturn, null,
-                btnSidebarSignatures, null,
+                btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, btnNotificationsAlert,
                 btnSidebarDashboard, btnThemeToggle
         );

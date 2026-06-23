@@ -57,7 +57,7 @@ public class UserController {
     private Button btnSidebarSignatures;
 
     @FXML
-    private Button btnSidebarPasswordReset;
+    private Button btnSidebarRequests;
 
     @FXML
     private Button btnLogout;
@@ -135,7 +135,7 @@ public class UserController {
                 btnSidebarEmployeeDirectory, btnSidebarAddEmployee, btnSidebarImportEmployee,
                 btnSidebarReports,
                 btnSidebarLogReturn, btnSidebarUsers,
-                btnSidebarSignatures, btnSidebarPasswordReset,
+                btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, btnNotificationsAlert,
                 btnSidebarUsers, btnThemeToggle
         );

@@ -118,7 +118,7 @@ public class ReportsController {
     private Button btnSidebarSignatures;
 
     @FXML
-    private Button btnSidebarPasswordReset;
+    private Button btnSidebarRequests;
 
     @FXML
     private Button btnLogout;
@@ -142,7 +142,7 @@ public class ReportsController {
                 btnSidebarEmployeeDirectory, btnSidebarAddEmployee, btnSidebarImportEmployee,
                 btnSidebarReports,
                 btnSidebarLogReturn, btnSidebarUsers,
-                btnSidebarSignatures, btnSidebarPasswordReset,
+                btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, null,
                 btnSidebarReports, btnThemeToggle
         );
@@ -266,6 +266,7 @@ public class ReportsController {
                         e.department,
                         ps.reason,
                         ps.time_out,
+                        ps.actual_time_out,
                         ps.time_in,
                         ps.estimated_return,
                         ps.duration,
@@ -283,6 +284,9 @@ public class ReportsController {
                 LocalDateTime timeOut = resultSet.getTimestamp("time_out") != null
                         ? resultSet.getTimestamp("time_out").toLocalDateTime() : null;
 
+                LocalDateTime actualTimeOut = resultSet.getTimestamp("actual_time_out") != null
+                        ? resultSet.getTimestamp("actual_time_out").toLocalDateTime() : null;
+
                 LocalDateTime timeIn = resultSet.getTimestamp("time_in") != null
                         ? resultSet.getTimestamp("time_in").toLocalDateTime() : null;
 
@@ -296,6 +300,7 @@ public class ReportsController {
                         resultSet.getString("department"),
                         resultSet.getString("reason"),
                         timeOut,
+                        actualTimeOut,
                         timeIn,
                         estimatedReturn,
                         resultSet.getLong("duration_minutes"),
@@ -420,6 +425,78 @@ public class ReportsController {
         return logs;
     }
 
+    public static ObservableList<ActivityLog> getPassSlipLogs(int limit) {
+
+        ObservableList<ActivityLog> logs =
+                FXCollections.observableArrayList();
+
+        try (Connection connection = DatabaseConnection.connect()) {
+            if (connection == null) return logs;
+
+            String query = """
+                    SELECT * FROM activity_logs
+                    WHERE action LIKE '%Pass Slip%'
+                       OR action LIKE '%PRINT_SLIP%'
+                    ORDER BY timestamp DESC""";
+            if (limit > 0) {
+                query += " LIMIT " + limit;
+            }
+
+            try (PreparedStatement statement = connection.prepareStatement(query);
+                 ResultSet resultSet = statement.executeQuery()) {
+
+                while (resultSet.next()) {
+                    ActivityLog log = new ActivityLog(
+                            resultSet.getInt("id"),
+                            resultSet.getString("action"),
+                            resultSet.getString("description"),
+                            resultSet.getInt("user_id"),
+                            resultSet.getString("username"),
+                            resultSet.getTimestamp("timestamp").toLocalDateTime(),
+                            resultSet.getInt("employee_id")
+                    );
+                    logs.add(log);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return logs;
+    }
+
+    public static ObservableList<ActivityLog> getPassSlipLogsForDate(java.time.LocalDate date) {
+        ObservableList<ActivityLog> logs = FXCollections.observableArrayList();
+        try (Connection connection = DatabaseConnection.connect()) {
+            if (connection == null) return logs;
+            String query = """
+                    SELECT * FROM activity_logs
+                    WHERE timestamp::date = ?
+                      AND (action LIKE '%Pass Slip%'
+                           OR action LIKE '%PRINT_SLIP%')
+                    ORDER BY timestamp DESC""";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setDate(1, java.sql.Date.valueOf(date));
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        logs.add(new ActivityLog(
+                                resultSet.getInt("id"),
+                                resultSet.getString("action"),
+                                resultSet.getString("description"),
+                                resultSet.getInt("user_id"),
+                                resultSet.getString("username"),
+                                resultSet.getTimestamp("timestamp").toLocalDateTime(),
+                                resultSet.getInt("employee_id")
+                        ));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return logs;
+    }
+
     public static ObservableList<ActivityLog> getLogsForDate(java.time.LocalDate date) {
         ObservableList<ActivityLog> logs = FXCollections.observableArrayList();
         try (Connection connection = DatabaseConnection.connect()) {
@@ -498,6 +575,7 @@ public class ReportsController {
                         e.department,
                         ps.reason,
                         ps.time_out,
+                        ps.actual_time_out,
                         ps.time_in,
                         ps.estimated_return,
                         ps.duration,
@@ -515,6 +593,9 @@ public class ReportsController {
                 LocalDateTime timeOut = resultSet.getTimestamp("time_out") != null
                         ? resultSet.getTimestamp("time_out").toLocalDateTime() : null;
 
+                LocalDateTime actualTimeOut = resultSet.getTimestamp("actual_time_out") != null
+                        ? resultSet.getTimestamp("actual_time_out").toLocalDateTime() : null;
+
                 LocalDateTime timeIn = resultSet.getTimestamp("time_in") != null
                         ? resultSet.getTimestamp("time_in").toLocalDateTime() : null;
 
@@ -528,6 +609,7 @@ public class ReportsController {
                         resultSet.getString("department"),
                         resultSet.getString("reason"),
                         timeOut,
+                        actualTimeOut,
                         timeIn,
                         estimatedReturn,
                         resultSet.getLong("duration_minutes"),

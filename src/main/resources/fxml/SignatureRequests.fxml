@@ -13,12 +13,10 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 
-<BorderPane prefHeight="720.0" prefWidth="1180.0" styleClass="page-background" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.PasswordResetRequestsController">
-    <!-- LEFT: Dark luxe sidebar -->
+<BorderPane prefHeight="720.0" prefWidth="1180.0" styleClass="page-background" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SignatureRequestsController">
     <left>
         <VBox prefWidth="240.0" styleClass="sidebar-dark" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
             <children>
-                <!-- Logo -->
                 <VBox alignment="CENTER" spacing="8.0" style="-fx-padding: 0 0 36px 0;">
                     <children>
                         <ImageView fitHeight="56.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
@@ -27,7 +25,6 @@
                         <Label text="PUP SRC" styleClass="sidebar-badge" />
                     </children>
                 </VBox>
-                <!-- Navigation -->
                 <VBox spacing="4.0" VBox.vgrow="ALWAYS" style="-fx-padding: 0 14px;">
                     <children>
                         <Label text="MAIN MENU" styleClass="sidebar-section-label" />
@@ -50,21 +47,19 @@
                         <Button fx:id="btnLogout" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Logout" styleClass="nav-item" />
                     </children>
                 </VBox>
-                <!-- Footer -->
                 <VBox alignment="CENTER" style="-fx-padding: 16px;">
                     <Label text="2026 PUP — SRC" styleClass="sidebar-footer-label" />
                 </VBox>
             </children>
         </VBox>
     </left>
-    <!-- TOP: Header bar -->
     <top>
         <HBox alignment="CENTER_LEFT" prefHeight="62.0" styleClass="header-clean" BorderPane.alignment="CENTER">
             <children>
                 <VBox spacing="2.0">
                     <children>
-                        <Label text="Password Reset Requests" styleClass="pg-title" />
-                        <Label text="Approve or reject pending reset requests" styleClass="pg-sub" />
+                        <Label text="Signature Requests" styleClass="pg-title" />
+                        <Label text="Review and approve staff signature requests" styleClass="pg-sub" />
                     </children>
                 </VBox>
                 <StackPane HBox.hgrow="ALWAYS" />
@@ -77,31 +72,68 @@
             </children>
         </HBox>
     </top>
-    <!-- CENTER: Main content -->
     <center>
         <ScrollPane fitToWidth="true" styleClass="content-scroll-pane" BorderPane.alignment="CENTER">
             <content>
-        <VBox spacing="16.0" style="-fx-padding: 28px 36px;">
-            <children>
-                <Label text="Pending Requests" style="-fx-text-fill: #D4A853; -fx-font-size: 15px; -fx-font-weight: bold;" />
-                <TableView fx:id="requestsTable" prefHeight="400.0" VBox.vgrow="ALWAYS">
-                    <columns>
-                        <TableColumn fx:id="colId" prefWidth="60.0" text="ID" />
-                        <TableColumn fx:id="colEmail" prefWidth="300.0" text="Email" />
-                        <TableColumn fx:id="colRequestedAt" prefWidth="200.0" text="Requested At" />
-                        <TableColumn fx:id="colStatus" prefWidth="100.0" text="Status" />
-                    </columns>
-                </TableView>
-                <HBox spacing="12.0" alignment="CENTER_LEFT">
+                <VBox spacing="16.0" style="-fx-padding: 28px 36px;">
                     <children>
-                        <Button fx:id="btnApprove" text="Approve" style="-fx-background-color: rgba(5,150,105,0.15); -fx-text-fill: #34D399; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 10px 20px; -fx-border-color: rgba(5,150,105,0.25); -fx-border-width: 1px; -fx-cursor: hand;" />
-                        <Button fx:id="btnReject" text="Reject" style="-fx-background-color: rgba(220,38,38,0.12); -fx-text-fill: #FCA5A5; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 10px 20px; -fx-border-color: rgba(220,38,38,0.25); -fx-border-width: 1px; -fx-cursor: hand;" />
-                        <HBox HBox.hgrow="ALWAYS" />
-                        <Label fx:id="messageLabel" text="" style="-fx-font-size: 12px;" />
+                        <!-- Summary -->
+                        <HBox spacing="16.0" alignment="CENTER_LEFT">
+                            <children>
+                                <VBox spacing="2.0" styleClass="card" style="-fx-padding: 12px 20px;">
+                                    <children>
+                                        <Label text="PENDING REQUESTS" style="-fx-text-fill: #FBBF24; -fx-font-size: 10px; -fx-font-weight: bold;" />
+                                        <Label fx:id="lblTotalPending" text="0" style="-fx-text-fill: #F5F5F4; -fx-font-size: 24px; -fx-font-weight: bold;" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+
+                        <HBox spacing="16.0" VBox.vgrow="ALWAYS">
+                            <children>
+                                <!-- Table -->
+                                <VBox spacing="10.0" VBox.vgrow="ALWAYS" prefWidth="600.0">
+                                    <children>
+                                        <Label text="All Requests" styleClass="sec-title" />
+                                        <TableView fx:id="requestsTable" prefHeight="400.0" VBox.vgrow="ALWAYS">
+                                            <columns>
+                                                <TableColumn fx:id="colId" prefWidth="50.0" text="ID" />
+                                                <TableColumn fx:id="colStaffName" prefWidth="150.0" text="Staff Name" />
+                                                <TableColumn fx:id="colSignatureName" prefWidth="120.0" text="File Name" />
+                                                <TableColumn fx:id="colRequestedAt" prefWidth="150.0" text="Requested At" />
+                                                <TableColumn fx:id="colStatus" prefWidth="80.0" text="Status" />
+                                            </columns>
+                                        </TableView>
+                                    </children>
+                                </VBox>
+
+                                <!-- Preview -->
+                                <VBox spacing="12.0" prefWidth="380.0" styleClass="card" style="-fx-padding: 20px;">
+                                    <children>
+                                        <Label text="Signature Preview" styleClass="sec-title" />
+                                        <Label fx:id="lblPreviewStaffName" text="Select a request to preview" style="-fx-text-fill: #A8A29E; -fx-font-size: 12px;" />
+                                        <VBox alignment="CENTER" prefHeight="180.0" style="-fx-border-color: #3D3229; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-color: #FFFFFF; -fx-background-radius: 8px;">
+                                            <children>
+                                                <ImageView fx:id="imgPreviewSignature" fitHeight="160.0" fitWidth="340.0" preserveRatio="true" />
+                                            </children>
+                                            <VBox.margin>
+                                                <Insets top="8.0" />
+                                            </VBox.margin>
+                                        </VBox>
+                                        <Label fx:id="lblPreviewStatus" text="" style="-fx-font-size: 12px;" />
+                                        <HBox spacing="10.0" alignment="CENTER" style="-fx-padding: 8px 0 0 0;">
+                                            <children>
+                                                <Button fx:id="btnApprove" text="Approve" disable="true" style="-fx-background-color: rgba(5,150,105,0.15); -fx-text-fill: #34D399; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 10px 24px; -fx-border-color: rgba(5,150,105,0.25); -fx-border-width: 1px; -fx-cursor: hand;" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                                                <Button fx:id="btnReject" text="Reject" disable="true" style="-fx-background-color: rgba(220,38,38,0.12); -fx-text-fill: #FCA5A5; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 10px 24px; -fx-border-color: rgba(220,38,38,0.25); -fx-border-width: 1px; -fx-cursor: hand;" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                                            </children>
+                                        </HBox>
+                                        <Label fx:id="messageLabel" text="" style="-fx-font-size: 12px; -fx-text-alignment: center;" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
                     </children>
-                </HBox>
-            </children>
-        </VBox>
+                </VBox>
             </content>
         </ScrollPane>
     </center>

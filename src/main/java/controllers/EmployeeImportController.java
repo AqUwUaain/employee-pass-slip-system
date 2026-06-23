@@ -45,7 +45,7 @@ public class EmployeeImportController {
     @FXML private Button btnSidebarLogReturn;
     @FXML private Button btnSidebarUsers;
     @FXML private Button btnSidebarSignatures;
-    @FXML private Button btnSidebarPasswordReset;
+    @FXML private Button btnSidebarRequests;
     @FXML private Button btnLogout;
     @FXML private Button btnNotificationsAlert;
     @FXML private Button btnThemeToggle;
@@ -80,7 +80,7 @@ public class EmployeeImportController {
                 btnSidebarEmployeeDirectory, btnSidebarAddEmployee, btnSidebarImportEmployee,
                 btnSidebarReports,
                 btnSidebarLogReturn, btnSidebarUsers,
-                btnSidebarSignatures, btnSidebarPasswordReset,
+                btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, btnNotificationsAlert,
                 btnSidebarImportEmployee, btnThemeToggle
         );

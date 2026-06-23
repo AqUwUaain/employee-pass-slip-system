@@ -115,17 +115,25 @@
                                     </children>
                                 </VBox>
 
-                                <!-- ROW SECTION 4: TEMPORAL TELEMETRY MARKS (TIME OUT / TIME IN) -->
+                                <!-- ROW SECTION 4: TEMPORAL TELEMETRY MARKS (TIME OUT / ACTUAL TIME OUT / TIME IN) -->
                                 <VBox styleClass="pass-slip-section">
                                     <children>
                                         <HBox>
                                             <children>
-                                                <!-- Time Out Input Slot -->
-                                                <VBox HBox.hgrow="ALWAYS" styleClass="pass-slip-border-right" style="-fx-padding: 6px 10px;">
+                                                <!-- Time Out Input Slot (auto-recorded, read-only) -->
+                                                <VBox prefWidth="160.0" styleClass="pass-slip-border-right" style="-fx-padding: 6px 10px;">
                                                     <children>
                                                         <Label styleClass="pass-slip-label" text="TIME OUT :" />
                                                         <TextField fx:id="txtSlipTimeOut" editable="false" promptText="Auto-recorded" styleClass="pass-slip-input" />
                                                         <Label styleClass="pass-slip-hint" text="Automatically recorded" />
+                                                    </children>
+                                                </VBox>
+                                                <!-- Actual Time Out Input Slot (editable for admin) -->
+                                                <VBox fx:id="vboxActualTimeOut" prefWidth="180.0" styleClass="pass-slip-border-right" style="-fx-padding: 6px 10px;">
+                                                    <children>
+                                                        <Label styleClass="pass-slip-label" text="ACTUAL TIME OUT :" />
+                                                        <ComboBox fx:id="cmbActualTimeOut" editable="true" promptText="Select or type time" prefWidth="160.0" styleClass="combo-box" />
+                                                        <Label styleClass="pass-slip-hint" text="When employee actually departed" />
                                                     </children>
                                                 </VBox>
                                                 <!-- Time In Input Slot -->
@@ -143,7 +151,20 @@
                                     </children>
                                 </VBox>
 
-                                <!-- ROW SECTION 5: VALIDATION SIGNATURE BLOCK FOOTER -->
+                                <!-- ROW SECTION 5a: REQUESTER SIGNATURE (staff only) -->
+                                <VBox fx:id="vboxRequesterSignature" alignment="BOTTOM_CENTER" style="-fx-padding: 6px 0;">
+                                    <children>
+                                        <Label styleClass="pass-slip-label" style="-fx-padding: 0 0 4px 0;" text="YOUR SIGNATURE :" />
+                                        <VBox maxWidth="320.0" alignment="CENTER" styleClass="pass-slip-signature-box">
+                                            <children>
+                                                <ImageView fx:id="imgRequesterSignature" fitHeight="60.0" fitWidth="280.0" preserveRatio="true" />
+                                            </children>
+                                        </VBox>
+                                        <Label fx:id="lblRequesterSignatureHint" styleClass="pass-slip-footer-label" text="" />
+                                    </children>
+                                </VBox>
+
+                                <!-- ROW SECTION 5b: ADMIN SIGNATURE -->
                                 <VBox alignment="BOTTOM_CENTER" style="-fx-padding: 6px 0;">
                                     <children>
                                         <Label styleClass="pass-slip-label" style="-fx-padding: 0 0 4px 0;" text="ADMIN SIGNATURE :" />

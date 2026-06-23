@@ -96,14 +96,14 @@ public final class NavigationHelper {
             Button employees,
             Button reports,
             Button users,
-            Button passwordReset
+            Button requests
     ) {
         if (!"STAFF".equalsIgnoreCase(Session.currentRole)) return;
 
         if (employees != null) { employees.setVisible(false); employees.setManaged(false); }
         if (reports != null) { reports.setVisible(false); reports.setManaged(false); }
         if (users != null) { users.setVisible(false); users.setManaged(false); }
-        if (passwordReset != null) { passwordReset.setVisible(false); passwordReset.setManaged(false); }
+        if (requests != null) { requests.setVisible(false); requests.setManaged(false); }
     }
 
     public static void hideMonitoringForStaff(Button btnSidebarMonitoring) {

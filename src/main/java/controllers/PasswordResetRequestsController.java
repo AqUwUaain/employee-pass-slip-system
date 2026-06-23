@@ -72,7 +72,7 @@ public class PasswordResetRequestsController {
     private Button btnSidebarSignatures;
 
     @FXML
-    private Button btnSidebarPasswordReset;
+    private Button btnSidebarRequests;
 
     @FXML
     private Button btnLogout;
@@ -101,9 +101,9 @@ public class PasswordResetRequestsController {
                 btnSidebarEmployeeDirectory, btnSidebarAddEmployee, btnSidebarImportEmployee,
                 btnSidebarReports,
                 btnSidebarLogReturn, btnSidebarUsers,
-                btnSidebarSignatures, btnSidebarPasswordReset,
+                btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarPasswordReset, btnThemeToggle
+                btnSidebarRequests, btnThemeToggle
         );
 
         if (btnManageEmployees != null) {

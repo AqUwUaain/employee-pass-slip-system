@@ -36,7 +36,14 @@ public class DatabaseMigration {
                     "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_activity_logs_employee') THEN ALTER TABLE activity_logs ADD CONSTRAINT fk_activity_logs_employee FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE SET NULL; END IF; END $$",
                     "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_signatures_user') THEN ALTER TABLE signatures ADD CONSTRAINT fk_signatures_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE; END IF; END $$",
                     // Account lockout table
-                    "CREATE TABLE IF NOT EXISTS login_lockouts (email VARCHAR(255) PRIMARY KEY, fail_attempts INT DEFAULT 0, lockout_time BIGINT DEFAULT 0)"
+                    "CREATE TABLE IF NOT EXISTS login_lockouts (email VARCHAR(255) PRIMARY KEY, fail_attempts INT DEFAULT 0, lockout_time BIGINT DEFAULT 0)",
+                    // Actual time out for pass slips
+                    "ALTER TABLE pass_slips ADD COLUMN IF NOT EXISTS actual_time_out TIMESTAMP DEFAULT NULL",
+                    // Staff/requester signature stored per pass slip
+                    "ALTER TABLE pass_slips ADD COLUMN IF NOT EXISTS requester_signature BYTEA DEFAULT NULL",
+                    // Signature requests table for staff approval workflow
+                    "CREATE TABLE IF NOT EXISTS signature_requests (id SERIAL PRIMARY KEY, user_id INT NOT NULL, signature_name VARCHAR(255) NOT NULL, image_data BYTEA NOT NULL, status VARCHAR(20) DEFAULT 'PENDING', reviewed_by INT DEFAULT NULL, reviewed_at TIMESTAMP DEFAULT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
+                    "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_sig_requests_user') THEN ALTER TABLE signature_requests ADD CONSTRAINT fk_sig_requests_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE; END IF; END $$"
             };
 
             for (String sql : migrations) {

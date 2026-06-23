@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import models.PassSlip;
 import utils.NavigationHelper;
@@ -25,6 +26,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import java.io.ByteArrayInputStream;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -60,7 +62,7 @@ public class ReturnController {
     private Button btnSidebarSignatures;
 
     @FXML
-    private Button btnSidebarPasswordReset;
+    private Button btnSidebarRequests;
 
     @FXML
     private Button btnNotificationsAlert;
@@ -108,6 +110,9 @@ public class ReturnController {
     private TableColumn<PassSlip, String> colMonitorTimestamp;
 
     @FXML
+    private TableColumn<PassSlip, String> colMonitorActualTimeOut;
+
+    @FXML
     private TableColumn<PassSlip, String> colMonitorEmployeeID;
 
     @FXML
@@ -115,6 +120,9 @@ public class ReturnController {
 
     @FXML
     private TableColumn<PassSlip, String> colMonitorDepartment;
+
+    @FXML
+    private TableColumn<PassSlip, String> colMonitorReason;
 
     @FXML
     private TableColumn<PassSlip, String> colMonitorExpectedReturn;
@@ -145,7 +153,7 @@ public class ReturnController {
                 btnSidebarEmployeeDirectory, btnSidebarAddEmployee, btnSidebarImportEmployee,
                 btnSidebarReports,
                 btnSidebarLogReturn, btnSidebarUsers,
-                btnSidebarSignatures, btnSidebarPasswordReset,
+                btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, btnNotificationsAlert,
                 btnSidebarLogReturn, btnThemeToggle
         );
@@ -180,7 +188,7 @@ public class ReturnController {
         btnRefreshMonitoring.setOnAction(event -> loadMonitoringDataAsync());
 
         cmbStatusFilter.setItems(FXCollections.observableArrayList(
-                "ALL", "OUT", "RETURNED", "RETURNED EARLY", "LATE", "OVERDUE", "PENDING", "REJECTED"
+                "ALL", "OUT", "RETURNED", "RETURNED EARLY", "LATE", "OVERDUE", "EXPIRED", "PENDING", "REJECTED", "CANCELLED"
         ));
         cmbStatusFilter.setPromptText("All Statuses");
         cmbStatusFilter.getSelectionModel().selectedItemProperty().addListener(
@@ -202,7 +210,7 @@ public class ReturnController {
         try (Connection connection = DatabaseConnection.connect()) {
 
             String getQuery = """
-                    SELECT time_out, estimated_return, employee_id
+                    SELECT time_out, actual_time_out, estimated_return, employee_id
                     FROM pass_slips
                     WHERE id = ?
                     """;
@@ -219,6 +227,9 @@ public class ReturnController {
                 LocalDateTime timeOut =
                         resultSet.getTimestamp("time_out").toLocalDateTime();
 
+                LocalDateTime actualTimeOut = resultSet.getTimestamp("actual_time_out") != null
+                        ? resultSet.getTimestamp("actual_time_out").toLocalDateTime() : null;
+
                 int employeeId = resultSet.getInt("employee_id");
 
                 LocalDateTime estimatedReturn = null;
@@ -228,7 +239,8 @@ public class ReturnController {
 
                 LocalDateTime timeIn = customTimeIn != null ? customTimeIn : LocalDateTime.now(PhilTime.ZONE);
 
-                Duration duration = Duration.between(timeOut, timeIn);
+                LocalDateTime durationStart = actualTimeOut != null ? actualTimeOut : timeOut;
+                Duration duration = Duration.between(durationStart, timeIn);
                 long totalMinutes = duration.toMinutes();
                 long hours = duration.toHours();
                 long minutes = totalMinutes % 60;
@@ -406,6 +418,14 @@ public class ReturnController {
                 }
         );
 
+        colMonitorActualTimeOut.setCellValueFactory(
+                cellData -> {
+                    PassSlip ps = cellData.getValue();
+                    String actualTimeOut = ps.getActualTimeOut() != null ? ps.getActualTimeOut().format(formatter) : "";
+                    return new ReadOnlyStringWrapper(actualTimeOut);
+                }
+        );
+
         colMonitorEmployeeID.setCellValueFactory(
                 cellData -> new ReadOnlyStringWrapper(String.valueOf(cellData.getValue().getEmployeeId()))
         );
@@ -417,6 +437,12 @@ public class ReturnController {
         colMonitorDepartment.setCellValueFactory(
                 cellData -> new ReadOnlyStringWrapper(
                         cellData.getValue().getDepartment() != null ? cellData.getValue().getDepartment() : ""
+                )
+        );
+
+        colMonitorReason.setCellValueFactory(
+                cellData -> new ReadOnlyStringWrapper(
+                        cellData.getValue().getReason() != null ? cellData.getValue().getReason() : ""
                 )
         );
 
@@ -455,6 +481,8 @@ public class ReturnController {
                         case "RETURNED EARLY" -> "#60A5FA";
                         case "LATE" -> "#F97316";
                         case "OVERDUE" -> "#EF4444";
+                        case "EXPIRED" -> "#DC2626";
+                        case "CANCELLED" -> "#9CA3AF";
                         default -> "#A8A29E";
                     };
                     setStyle("-fx-text-fill: " + color + "; -fx-font-weight: bold;");
@@ -475,7 +503,21 @@ public class ReturnController {
             javafx.scene.control.MenuItem returnItem = new javafx.scene.control.MenuItem("Mark as RETURNED");
             returnItem.setOnAction(event -> updatePassSlipStatus(row.getItem(), "RETURNED"));
 
-            contextMenu.getItems().addAll(approveItem, rejectItem, returnItem);
+            javafx.scene.control.MenuItem cancelItem = new javafx.scene.control.MenuItem("Cancelled");
+            cancelItem.setOnAction(event -> updatePassSlipStatus(row.getItem(), "CANCELLED"));
+
+            javafx.scene.control.MenuItem viewSigItem = new javafx.scene.control.MenuItem("View Requester Signature");
+            viewSigItem.setOnAction(event -> showRequesterSignature(row.getItem()));
+
+            javafx.scene.control.MenuItem reprintItem = new javafx.scene.control.MenuItem("Reprint Slip");
+            reprintItem.setOnAction(event -> {
+                PassSlip ps = row.getItem();
+                if (ps != null) {
+                    PassSlipController.reprintSlip(ps, row.getScene().getWindow());
+                }
+            });
+
+            contextMenu.getItems().addAll(approveItem, rejectItem, returnItem, cancelItem, viewSigItem, reprintItem);
 
             row.contextMenuProperty().bind(
                     javafx.beans.binding.Bindings.when(row.emptyProperty())
@@ -493,8 +535,10 @@ public class ReturnController {
                         case "RETURNED EARLY" -> color = "#60A5FA";
                         case "LATE" -> color = "#F97316";
                         case "OVERDUE" -> color = "#EF4444";
+                        case "EXPIRED" -> color = "#DC2626";
                         case "PENDING" -> color = "#D97706";
                         case "REJECTED" -> color = "#EF4444";
+                        case "CANCELLED" -> color = "#9CA3AF";
                         default -> color = "#A8A29E";
                     }
                     row.setStyle("-fx-text-fill: " + color + ";");
@@ -503,6 +547,7 @@ public class ReturnController {
                     approveItem.setDisable(isStaff && "PENDING".equals(status));
                     rejectItem.setDisable(isStaff && "PENDING".equals(status));
                     returnItem.setDisable(isStaff && "PENDING".equals(status));
+                    cancelItem.setDisable(isStaff && "PENDING".equals(status));
                 } else {
                     row.setStyle("");
                 }
@@ -510,6 +555,32 @@ public class ReturnController {
 
             return row;
         });
+    }
+
+    private void showRequesterSignature(PassSlip passSlip) {
+        if (passSlip == null || passSlip.getRequesterSignature() == null) {
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+            alert.setTitle("No Signature");
+            alert.setHeaderText(null);
+            alert.setContentText("This request does not include a requester signature.");
+            alert.showAndWait();
+            return;
+        }
+
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+        alert.setTitle("Requester Signature");
+        alert.setHeaderText("Signature for Pass Slip #" + passSlip.getId());
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(passSlip.getRequesterSignature());
+        javafx.scene.image.Image fxImage = new javafx.scene.image.Image(bis);
+        ImageView imageView = new ImageView(fxImage);
+        imageView.setFitWidth(300);
+        imageView.setFitHeight(120);
+        imageView.setPreserveRatio(true);
+
+        alert.setGraphic(imageView);
+        alert.setContentText("Requested by: " + passSlip.getEmployeeName());
+        alert.showAndWait();
     }
 
     private void updatePassSlipStatus(PassSlip passSlip, String newStatus) {
@@ -580,11 +651,13 @@ public class ReturnController {
                         e.department,
                         ps.reason,
                         ps.time_out,
+                        ps.actual_time_out,
                         ps.time_in,
                         ps.estimated_return,
                         ps.duration,
                         ps.duration_minutes,
-                        ps.status
+                        ps.status,
+                        ps.requester_signature
                     FROM pass_slips ps
                     JOIN employees e ON ps.employee_id = e.id
                     ORDER BY ps.id DESC
@@ -596,6 +669,9 @@ public class ReturnController {
             while (resultSet.next()) {
                 LocalDateTime timeOut = resultSet.getTimestamp("time_out") != null
                         ? resultSet.getTimestamp("time_out").toLocalDateTime() : null;
+
+                LocalDateTime actualTimeOut = resultSet.getTimestamp("actual_time_out") != null
+                        ? resultSet.getTimestamp("actual_time_out").toLocalDateTime() : null;
 
                 LocalDateTime timeIn = resultSet.getTimestamp("time_in") != null
                         ? resultSet.getTimestamp("time_in").toLocalDateTime() : null;
@@ -610,11 +686,13 @@ public class ReturnController {
                         resultSet.getString("department"),
                         resultSet.getString("reason"),
                         timeOut,
+                        actualTimeOut,
                         timeIn,
                         estimatedReturn,
                         resultSet.getLong("duration_minutes"),
                         resultSet.getString("status")
                 );
+                passSlip.setRequesterSignature(resultSet.getBytes("requester_signature"));
 
                 data.add(passSlip);
             }
@@ -639,7 +717,9 @@ public class ReturnController {
                     || ps.getStatus().toLowerCase().contains(keyword.toLowerCase())
                     || String.valueOf(ps.getEmployeeId()).contains(keyword)
                     || (ps.getDepartment() != null
-                        && ps.getDepartment().toLowerCase().contains(keyword.toLowerCase())));
+                        && ps.getDepartment().toLowerCase().contains(keyword.toLowerCase()))
+                    || (ps.getReason() != null
+                        && ps.getReason().toLowerCase().contains(keyword.toLowerCase())));
 
             if (matchesStatus && matchesKeyword) {
                 filtered.add(ps);

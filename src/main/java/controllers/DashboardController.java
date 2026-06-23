@@ -67,7 +67,7 @@ public class DashboardController {
     private Button btnSidebarSignatures;
 
     @FXML
-    private Button btnSidebarPasswordReset;
+    private Button btnSidebarRequests;
 
     @FXML
     private Button btnLogout;
@@ -151,7 +151,7 @@ public class DashboardController {
                 btnSidebarEmployeeDirectory, btnSidebarAddEmployee, btnSidebarImportEmployee,
                 btnSidebarReports,
                 btnSidebarLogReturn, btnSidebarUsers,
-                btnSidebarSignatures, btnSidebarPasswordReset,
+                btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, btnNotificationsAlert,
                 btnSidebarDashboard, btnThemeToggle
         );
@@ -313,9 +313,9 @@ public class DashboardController {
         // Use a limit when getting all logs to avoid loading thousands
         List<ActivityLog> allLogs;
         if ("DateSelection".equals(filter) && selectedDate != null) {
-            allLogs = new ArrayList<>(ReportsController.getLogsForDate(selectedDate));
+            allLogs = new ArrayList<>(ReportsController.getPassSlipLogsForDate(selectedDate));
         } else {
-            allLogs = ReportsController.getLogs("All".equals(filter) ? 100 : 0);
+            allLogs = new ArrayList<>(ReportsController.getPassSlipLogs("All".equals(filter) ? 100 : 0));
         }
         List<ActivityLog> filteredLogs = new ArrayList<>();
 
