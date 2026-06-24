@@ -188,7 +188,7 @@ public class DashboardController {
             cardPendingSlips.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_CLICKED,
                     event -> NavigationHelper.navigateTo(
                             cardPendingSlips,
-                            "/fxml/PendingSlips.fxml"
+                            "/fxml/Requests.fxml"
                     )
             );
             boolean isAdmin = utils.Session.isAdmin();
