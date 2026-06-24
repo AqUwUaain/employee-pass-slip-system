@@ -60,7 +60,6 @@ public final class SidebarHelper {
 
         NavigationHelper.hideAdminSidebarItems(btnEmployeeDirectory, btnReports, btnUsers, btnRequests);
         NavigationHelper.hideMonitoringForStaff(btnMonitoring);
-        NavigationHelper.hideReturnForAdmin(btnLogReturn);
 
         if ("STAFF".equalsIgnoreCase(Session.currentRole)) {
             hideButton(btnEmployeeDirectory);
