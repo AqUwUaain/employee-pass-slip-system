@@ -358,7 +358,7 @@ public class MonitoringController {
                 if (now.isAfter(cutoff)) {
                     String updateQuery = """
                             UPDATE pass_slips
-                            SET status = 'OVERDUE', time_in = ?, duration = ?, duration_minutes = ?, no_return_reason = ?
+                            SET status = 'NO RE-ENTRY', time_in = ?, duration = ?, duration_minutes = ?, no_return_reason = ?
                             WHERE id = ?
                             """;
                     PreparedStatement updateStatement =
@@ -394,7 +394,7 @@ public class MonitoringController {
 
                     String updateQuery = """
                             UPDATE pass_slips
-                            SET status = 'OVERDUE', time_in = ?, duration = ?, duration_minutes = ?, no_return_reason = ?
+                            SET status = 'NO RE-ENTRY', time_in = ?, duration = ?, duration_minutes = ?, no_return_reason = ?
                             WHERE id = ?
                             """;
 

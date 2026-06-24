@@ -189,7 +189,7 @@ public class ReturnController {
         btnRefreshMonitoring.setOnAction(event -> loadMonitoringDataAsync());
 
         cmbStatusFilter.setItems(FXCollections.observableArrayList(
-                "ALL", "OUT", "RETURNED", "RETURNED EARLY", "LATE", "OVERDUE", "EXPIRED", "PENDING", "REJECTED", "CANCELLED"
+                "ALL", "OUT", "RETURNED", "RETURNED EARLY", "LATE", "NO RE-ENTRY", "EXPIRED", "PENDING", "REJECTED", "CANCELLED"
         ));
         cmbStatusFilter.setPromptText("All Statuses");
         cmbStatusFilter.getSelectionModel().selectedItemProperty().addListener(
@@ -481,7 +481,7 @@ public class ReturnController {
                         case "RETURNED" -> "#34D399";
                         case "RETURNED EARLY" -> "#60A5FA";
                         case "LATE" -> "#F97316";
-                        case "OVERDUE" -> "#EF4444";
+                        case "NO RE-ENTRY" -> "#EF4444";
                         case "EXPIRED" -> "#DC2626";
                         case "CANCELLED" -> "#9CA3AF";
                         default -> "#A8A29E";
@@ -535,7 +535,7 @@ public class ReturnController {
                         case "RETURNED" -> color = "#34D399";
                         case "RETURNED EARLY" -> color = "#60A5FA";
                         case "LATE" -> color = "#F97316";
-                        case "OVERDUE" -> color = "#EF4444";
+                        case "NO RE-ENTRY" -> color = "#EF4444";
                         case "EXPIRED" -> color = "#DC2626";
                         case "PENDING" -> color = "#D97706";
                         case "REJECTED" -> color = "#EF4444";

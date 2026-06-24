@@ -776,7 +776,7 @@ public class PassSlipController {
             var conn = database.DatabaseConnection.connect();
             if (conn != null) {
                 var ps = conn.prepareStatement(
-                        "SELECT time_in FROM pass_slips WHERE employee_id = ? AND status IN ('RETURNED','RETURNED EARLY','LATE','OVERDUE') ORDER BY id DESC LIMIT 1");
+                        "SELECT time_in FROM pass_slips WHERE employee_id = ? AND status IN ('RETURNED','RETURNED EARLY','LATE','NO RE-ENTRY') ORDER BY id DESC LIMIT 1");
                 ps.setInt(1, selectedEmployeeId);
                 var rs = ps.executeQuery();
                 if (rs.next() && rs.getTimestamp("time_in") != null) {
@@ -960,7 +960,7 @@ public class PassSlipController {
                     var conn = database.DatabaseConnection.connect();
                     if (conn != null) {
                         var ps = conn.prepareStatement(
-                                "SELECT time_in FROM pass_slips WHERE employee_id = ? AND status IN ('RETURNED','RETURNED EARLY','LATE','OVERDUE') ORDER BY id DESC LIMIT 1");
+                                "SELECT time_in FROM pass_slips WHERE employee_id = ? AND status IN ('RETURNED','RETURNED EARLY','LATE','NO RE-ENTRY') ORDER BY id DESC LIMIT 1");
                         ps.setInt(1, selectedEmployeeId);
                         var rs = ps.executeQuery();
                         if (rs.next() && rs.getTimestamp("time_in") != null) {
