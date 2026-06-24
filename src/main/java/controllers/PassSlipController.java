@@ -497,7 +497,7 @@ public class PassSlipController {
     }
 
     private void loadAdminSignature() {
-        byte[] imageData = SignatureController.getSignatureByUserId(Session.currentUserId);
+        byte[] imageData = SignatureController.getLatestAdminSignature();
         if (imageData != null) {
             ByteArrayInputStream bis = new ByteArrayInputStream(imageData);
             Image fxImage = new Image(bis);
@@ -1008,7 +1008,7 @@ public class PassSlipController {
                 signeeValueCell.setBorder(new SolidBorder(new DeviceRgb(200, 200, 200), 0.5f));
                 signeeValueCell.setPadding(5);
                 signeeValueCell.setBackgroundColor(lightGray);
-                byte[] sigData = SignatureController.getSignatureByUserId(Session.currentUserId);
+        byte[] sigData = SignatureController.getLatestAdminSignature();
                 if (sigData != null) {
                     com.itextpdf.layout.element.Image sigImage = new com.itextpdf.layout.element.Image(
                             ImageDataFactory.create(sigData)
@@ -1176,7 +1176,7 @@ public class PassSlipController {
             adminSigCell.setBorder(new SolidBorder(new DeviceRgb(200, 200, 200), 0.5f));
             adminSigCell.setPadding(5);
             adminSigCell.setBackgroundColor(lightGray);
-            byte[] adminSig = SignatureController.getSignatureByUserId(Session.currentUserId);
+            byte[] adminSig = SignatureController.getLatestAdminSignature();
             if (adminSig != null) {
                 adminSigCell.add(new com.itextpdf.layout.element.Image(ImageDataFactory.create(adminSig))
                         .setWidth(150).setHeight(50));

@@ -522,4 +522,25 @@ public class SignatureController {
         }
     }
 
+    public static byte[] getLatestAdminSignature() {
+        try (Connection connection = DatabaseConnection.connect()) {
+            PreparedStatement stmt = connection.prepareStatement(
+                    "SELECT s.image_data FROM signatures s JOIN users u ON s.user_id = u.id WHERE u.role = 'ADMIN' ORDER BY s.id DESC LIMIT 1"
+            );
+            ResultSet rs = stmt.executeQuery();
+
+            byte[] imageData = null;
+            if (rs.next()) {
+                imageData = rs.getBytes("image_data");
+            }
+
+            rs.close();
+            stmt.close();
+            return imageData;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
