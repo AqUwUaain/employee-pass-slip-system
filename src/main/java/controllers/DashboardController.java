@@ -153,7 +153,8 @@ public class DashboardController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarDashboard, btnThemeToggle
+                btnSidebarDashboard, btnThemeToggle,
+                btnManageEmployees, manageEmployeesSubMenu
         );
 
         currentYearMonth = YearMonth.now();

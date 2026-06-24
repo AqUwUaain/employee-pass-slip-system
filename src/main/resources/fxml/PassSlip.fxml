@@ -186,7 +186,7 @@
                 <HBox alignment="CENTER_RIGHT" spacing="12.0">
                     <children>
                         <Button fx:id="btnCancelSlipAction" mnemonicParsing="false" prefHeight="36.0" prefWidth="110.0" styleClass="btn-dismiss" text="Dismiss" />
-                        <Button fx:id="btnSaveSlipAction" mnemonicParsing="false" prefHeight="36.0" prefWidth="180.0" styleClass="btn-authorize" text="&#x1F4BE; Authorize, Save &amp; Print" />
+                        <Button fx:id="btnSaveSlipAction" mnemonicParsing="false" prefHeight="36.0" prefWidth="180.0" styleClass="btn-authorize" text="&#x1F4BE; Save" />
                     </children>
                     <VBox.margin>
                         <Insets top="5.0" />

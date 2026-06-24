@@ -114,7 +114,8 @@ public class MonitoringController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, null,
-                btnSidebarMonitoring, btnThemeToggle
+                btnSidebarMonitoring, btnThemeToggle,
+                btnManageEmployees, manageEmployeesSubMenu
         );
 
         if (btnManageEmployees != null) {
@@ -357,12 +358,20 @@ public class MonitoringController {
                 if (now.isAfter(cutoff)) {
                     String updateQuery = """
                             UPDATE pass_slips
-                            SET status = 'OVERDUE'
+                            SET status = 'OVERDUE', time_in = ?, duration = ?, duration_minutes = ?, no_return_reason = ?
                             WHERE id = ?
                             """;
                     PreparedStatement updateStatement =
                             connection.prepareStatement(updateQuery);
-                    updateStatement.setInt(1, passSlipId);
+                    java.sql.Timestamp cutoffTimestamp = java.sql.Timestamp.valueOf(cutoff);
+                    updateStatement.setTimestamp(1, cutoffTimestamp);
+                    long totalMinutes = Duration.between(timeOut, cutoff).toMinutes();
+                    long hours = totalMinutes / 60;
+                    long mins = totalMinutes % 60;
+                    updateStatement.setString(2, hours + " hrs " + mins + " mins");
+                    updateStatement.setLong(3, totalMinutes);
+                    updateStatement.setString(4, "Auto-expired: No re-entry recorded after 9:00 PM cutoff");
+                    updateStatement.setInt(5, passSlipId);
                     updateStatement.executeUpdate();
                     continue;
                 }
@@ -385,14 +394,26 @@ public class MonitoringController {
 
                     String updateQuery = """
                             UPDATE pass_slips
-                            SET status = 'OVERDUE'
+                            SET status = 'OVERDUE', time_in = ?, duration = ?, duration_minutes = ?, no_return_reason = ?
                             WHERE id = ?
                             """;
 
                     PreparedStatement updateStatement =
                             connection.prepareStatement(updateQuery);
 
-                    updateStatement.setInt(1, passSlipId);
+                    java.sql.Timestamp autoTimeIn = java.sql.Timestamp.valueOf(
+                            estimatedReturnTimestamp != null
+                                    ? estimatedReturnTimestamp.toLocalDateTime().plusHours(1)
+                                    : timeOut.plusHours(2)
+                    );
+                    updateStatement.setTimestamp(1, autoTimeIn);
+                    long totalMinutes = Duration.between(timeOut, autoTimeIn.toLocalDateTime()).toMinutes();
+                    long hours = totalMinutes / 60;
+                    long mins = totalMinutes % 60;
+                    updateStatement.setString(2, hours + " hrs " + mins + " mins");
+                    updateStatement.setLong(3, totalMinutes);
+                    updateStatement.setString(4, "Auto-expired: Did not return within expected time + 1 hour grace period");
+                    updateStatement.setInt(5, passSlipId);
 
                     updateStatement.executeUpdate();
 

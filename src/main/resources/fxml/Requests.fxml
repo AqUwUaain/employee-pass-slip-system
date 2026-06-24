@@ -40,9 +40,9 @@
                                 <Button fx:id="btnSidebarReports" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Reports" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarUsers" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Users" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarSignatures" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Signatures" styleClass="nav-sub-item" />
+                                <Button fx:id="btnSidebarRequests" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Settings" styleClass="nav-sub-item" />
                             </children>
                         </VBox>
-                        <Button fx:id="btnSidebarRequests" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Requests" styleClass="nav-item nav-active" />
                         <Label text="ACCOUNT" styleClass="sidebar-section-label" />
                         <Button fx:id="btnLogout" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Logout" styleClass="nav-item" />
                     </children>
@@ -112,6 +112,7 @@
                                             <children>
                                                 <Button fx:id="btnApprove" text="Approve" disable="true" style="-fx-background-color: rgba(5,150,105,0.15); -fx-text-fill: #34D399; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 10px 20px; -fx-border-color: rgba(5,150,105,0.25); -fx-border-width: 1px; -fx-cursor: hand;" />
                                                 <Button fx:id="btnReject" text="Reject" disable="true" style="-fx-background-color: rgba(220,38,38,0.12); -fx-text-fill: #FCA5A5; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 10px 20px; -fx-border-color: rgba(220,38,38,0.25); -fx-border-width: 1px; -fx-cursor: hand;" />
+                                                <Button fx:id="btnCancel" text="Cancel" disable="true" style="-fx-background-color: rgba(156,163,175,0.12); -fx-text-fill: #9CA3AF; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 12px; -fx-padding: 10px 20px; -fx-border-color: rgba(156,163,175,0.25); -fx-border-width: 1px; -fx-cursor: hand;" />
                                                 <HBox HBox.hgrow="ALWAYS" />
                                                 <Label fx:id="messageLabel" text="" style="-fx-font-size: 12px;" />
                                             </children>

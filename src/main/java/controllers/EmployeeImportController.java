@@ -82,7 +82,8 @@ public class EmployeeImportController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarImportEmployee, btnThemeToggle
+                btnSidebarImportEmployee, btnThemeToggle,
+                btnManageEmployees, manageEmployeesSubMenu
         );
 
         if (btnManageEmployees != null) {

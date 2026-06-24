@@ -144,7 +144,8 @@ public class ReportsController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, null,
-                btnSidebarReports, btnThemeToggle
+                btnSidebarReports, btnThemeToggle,
+                btnManageEmployees, manageEmployeesSubMenu
         );
 
         if (btnManageEmployees != null) {

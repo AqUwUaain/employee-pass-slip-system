@@ -141,7 +141,8 @@ public class EmployeeFormController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarAddEmployee, btnThemeToggle
+                btnSidebarAddEmployee, btnThemeToggle,
+                btnManageEmployees, manageEmployeesSubMenu
         );
 
         if (btnManageEmployees != null) {

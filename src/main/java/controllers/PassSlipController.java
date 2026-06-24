@@ -146,10 +146,10 @@ public class PassSlipController {
         populateTimeInOptions(now);
         populateActualTimeOutOptions(now);
 
-        if (isStaff) {
-            loadRequesterSignature();
-        } else {
+        if (!isStaff) {
             loadAdminSignature();
+        } else {
+            lblRequesterSignatureHint.setText("No signature attached. Admin signature will be used.");
         }
 
         cmbTimeIn.setOnAction(event -> {
@@ -263,7 +263,7 @@ public class PassSlipController {
             );
 
             String msg = lblSlipStatusMessage.getText();
-            if ("PASS SLIP ISSUED".equals(msg) || "REQUEST".equals(msg)) {
+            if ("PASS SLIP ISSUED".equals(msg) || "PENDING APPROVAL".equals(msg)) {
                 javafx.application.Platform.runLater(() -> {
                     javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
                             javafx.scene.control.Alert.AlertType.INFORMATION);
@@ -617,7 +617,7 @@ public class PassSlipController {
                             "Requested Pass Slip for Employee ID: " + employeeId,
                             Integer.parseInt(employeeId)
                     );
-                    messageLabel.setText("REQUEST");
+                    messageLabel.setText("PENDING APPROVAL");
                 }
 
             } else {
@@ -763,7 +763,7 @@ public class PassSlipController {
         timeRow.addCell(createValueCell(actualTimeOutText, darkText, lightGray));
         mainCell.add(timeRow);
 
-        Table timeInRow = new Table(UnitValue.createPercentArray(new float[]{20, 80}))
+        Table timeInRow = new Table(UnitValue.createPercentArray(new float[]{20, 30, 25, 25}))
                 .useAllAvailableWidth()
                 .setAutoLayout();
         timeInRow.addCell(createLabelCell("TIME IN:", medGray, white));
@@ -771,6 +771,27 @@ public class PassSlipController {
                 ? selectedEstimatedReturn.format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"))
                 : "Pending";
         timeInRow.addCell(createValueCell(expectedTimeIn, darkText, lightGray));
+        String actualTimeInText = "";
+        try {
+            var conn = database.DatabaseConnection.connect();
+            if (conn != null) {
+                var ps = conn.prepareStatement(
+                        "SELECT time_in FROM pass_slips WHERE employee_id = ? AND status IN ('RETURNED','RETURNED EARLY','LATE','OVERDUE') ORDER BY id DESC LIMIT 1");
+                ps.setInt(1, selectedEmployeeId);
+                var rs = ps.executeQuery();
+                if (rs.next() && rs.getTimestamp("time_in") != null) {
+                    actualTimeInText = rs.getTimestamp("time_in").toLocalDateTime()
+                            .format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"));
+                }
+                rs.close();
+                ps.close();
+                conn.close();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        timeInRow.addCell(createLabelCell("ACTUAL TIME IN:", medGray, white));
+        timeInRow.addCell(createValueCell(actualTimeInText, darkText, lightGray));
         mainCell.add(timeInRow);
 
         if ("STAFF".equalsIgnoreCase(Session.currentRole)) {

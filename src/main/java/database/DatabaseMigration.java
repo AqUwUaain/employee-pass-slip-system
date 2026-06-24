@@ -43,7 +43,9 @@ public class DatabaseMigration {
                     "ALTER TABLE pass_slips ADD COLUMN IF NOT EXISTS requester_signature BYTEA DEFAULT NULL",
                     // Signature requests table for staff approval workflow
                     "CREATE TABLE IF NOT EXISTS signature_requests (id SERIAL PRIMARY KEY, user_id INT NOT NULL, signature_name VARCHAR(255) NOT NULL, image_data BYTEA NOT NULL, status VARCHAR(20) DEFAULT 'PENDING', reviewed_by INT DEFAULT NULL, reviewed_at TIMESTAMP DEFAULT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",
-                    "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_sig_requests_user') THEN ALTER TABLE signature_requests ADD CONSTRAINT fk_sig_requests_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE; END IF; END $$"
+                    "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_sig_requests_user') THEN ALTER TABLE signature_requests ADD CONSTRAINT fk_sig_requests_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE; END IF; END $$",
+                    // Reason for no return when pass slip expires
+                    "ALTER TABLE pass_slips ADD COLUMN IF NOT EXISTS no_return_reason TEXT DEFAULT NULL"
             };
 
             for (String sql : migrations) {

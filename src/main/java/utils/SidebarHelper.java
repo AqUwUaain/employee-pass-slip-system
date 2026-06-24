@@ -21,7 +21,9 @@ public final class SidebarHelper {
             Button btnLogout,
             Button btnNotifications,
             Button activeButton,
-            Button btnThemeToggle
+            Button btnThemeToggle,
+            Button btnManageEmployees,
+            javafx.scene.layout.VBox manageEmployeesSubMenu
     ) {
         if (btnDashboard != null)
             btnDashboard.setOnAction(e -> NavigationHelper.navigateToDashboard(btnDashboard));
@@ -58,11 +60,17 @@ public final class SidebarHelper {
 
         NavigationHelper.hideAdminSidebarItems(btnEmployeeDirectory, btnReports, btnUsers, btnRequests);
         NavigationHelper.hideMonitoringForStaff(btnMonitoring);
+        NavigationHelper.hideReturnForAdmin(btnLogReturn);
 
         if ("STAFF".equalsIgnoreCase(Session.currentRole)) {
             hideButton(btnEmployeeDirectory);
             hideButton(btnAddEmployee);
             hideButton(btnImportEmployee);
+            hideButton(btnManageEmployees);
+            if (manageEmployeesSubMenu != null) {
+                manageEmployeesSubMenu.setVisible(false);
+                manageEmployeesSubMenu.setManaged(false);
+            }
         }
 
         if (activeButton != null)

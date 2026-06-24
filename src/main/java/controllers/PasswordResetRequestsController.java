@@ -103,7 +103,8 @@ public class PasswordResetRequestsController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarRequests, btnThemeToggle
+                btnSidebarRequests, btnThemeToggle,
+                btnManageEmployees, manageEmployeesSubMenu
         );
 
         if (btnManageEmployees != null) {

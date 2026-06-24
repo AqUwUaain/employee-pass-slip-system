@@ -47,9 +47,9 @@
                                 <Button fx:id="btnSidebarReports" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Reports" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarUsers" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Users" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarSignatures" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Signatures" styleClass="nav-sub-item" />
+                                <Button fx:id="btnSidebarRequests" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Settings" styleClass="nav-sub-item" />
                             </children>
                         </VBox>
-                        <Button fx:id="btnSidebarPasswordReset" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Reset Requests" styleClass="nav-item" />
                         <Label text="ACCOUNT" styleClass="sidebar-section-label" />
                         <Button fx:id="btnLogout" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Logout" styleClass="nav-item" />
                     </children>
@@ -154,13 +154,13 @@
                         </HBox>
                         <HBox spacing="18.0" VBox.vgrow="ALWAYS">
                             <children>
-                                <!-- Activity Tracker -->
+                                <!-- Pass Slip Activity -->
                                 <VBox spacing="12.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" styleClass="card card-padding dashboard-activity-card">
                                     <children>
                                         <HBox alignment="CENTER_LEFT" spacing="8.0">
                                             <padding><Insets left="6.0" /></padding>
                                             <children>
-                                                <Label text="Activity Tracker" styleClass="sec-title" />
+                                                <Label text="Pass Slip Activity" styleClass="sec-title" />
                                                 <StackPane HBox.hgrow="ALWAYS" />
                                                 <Button fx:id="btnViewAllActivity" text="View All →" styleClass="link-button" />
                                             </children>

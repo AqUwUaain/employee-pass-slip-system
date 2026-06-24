@@ -114,6 +114,14 @@ public final class NavigationHelper {
         }
     }
 
+    public static void hideReturnForAdmin(Button btnLogReturn) {
+        if ("STAFF".equalsIgnoreCase(Session.currentRole)) return;
+        if (btnLogReturn != null) {
+            btnLogReturn.setVisible(false);
+            btnLogReturn.setManaged(false);
+        }
+    }
+
     public static String getCurrentFxmlPath(Node source) {
         return Session.currentFxmlPath != null ? Session.currentFxmlPath : "/fxml/Dashboard.fxml";
     }

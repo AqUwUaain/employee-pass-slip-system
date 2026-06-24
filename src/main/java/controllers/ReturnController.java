@@ -155,7 +155,8 @@ public class ReturnController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarLogReturn, btnThemeToggle
+                btnSidebarLogReturn, btnThemeToggle,
+                btnManageEmployees, manageEmployeesSubMenu
         );
 
         if (btnManageEmployees != null) {
@@ -544,10 +545,10 @@ public class ReturnController {
                     row.setStyle("-fx-text-fill: " + color + ";");
 
                     boolean isStaff = "STAFF".equalsIgnoreCase(Session.currentRole);
-                    approveItem.setDisable(isStaff && "PENDING".equals(status));
-                    rejectItem.setDisable(isStaff && "PENDING".equals(status));
-                    returnItem.setDisable(isStaff && "PENDING".equals(status));
-                    cancelItem.setDisable(isStaff && "PENDING".equals(status));
+                    approveItem.setDisable(isStaff);
+                    rejectItem.setDisable(isStaff);
+                    cancelItem.setDisable(isStaff);
+                    returnItem.setDisable(false);
                 } else {
                     row.setStyle("");
                 }

@@ -81,7 +81,8 @@ public class EmployeeController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarEmployeeDirectory, btnThemeToggle
+                btnSidebarEmployeeDirectory, btnThemeToggle,
+                btnManageEmployees, manageEmployeesSubMenu
         );
 
         if (btnManageEmployees != null) {

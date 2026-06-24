@@ -57,6 +57,7 @@ public class RequestsController {
 
     @FXML private Button btnApprove;
     @FXML private Button btnReject;
+    @FXML private Button btnCancel;
     @FXML private Label messageLabel;
     @FXML private Label lblTotalPending;
 
@@ -86,7 +87,8 @@ public class RequestsController {
                 btnSidebarLogReturn, btnSidebarUsers,
                 btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarRequests, btnThemeToggle
+                btnSidebarRequests, btnThemeToggle,
+                btnManageEmployees, manageEmployeesSubMenu
         );
 
         if (btnManageEmployees != null) {
@@ -106,9 +108,11 @@ public class RequestsController {
 
         btnApprove.setOnAction(e -> processSelected("APPROVED"));
         btnReject.setOnAction(e -> processSelected("REJECTED"));
+        btnCancel.setOnAction(e -> processSelected("CANCELLED"));
 
         btnApprove.setDisable(true);
         btnReject.setDisable(true);
+        btnCancel.setDisable(true);
 
         loadAllRequestsAsync();
     }
@@ -204,10 +208,10 @@ public class RequestsController {
                     setText(item);
                     String color = switch (item) {
                         case "PENDING" -> "#FBBF24";
-                        case "APPROVED" -> "#34D399";
+                        case "APPROVED", "OUT" -> "#34D399";
                         case "REJECTED" -> "#EF4444";
-                        case "OUT" -> "#FBBF24";
                         case "RETURNED" -> "#34D399";
+                        case "CANCELLED" -> "#9CA3AF";
                         default -> "#A8A29E";
                     };
                     setStyle("-fx-text-fill: " + color + "; -fx-font-weight: bold;");
@@ -219,8 +223,6 @@ public class RequestsController {
     private void showPreview(UnifiedRequest request) {
         if (request == null) {
             clearPreview();
-            btnApprove.setDisable(true);
-            btnReject.setDisable(true);
             return;
         }
 
@@ -235,6 +237,7 @@ public class RequestsController {
             case "PENDING", "OUT" -> "#FBBF24";
             case "APPROVED", "RETURNED" -> "#34D399";
             case "REJECTED" -> "#EF4444";
+            case "CANCELLED" -> "#9CA3AF";
             default -> "#A8A29E";
         };
         lblPreviewStatus.setStyle("-fx-text-fill: " + statusColor + "; -fx-font-weight: bold; -fx-font-size: 13px;");
@@ -253,6 +256,7 @@ public class RequestsController {
                 PasswordResetRequest prr = request.getRawData(PasswordResetRequest.class);
                 btnApprove.setDisable(!isPending);
                 btnReject.setDisable(!isPending);
+                btnCancel.setDisable(true);
             }
             case PASS_SLIP -> {
                 PassSlip ps = request.getRawData(PassSlip.class);
@@ -263,6 +267,7 @@ public class RequestsController {
                 lblPreviewDetail3.setText("Reason: " + (ps.getReason() != null ? ps.getReason() : "N/A"));
                 btnApprove.setDisable(!isPending);
                 btnReject.setDisable(!isPending);
+                btnCancel.setDisable(!isPending);
             }
             case SIGNATURE -> {
                 SignatureRequest sr = request.getRawData(SignatureRequest.class);
@@ -276,6 +281,7 @@ public class RequestsController {
                 }
                 btnApprove.setDisable(!isPending);
                 btnReject.setDisable(!isPending);
+                btnCancel.setDisable(true);
             }
         }
     }
@@ -294,6 +300,9 @@ public class RequestsController {
         vboxPassSlipPreview.setManaged(false);
         lblPreviewDetail3.setVisible(false);
         lblPreviewDetail3.setManaged(false);
+        btnApprove.setDisable(true);
+        btnReject.setDisable(true);
+        btnCancel.setDisable(true);
     }
 
     private void loadAllRequestsAsync() {
@@ -449,6 +458,12 @@ public class RequestsController {
             return;
         }
 
+        if ("CANCELLED".equals(newStatus) && selected.getCategory() != UnifiedRequest.Category.PASS_SLIP) {
+            messageLabel.setText("Cancel is only available for pass slip requests.");
+            messageLabel.setStyle("-fx-text-fill: #FCA5A5; -fx-font-weight: bold;");
+            return;
+        }
+
         switch (selected.getCategory()) {
             case PASSWORD_RESET -> processPasswordReset(selected.getRawData(PasswordResetRequest.class), newStatus);
             case SIGNATURE -> processSignature(selected.getRawData(SignatureRequest.class), newStatus);
@@ -457,7 +472,14 @@ public class RequestsController {
     }
 
     private void processPassSlip(PassSlip passSlip, String newStatus) {
-        String dbStatus = "APPROVED".equals(newStatus) ? "OUT" : "REJECTED";
+        String dbStatus;
+        if ("APPROVED".equals(newStatus)) {
+            dbStatus = "OUT";
+        } else if ("CANCELLED".equals(newStatus)) {
+            dbStatus = "CANCELLED";
+        } else {
+            dbStatus = "REJECTED";
+        }
         try (Connection connection = DatabaseConnection.connect()) {
             String sql = "UPDATE pass_slips SET status = ? WHERE id = ?";
             PreparedStatement stmt = connection.prepareStatement(sql);

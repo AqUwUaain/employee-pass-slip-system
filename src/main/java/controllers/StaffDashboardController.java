@@ -103,7 +103,8 @@ public class StaffDashboardController {
                 btnSidebarLogReturn, null,
                 btnSidebarSignatures, btnSidebarRequests,
                 btnLogout, btnNotificationsAlert,
-                btnSidebarDashboard, btnThemeToggle
+                btnSidebarDashboard, btnThemeToggle,
+                btnManageEmployees, manageEmployeesSubMenu
         );
 
         if (btnManageEmployees != null) {

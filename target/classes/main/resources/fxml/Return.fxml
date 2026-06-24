@@ -46,9 +46,9 @@
                                 <Button fx:id="btnSidebarReports" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Reports" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarUsers" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Users" styleClass="nav-sub-item" />
                                 <Button fx:id="btnSidebarSignatures" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Signatures" styleClass="nav-sub-item" />
+                                <Button fx:id="btnSidebarRequests" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x251C;   Settings" styleClass="nav-sub-item" />
                             </children>
                         </VBox>
-                        <Button fx:id="btnSidebarPasswordReset" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Reset Requests" styleClass="nav-item" />
                         <Label text="ACCOUNT" styleClass="sidebar-section-label" />
                         <Button fx:id="btnLogout" alignment="CENTER_LEFT" maxWidth="Infinity" mnemonicParsing="false" text="&#x25A0;   Logout" styleClass="nav-item" />
                     </children>
@@ -168,9 +168,11 @@
                                 <TableView fx:id="monitoringTableView" prefHeight="350.0" VBox.vgrow="ALWAYS">
                                     <columns>
                                         <TableColumn fx:id="colMonitorTimestamp" prefWidth="140.0" text="Time Out" />
+                                        <TableColumn fx:id="colMonitorActualTimeOut" prefWidth="140.0" text="Actual Time Out" />
                                         <TableColumn fx:id="colMonitorEmployeeID" prefWidth="90.0" text="Employee ID" />
                                         <TableColumn fx:id="colMonitorFullName" prefWidth="170.0" text="Personnel Name" />
                                         <TableColumn fx:id="colMonitorDepartment" prefWidth="140.0" text="Department" />
+                                        <TableColumn fx:id="colMonitorReason" prefWidth="160.0" text="Reason" />
                                         <TableColumn fx:id="colMonitorExpectedReturn" prefWidth="130.0" text="Expected In" />
                                         <TableColumn fx:id="colMonitorTimeIn" prefWidth="130.0" text="Time In" />
                                         <TableColumn fx:id="colMonitorStatus" prefWidth="110.0" text="Status" />
