@@ -218,7 +218,11 @@ public class ReportsController {
         );
 
         colStatus.setCellValueFactory(
-                cellData -> new ReadOnlyStringWrapper(cellData.getValue().getStatus())
+                cellData -> {
+                    String status = cellData.getValue().getStatus();
+                    if ("OVERDUE".equals(status)) status = "NO RE-ENTRY";
+                    return new ReadOnlyStringWrapper(status);
+                }
         );
 
         colDuration.setCellValueFactory(

@@ -44,3 +44,6 @@ CREATE TABLE IF NOT EXISTS signature_requests (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ALTER TABLE signature_requests ADD CONSTRAINT fk_sig_requests_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+-- Rename OVERDUE status to NO RE-ENTRY
+UPDATE pass_slips SET status = 'NO RE-ENTRY' WHERE status = 'OVERDUE';

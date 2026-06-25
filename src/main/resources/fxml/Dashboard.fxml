@@ -105,11 +105,11 @@
                                         </VBox>
                                     </children>
                                 </VBox>
-                                <!-- Pending Slips -->
+                                <!-- Pending Requests -->
                                 <VBox fx:id="cardPendingSlips" alignment="CENTER" minHeight="170.0" HBox.hgrow="ALWAYS" styleClass="stat-light" style="-fx-cursor: hand;" pickOnBounds="true">
                                     <children>
                                         <VBox alignment="CENTER_LEFT" styleClass="stat-header" prefWidth="210.0">
-                                            <children><Label text="PENDING SLIPS" styleClass="stat-header-label" /></children>
+                                            <children><Label text="PENDING REQUESTS" styleClass="stat-header-label" /></children>
                                         </VBox>
                                         <VBox alignment="CENTER" spacing="4.0" VBox.vgrow="ALWAYS">
                                             <children>

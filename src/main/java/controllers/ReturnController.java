@@ -475,8 +475,9 @@ public class ReturnController {
                     setText(null);
                     setStyle("");
                 } else {
-                    setText(item);
-                    String color = switch (item) {
+                    String displayItem = "OVERDUE".equals(item) ? "NO RE-ENTRY" : item;
+                    setText(displayItem);
+                    String color = switch (displayItem) {
                         case "OUT" -> "#FBBF24";
                         case "RETURNED" -> "#34D399";
                         case "RETURNED EARLY" -> "#60A5FA";
@@ -535,7 +536,7 @@ public class ReturnController {
                         case "RETURNED" -> color = "#34D399";
                         case "RETURNED EARLY" -> color = "#60A5FA";
                         case "LATE" -> color = "#F97316";
-                        case "NO RE-ENTRY" -> color = "#EF4444";
+                        case "NO RE-ENTRY", "OVERDUE" -> color = "#EF4444";
                         case "EXPIRED" -> color = "#DC2626";
                         case "PENDING" -> color = "#D97706";
                         case "REJECTED" -> color = "#EF4444";
